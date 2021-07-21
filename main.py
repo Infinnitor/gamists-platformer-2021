@@ -80,10 +80,13 @@ class player(sprite):
         self.on_ground = False
 
         collider_h = 1
-        self.down_collider = offset_rect(offset=(1, self.h - collider_h), parent=self, size=(self.w - 2, collider_h))
-        self.up_collider = offset_rect(offset=(1, 0), parent=self, size=(self.w - 2, collider_h))
-        self.left_collider = offset_rect(offset=(0, 1), parent=self, size=(collider_h, self.h - 2))
-        self.right_collider = offset_rect(offset=(self.w, 1), parent=self, size=(collider_h, self.h - 2))
+        self.colliders = {
+            "DOWN" : offset_rect(offset=(1, self.h - collider_h), parent=self, size=(self.w - 2, collider_h)),
+            "UP" : offset_rect(offset=(1, 0), parent=self, size=(self.w - 2, collider_h)),
+            "LEFT" : offset_rect(offset=(0, 1), parent=self, size=(collider_h, self.h - 2)),
+            "RIGHT" : offset_rect(offset=(self.w, 1), parent=self, size=(collider_h, self.h - 2))
+
+        }
 
     def update_move(self, game):
         if game.check_key(pygame.K_LEFT, pygame.K_a):
@@ -123,48 +126,43 @@ class player(sprite):
     def update_collision(self, game, axis):
 
         if axis == "X":
-            self.left_collider.get_pos()
-            self.right_collider.get_pos()
+            self.colliders["LEFT"].get_pos()
+            self.colliders["RIGHT"].get_pos()
 
             for t in game.sprites["TERRAIN"]:
-                if rect_collision(self.left_collider, t):
+                if rect_collision(self.colliders["LEFT"], t):
                     self.x_speed = 0
                     depth = t.x + t.w - self.x
                     self.x += depth
-                    print("left", depth)
 
-                elif rect_collision(self.right_collider, t):
+                elif rect_collision(self.colliders["RIGHT"], t):
                     self.x_speed = 0
                     depth = self.x + self.w - t.x
                     self.x -= depth
-                    print("right", depth)
 
         elif axis == "Y":
-            self.down_collider.get_pos()
-            self.up_collider.get_pos()
+            self.colliders["DOWN"].get_pos()
+            self.colliders["UP"].get_pos()
 
             self.on_ground = False
             for t in game.sprites["TERRAIN"]:
-                if rect_collision(self.down_collider, t):
+                if rect_collision(self.colliders["DOWN"], t):
                     self.on_ground = True
                     self.held_jump_frames = 0
                     depth = self.y + self.h - t.y
                     self.y -= depth
-                    # print("down", depth)
 
-                elif rect_collision(self.up_collider, t):
+                elif rect_collision(self.colliders["UP"], t):
                     self.held_jump_frames = self.held_jump_max + 1
                     self.y_speed = 0
                     depth = t.y + t.h - self.y
                     self.y += depth
-                    # print("up", depth)
 
     def update_draw(self, game):
         pygame.draw.rect(game.win, (155, 40, 40), (self.x, self.y, self.w, self.h))
-        pygame.draw.rect(game.win, (255, 255, 255), self.down_collider.get_pos())
-        pygame.draw.rect(game.win, (255, 255, 255), self.up_collider.get_pos())
-        pygame.draw.rect(game.win, (0, 255, 255), self.left_collider.get_pos())
-        pygame.draw.rect(game.win, (255, 255, 255), self.right_collider.get_pos())
+
+        for collider_rect in self.colliders.values():
+            pygame.draw.rect(game.win, (255, 255, 255), collider_rect.get_pos())
 
 
 class platform(sprite):
