@@ -56,43 +56,56 @@ class player(sprite):
     layer = "PLAYER"
 
     def __init__(self, pos, size, speed):
+
+        # Position
         self.x = pos[0]
         self.y = pos[1]
 
+        # Width and height
         self.w = size[0]
         self.h = size[1]
 
-        self.base_walking_speed = speed[0]
-        self.speed_cap = 7
+        # Acceleration on the X axis
+        self.x_acceleration = speed[0]
+        # Acceleration of gravity / downward acceleration on the Y axis
+        self.gravity = speed[1]
+
+        # The max force of gravity on the player
         self.terminal_velocity = 11
+
+        # The max speed that the player can move at on the X and Y axis
+        self.speed_cap = 7
         self.min_y_speed = self.terminal_velocity * -1
 
+        # Player momentum on both the X and Y
         self.x_speed = 0
         self.y_speed = 0
 
-        self.gravity = 0.5
-
+        # Upward acceleration when jumping
         self.jump_str = 20
+
+        # The number of frames that the player has been jumping
         self.held_jump_frames = 0
         self.held_jump_min = 5
         self.held_jump_max = 10
 
+        # If the player is on the ground
         self.on_ground = False
 
         collider_h = 1
+        # Player colliders
         self.colliders = {
             "DOWN" : offset_rect(offset=(1, self.h - collider_h), parent=self, size=(self.w - 2, collider_h)),
             "UP" : offset_rect(offset=(1, 0), parent=self, size=(self.w - 2, collider_h)),
             "LEFT" : offset_rect(offset=(0, 1), parent=self, size=(collider_h, self.h - 2)),
             "RIGHT" : offset_rect(offset=(self.w, 1), parent=self, size=(collider_h, self.h - 2))
-
         }
 
     def update_move(self, game):
         if game.check_key(pygame.K_LEFT, pygame.K_a):
-            self.x_speed -= self.base_walking_speed
+            self.x_speed -= self.x_acceleration
         elif game.check_key(pygame.K_RIGHT, pygame.K_d):
-            self.x_speed += self.base_walking_speed
+            self.x_speed += self.x_acceleration
         else:
             self.x_speed = 0
 
@@ -192,7 +205,7 @@ game = game_info(
                 show_framerate=False,
                 quit_key=pygame.K_ESCAPE)
 
-game.add_sprite(player(pos=(500, 500), size=(50, 50), speed=(1, 5)))
+game.add_sprite(player(pos=(500, 500), size=(50, 50), speed=(1, 0.5)))
 game.add_sprite(platform(pos=(0, 600), size=(1280, 200), colour=(35, 35, 155)))
 game.add_sprite(platform(pos=(300, 300), size=(700, 100), colour=(49, 52, 63)))
 game.add_sprite(platform(pos=(0, 550), size=(700, 100), colour=(49, 52, 63)))
