@@ -2,6 +2,18 @@ import math
 import random
 
 
+def value_to(value, target, step=0.5, prox=0):
+    if value > target:
+        value -= step
+    elif value < target:
+        value += step
+
+    if abs(value - target) < prox:
+        value = target
+
+    return value
+
+
 def circle_collide(p, q, add=[], attr=True):
 
     if attr:
@@ -31,15 +43,6 @@ def midpoint(p, q, attr=True, rounding=False):
     if rounding:
         ret = [round(r) for r in ret]
     return ret
-
-
-# class shape():
-#     def center_square(pos, side):
-#         s = side/2
-#         return (pos[0] - s, pos[1] - s, pos[0] + s, pos[1] + s)
-#
-#     def center_triangle(pos, d):
-#         return (pos[0], )
 
 
 class offset():

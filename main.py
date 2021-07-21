@@ -109,7 +109,7 @@ class player(sprite):
         elif game.check_key(pygame.K_RIGHT, pygame.K_d):
             self.x_speed += self.x_acceleration
         else:
-            self.x_speed = 0
+            self.x_speed = move.value_to(self.x_speed, 0, prox=0.5)
 
         if self.x_speed > self.speed_cap:
             self.x_speed = self.speed_cap
@@ -117,7 +117,7 @@ class player(sprite):
         elif self.x_speed < self.speed_cap * -1:
             self.x_speed = self.speed_cap * -1
 
-        if game.check_key(pygame.K_SPACE):
+        if game.check_key(pygame.K_SPACE, pygame.K_UP):
             if self.held_jump_frames <= self.held_jump_max:
                 if self.held_jump_frames >= self.held_jump_min or self.held_jump_frames == 0:
                     self.y_speed -= self.jump_str
@@ -145,12 +145,12 @@ class player(sprite):
             self.colliders["RIGHT"].get_pos()
 
             for t in game.sprites["TERRAIN"]:
-                if rect_collision(self.colliders["LEFT"], t):
+                if move.rect_collision(self.colliders["LEFT"], t):
                     self.x_speed = 0
                     depth = t.x + t.w - self.x
                     self.x += depth
 
-                elif rect_collision(self.colliders["RIGHT"], t):
+                elif move.rect_collision(self.colliders["RIGHT"], t):
                     self.x_speed = 0
                     depth = self.x + self.w - t.x
                     self.x -= depth
@@ -161,13 +161,13 @@ class player(sprite):
 
             self.on_ground = False
             for t in game.sprites["TERRAIN"]:
-                if rect_collision(self.colliders["DOWN"], t):
+                if move.rect_collision(self.colliders["DOWN"], t):
                     self.on_ground = True
                     self.held_jump_frames = 0
                     depth = self.y + self.h - t.y
                     self.y -= depth
 
-                elif rect_collision(self.colliders["UP"], t):
+                elif move.rect_collision(self.colliders["UP"], t):
                     self.held_jump_frames = self.held_jump_max + 1
                     self.y_speed = 0
                     depth = t.y + t.h - self.y
