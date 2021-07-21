@@ -1,6 +1,8 @@
 from gameinfo import game_info, pygame, time, math, random
 from sprite_class import sprite
 
+import move_utils as move
+
 
 def rect_collision(rect1, rect2):
 
