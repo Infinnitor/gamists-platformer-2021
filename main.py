@@ -190,6 +190,7 @@ class player(sprite):
                     # Move the player back down based on overlap between collider bottom and player top
                     depth = t.y + t.h - self.y
                     self.y += depth
+            print(self.y_speed)
 
     def update_draw(self, game):
 
@@ -218,7 +219,7 @@ class platform(sprite):
 def mainloop(game):
     game.add_sprite(player(pos=(500, 500), size=(50, 50), speed=(1, 0.5)))
     game.add_sprite(platform(pos=(0, 600), size=(1280, 200), colour=(35, 35, 155)))
-    game.add_sprite(platform(pos=(300, 300), size=(700, 100), colour=(49, 52, 63)))
+    game.add_sprite(platform(pos=(300, 350), size=(700, 50), colour=(49, 52, 63)))
     game.add_sprite(platform(pos=(0, 550), size=(700, 100), colour=(49, 52, 63)))
 
     while game.run:
