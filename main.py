@@ -72,8 +72,12 @@ class player(sprite):
         }
 
     def update_move(self, game):
+
+        # Move player based on left or right key press
         if game.check_key(pygame.K_LEFT, pygame.K_a):
             self.x_speed -= self.x_acceleration
+
+            # If player is fighting against opposite momentum, move value closer to the inverse of current x_speed
             if self.x_speed > 0:
                 self.x_speed = move.value_to(self.x_speed, self.x_speed * -1, step=1, prox=0.5)
 
@@ -82,28 +86,43 @@ class player(sprite):
             if self.x_speed < 0:
                 self.x_speed = move.value_to(self.x_speed, self.x_speed * -1, step=1, prox=0.5)
 
+        # Slow player down if left or right are not pre
         else:
             self.x_speed = move.value_to(self.x_speed, 0, step=1, prox=0.5)
 
+        # Adjust x_speed if it is above the max momentum cap on the X axis
         if self.x_speed > self.speed_cap:
             self.x_speed = self.speed_cap
 
         elif self.x_speed < self.speed_cap * -1:
             self.x_speed = self.speed_cap * -1
 
+        # If presses space, add vertical momentum
         if game.check_key(pygame.K_SPACE, pygame.K_UP):
+
+            # Stop further additions to upward momentum if the player has hit the max height
             if self.held_jump_frames <= self.held_jump_max:
+
+                # Allow for jumping if the player is within the correct window of frames
                 if self.held_jump_frames >= self.held_jump_min or self.held_jump_frames == 0:
                     self.y_speed -= self.jump_str
+
+            # Increment by one
             self.held_jump_frames += 1
         else:
+
+            # If pressing of space is broken, prevent further upward momentum increments
             if not self.on_ground:
                 self.held_jump_frames = self.held_jump_max + 1
 
+        # Add gravity to y_speed
         self.y_speed += self.gravity
+
+        # Adjust so that downward momentum is never more than the terminal_velocity
         if self.y_speed > self.terminal_velocity:
             self.y_speed = self.terminal_velocity
 
+        # If the upward momentum is more than the max, cap it
         if self.y_speed < self.min_y_speed:
             self.y_speed = self.min_y_speed
 
@@ -170,6 +189,25 @@ class platform(sprite):
         pygame.draw.rect(game.win, self.colour, (self.x, self.y, self.w, self.h))
 
 
+def mainloop(game):
+    game.add_sprite(player(pos=(500, 500), size=(50, 50), speed=(1, 0.5)))
+    game.add_sprite(platform(pos=(0, 600), size=(1280, 200), colour=(35, 35, 155)))
+    game.add_sprite(platform(pos=(300, 300), size=(700, 100), colour=(49, 52, 63)))
+    game.add_sprite(platform(pos=(0, 550), size=(700, 100), colour=(49, 52, 63)))
+
+    while game.run:
+        game.update_keys()
+        game.update_draw()
+
+        game.update_scaled()
+        game.update_state()
+
+        if game.check_key(pygame.K_r, buffer=True):
+            return True
+
+    return False
+
+
 game = game_info(
                 name="the mario killer",
                 win_w=1280,
@@ -181,14 +219,8 @@ game = game_info(
                 show_framerate=False,
                 quit_key=pygame.K_ESCAPE)
 
-game.add_sprite(player(pos=(500, 500), size=(50, 50), speed=(1, 0.5)))
-game.add_sprite(platform(pos=(0, 600), size=(1280, 200), colour=(35, 35, 155)))
-game.add_sprite(platform(pos=(300, 300), size=(700, 100), colour=(49, 52, 63)))
-game.add_sprite(platform(pos=(0, 550), size=(700, 100), colour=(49, 52, 63)))
-
-while game.run:
-    game.update_keys()
-    game.update_draw()
-
-    game.update_scaled()
-    game.update_state()
+while True:
+    if mainloop(game):
+        game.purge_sprites()
+    else:
+        break
