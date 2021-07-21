@@ -160,7 +160,8 @@ class game_info():
             self.sprites[new_sprite.layer] = [new_sprite]
 
     def purge_sprites(self):
-        self.sprites = []
+        for layer in self.sprites:
+            self.sprites[layer] = []
 
     def init_screenshake(self, magnitude, len, rand=True, spread=False):
         self.shake = True
