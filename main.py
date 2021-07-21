@@ -126,49 +126,75 @@ class player(sprite):
         if self.y_speed < self.min_y_speed:
             self.y_speed = self.min_y_speed
 
+        # Move on X axis, then update X collision
         self.x += self.x_speed
         self.update_collision(game, "X")
+        # Move on Y axis, then update Y collision
         self.y += self.y_speed
         self.update_collision(game, "Y")
 
     def update_collision(self, game, axis):
 
+        # Update collisions on X axis
         if axis == "X":
+
+            # Update colliders
             self.colliders["LEFT"].get_pos()
             self.colliders["RIGHT"].get_pos()
 
+            # Iterate through valid collision objects
             for t in game.sprites["TERRAIN"]:
+
                 if move.rect_collision(self.colliders["LEFT"], t):
+                    # Freeze X momentum to halt the player
                     self.x_speed = 0
+
+                    # Move player back based on the overlap between player left side and collider right side
                     depth = t.x + t.w - self.x
                     self.x += depth
 
                 elif move.rect_collision(self.colliders["RIGHT"], t):
+                    # Freeze X momentum
                     self.x_speed = 0
+
+                    # Move player back based on the overlap between player right side and collider left side
                     depth = self.x + self.w - t.x
                     self.x -= depth
 
+        # Update collisions on Y axis
         elif axis == "Y":
+
+            # Update colliders
             self.colliders["DOWN"].get_pos()
             self.colliders["UP"].get_pos()
 
+            # On ground will be False unless the DOWN collider has a successful collision
             self.on_ground = False
             for t in game.sprites["TERRAIN"]:
                 if move.rect_collision(self.colliders["DOWN"], t):
+
+                    # If a collision occurs, on_ground is True and jump_frames are reset
                     self.on_ground = True
                     self.held_jump_frames = 0
+
+                    # Move the player up based on overlap between player bottom and collider top
                     depth = self.y + self.h - t.y
                     self.y -= depth
 
                 elif move.rect_collision(self.colliders["UP"], t):
+
+                    # If a collision occurs on the UP collider, remove upward momentum
                     self.held_jump_frames = self.held_jump_max + 1
                     self.y_speed = 0
+
+                    # Move the player back down based on overlap between collider bottom and player top
                     depth = t.y + t.h - self.y
                     self.y += depth
 
     def update_draw(self, game):
-        pygame.draw.rect(game.win, (155, 40, 40), (self.x, self.y, self.w, self.h))
 
+        # Draw player and its colliders
+        pygame.draw.rect(game.win, (155, 40, 40), (self.x, self.y, self.w, self.h))
         for collider_rect in self.colliders.values():
             pygame.draw.rect(game.win, (255, 255, 255), collider_rect.get_pos())
 
