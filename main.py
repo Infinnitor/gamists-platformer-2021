@@ -22,38 +22,6 @@ def rect_collision_info(rect1, rect2):
     return False
 
 
-class offset():
-    def update_pos(self, pos=(0, 0)):
-        if self.parent is not None:
-            pos = (self.parent.x, self.parent.y)
-
-        self.x = pos[0] + self.offset_x
-        self.y = pos[1] + self.offset_y
-
-    def get_pos(self, pos=(0, 0)):
-        self.update_pos(pos)
-
-        return [self.x, self.y]
-
-
-class offset_rect(offset):
-    def __init__(self, offset, parent, size):
-        self.parent = parent
-
-        self.offset_x = offset[0]
-        self.offset_y = offset[1]
-
-        self.w = size[0]
-        self.h = size[1]
-
-        self.update_pos()
-
-    def get_pos(self, pos=(0, 0)):
-        self.update_pos(pos)
-
-        return [self.x, self.y, self.w, self.h]
-
-
 class player(sprite):
     layer = "PLAYER"
 
@@ -97,19 +65,25 @@ class player(sprite):
         collider_h = 1
         # Player colliders
         self.colliders = {
-            "DOWN" : offset_rect(offset=(1, self.h - collider_h), parent=self, size=(self.w - 2, collider_h)),
-            "UP" : offset_rect(offset=(1, 0), parent=self, size=(self.w - 2, collider_h)),
-            "LEFT" : offset_rect(offset=(0, 1), parent=self, size=(collider_h, self.h - 2)),
-            "RIGHT" : offset_rect(offset=(self.w, 1), parent=self, size=(collider_h, self.h - 2))
+            "DOWN" : move.offset_rect(offset=(1, self.h - collider_h), parent=self, size=(self.w - 2, collider_h)),
+            "UP" : move.offset_rect(offset=(1, 0), parent=self, size=(self.w - 2, collider_h)),
+            "LEFT" : move.offset_rect(offset=(0, 1), parent=self, size=(collider_h, self.h - 2)),
+            "RIGHT" : move.offset_rect(offset=(self.w, 1), parent=self, size=(collider_h, self.h - 2))
         }
 
     def update_move(self, game):
         if game.check_key(pygame.K_LEFT, pygame.K_a):
             self.x_speed -= self.x_acceleration
+            if self.x_speed > 0:
+                self.x_speed = move.value_to(self.x_speed, self.x_speed * -1, step=1, prox=0.5)
+
         elif game.check_key(pygame.K_RIGHT, pygame.K_d):
             self.x_speed += self.x_acceleration
+            if self.x_speed < 0:
+                self.x_speed = move.value_to(self.x_speed, self.x_speed * -1, step=1, prox=0.5)
+
         else:
-            self.x_speed = move.value_to(self.x_speed, 0, prox=0.5)
+            self.x_speed = move.value_to(self.x_speed, 0, step=1, prox=0.5)
 
         if self.x_speed > self.speed_cap:
             self.x_speed = self.speed_cap

@@ -82,6 +82,24 @@ class offset_circle(offset):
         self.r = radius
 
 
+class offset_rect(offset):
+    def __init__(self, offset, parent, size):
+        self.parent = parent
+
+        self.offset_x = offset[0]
+        self.offset_y = offset[1]
+
+        self.w = size[0]
+        self.h = size[1]
+
+        self.update_pos()
+
+    def get_pos(self, pos=(0, 0)):
+        self.update_pos(pos)
+
+        return [self.x, self.y, self.w, self.h]
+
+
 class sine_bob():
     def __init__(self, wavelength, period):
         self.w = wavelength
