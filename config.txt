@@ -1,0 +1,11 @@
+horizontal acceleration : 1
+gravity : 0.5
+vertical speed cap : 11
+horizontal speed cap : 8
+jump strength : 15
+held jump min : 5
+held jump max : 10
+start x : 500
+start y : 500
+player width : 50
+player height : 50

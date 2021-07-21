@@ -22,29 +22,53 @@ def rect_collision_info(rect1, rect2):
     return False
 
 
+class text_config():
+    def __init__(self):
+        file = open("config.txt", "r").readlines()
+        for f in range(len(file)):
+            file[f] = file[f].replace("\n", "")
+
+        values = {}
+        for val in file:
+            k, v = val.split(" : ")
+            values[k] = float(v)
+
+        self.x_acceleration = values["horizontal acceleration"]
+        self.gravity = values["gravity"]
+        self.terminal_velocity = values["vertical speed cap"]
+        self.speed_cap = values["horizontal speed cap"]
+        self.jump_str = values["jump strength"]
+        self.held_jump_min = values["held jump min"]
+        self.held_jump_max = values["held jump max"]
+
+        self.x = values["start x"]
+        self.y = values["start y"]
+        self.w = values["player width"]
+        self.h = values["player height"]
+
 class player(sprite):
     layer = "PLAYER"
 
-    def __init__(self, pos, size, speed):
+    def __init__(self, c):
 
         # Position
-        self.x = pos[0]
-        self.y = pos[1]
+        self.x = c.x
+        self.y = c.y
 
         # Width and height
-        self.w = size[0]
-        self.h = size[1]
+        self.w = c.w
+        self.h = c.h
 
         # Acceleration on the X axis
-        self.x_acceleration = speed[0]
+        self.x_acceleration = c.x_acceleration
         # Acceleration of gravity / downward acceleration on the Y axis
-        self.gravity = speed[1]
+        self.gravity = c.gravity
 
         # The max force of gravity on the player
-        self.terminal_velocity = 11
+        self.terminal_velocity = c.terminal_velocity
 
         # The max speed that the player can move at on the X and Y axis
-        self.speed_cap = 7
+        self.speed_cap = c.speed_cap
         self.min_y_speed = self.terminal_velocity * -1
 
         # Player momentum on both the X and Y
@@ -52,23 +76,24 @@ class player(sprite):
         self.y_speed = 0
 
         # Upward acceleration when jumping
-        self.jump_str = 20
+        self.jump_str = c.jump_str
 
         # The number of frames that the player has been jumping
         self.held_jump_frames = 0
-        self.held_jump_min = 5
-        self.held_jump_max = 10
+        self.held_jump_min = c.held_jump_min
+        self.held_jump_max = c.held_jump_max
 
         # If the player is on the ground
         self.on_ground = False
 
-        collider_h = 1
+        y_collider_h = self.terminal_velocity + 1
+        x_collider_h = self.speed_cap
         # Player colliders
         self.colliders = {
-            "DOWN" : move.offset_rect(offset=(1, self.h - collider_h), parent=self, size=(self.w - 2, collider_h)),
-            "UP" : move.offset_rect(offset=(1, 0), parent=self, size=(self.w - 2, collider_h)),
-            "LEFT" : move.offset_rect(offset=(0, 1), parent=self, size=(collider_h, self.h - 2)),
-            "RIGHT" : move.offset_rect(offset=(self.w, 1), parent=self, size=(collider_h, self.h - 2))
+            "DOWN" : move.offset_rect(offset=(1, self.h - y_collider_h), parent=self, size=(self.w - 2, y_collider_h)),
+            "UP" : move.offset_rect(offset=(1, 0), parent=self, size=(self.w - 2, y_collider_h)),
+            "LEFT" : move.offset_rect(offset=(0, 1), parent=self, size=(x_collider_h, self.h - 2)),
+            "RIGHT" : move.offset_rect(offset=(self.w - x_collider_h, 1), parent=self, size=(x_collider_h, self.h - 2))
         }
 
     def update_move(self, game):
@@ -176,6 +201,7 @@ class player(sprite):
                     # If a collision occurs, on_ground is True and jump_frames are reset
                     self.on_ground = True
                     self.held_jump_frames = 0
+                    self.y_speed = 0
 
                     # Move the player up based on overlap between player bottom and collider top
                     depth = self.y + self.h - t.y
@@ -190,12 +216,13 @@ class player(sprite):
                     # Move the player back down based on overlap between collider bottom and player top
                     depth = t.y + t.h - self.y
                     self.y += depth
+
             print(self.y_speed)
 
     def update_draw(self, game):
-
         # Draw player and its colliders
         pygame.draw.rect(game.win, (155, 40, 40), (self.x, self.y, self.w, self.h))
+
         for collider_rect in self.colliders.values():
             pygame.draw.rect(game.win, (255, 255, 255), collider_rect.get_pos())
 
@@ -216,10 +243,11 @@ class platform(sprite):
         pygame.draw.rect(game.win, self.colour, (self.x, self.y, self.w, self.h))
 
 
-def mainloop(game):
-    game.add_sprite(player(pos=(500, 500), size=(50, 50), speed=(1, 0.5)))
+def mainloop(game, player_config):
+    game.add_sprite(player(player_config))
+
     game.add_sprite(platform(pos=(0, 600), size=(1280, 200), colour=(35, 35, 155)))
-    game.add_sprite(platform(pos=(300, 350), size=(700, 50), colour=(49, 52, 63)))
+    game.add_sprite(platform(pos=(300, 350), size=(700, 2), colour=(49, 52, 63)))
     game.add_sprite(platform(pos=(0, 550), size=(700, 100), colour=(49, 52, 63)))
 
     while game.run:
@@ -246,8 +274,10 @@ game = game_info(
                 show_framerate=False,
                 quit_key=pygame.K_ESCAPE)
 
+
 while True:
-    if mainloop(game):
+    config = text_config()
+    if mainloop(game, config):
         game.purge_sprites()
     else:
         break
