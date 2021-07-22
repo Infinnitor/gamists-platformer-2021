@@ -19,3 +19,18 @@ ALL THESE VALUES SHOULD BE POSITIVE
 - start y: the Y location on the screen (in pixels) where the player starts. default : 500
 - player width: the width of the player (px). default : 50
 - player height: the height of the player (px). default : 50
+
+
+# About level.txt:
+
+This file contains all the solid platforms.
+You can add/edit platforms by adding another line in this format:
+
+(X start,Y start) (Width,Height) (Red,Green,Blue)
+
+example:
+(0,700) (1200,100) (49,52,63)
+
+Note only to have spaces between the sets of brackets as it wont work otherwise
+
+Lines that start with a "#" will be ignored
