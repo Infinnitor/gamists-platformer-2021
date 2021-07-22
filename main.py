@@ -22,11 +22,23 @@ def rect_collision_info(rect1, rect2):
     return False
 
 
+def text_clean(file):
+    text = file.readlines()
+    valid_text = []
+    for f in range(len(text)):
+        if text[f].startswith("#"):
+            continue
+        text[f] = text[f].replace("\n", "")
+
+        if not text[f].replace(" ", "") == "":
+            valid_text.append(text[f])
+
+    return valid_text
+
+
 class text_player():
     def __init__(self):
-        file = open("config.txt", "r").readlines()
-        for f in range(len(file)):
-            file[f] = file[f].replace("\n", "")
+        file = text_clean(open("config.txt", "r"))
 
         values = {}
         for val in file:
@@ -49,9 +61,7 @@ class text_player():
 
 class text_level():
     def __init__(self):
-        file = open("level.txt", "r").readlines()
-        for f in range(len(file)):
-            file[f] = file[f].replace("\n", "")
+        file = text_clean(open("level.txt", "r"))
 
         self.terrain = []
         for val in file:

@@ -1,3 +1,5 @@
+# Player config goes here
+
 horizontal acceleration : 1
 gravity : 0.5
 vertical speed cap : 11
