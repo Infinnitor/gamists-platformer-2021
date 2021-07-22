@@ -22,7 +22,7 @@ def rect_collision_info(rect1, rect2):
     return False
 
 
-class text_config():
+class text_player():
     def __init__(self):
         file = open("config.txt", "r").readlines()
         for f in range(len(file)):
@@ -45,6 +45,26 @@ class text_config():
         self.y = values["start y"]
         self.w = values["player width"]
         self.h = values["player height"]
+
+
+class text_level():
+    def __init__(self):
+        file = open("level.txt", "r").readlines()
+        for f in range(len(file)):
+            file[f] = file[f].replace("\n", "")
+
+        self.terrain = []
+        for val in file:
+            line = val.split(" ")
+
+            items = []
+            for i in line:
+                i = i.replace("(", "").replace(")", "")
+                i = i.split(",")
+                items.append([int(v) for v in i])
+
+            self.terrain.append(items)
+
 
 class player(sprite):
     layer = "PLAYER"
@@ -104,16 +124,16 @@ class player(sprite):
 
             # If player is fighting against opposite momentum, move value closer to the inverse of current x_speed
             if self.x_speed > 0:
-                self.x_speed = move.value_to(self.x_speed, self.x_speed * -1, step=1, prox=0.5)
+                self.x_speed = move.value_to(self.x_speed, self.x_speed * -1, step=self.x_acceleration, prox=0.5)
 
         elif game.check_key(pygame.K_RIGHT, pygame.K_d):
             self.x_speed += self.x_acceleration
             if self.x_speed < 0:
-                self.x_speed = move.value_to(self.x_speed, self.x_speed * -1, step=1, prox=0.5)
+                self.x_speed = move.value_to(self.x_speed, self.x_speed * -1, step=self.x_acceleration, prox=0.5)
 
         # Slow player down if left or right are not pre
         else:
-            self.x_speed = move.value_to(self.x_speed, 0, step=1, prox=0.5)
+            self.x_speed = move.value_to(self.x_speed, 0, step=self.x_acceleration, prox=0.5)
 
         # Adjust x_speed if it is above the max momentum cap on the X axis
         if self.x_speed > self.speed_cap:
@@ -217,7 +237,7 @@ class player(sprite):
                     depth = t.y + t.h - self.y
                     self.y += depth
 
-            print(self.y_speed)
+            # print(self.y_speed)
 
     def update_draw(self, game):
         # Draw player and its colliders
@@ -243,12 +263,11 @@ class platform(sprite):
         pygame.draw.rect(game.win, self.colour, (self.x, self.y, self.w, self.h))
 
 
-def mainloop(game, player_config):
+def mainloop(game, player_config, level_config):
     game.add_sprite(player(player_config))
 
-    game.add_sprite(platform(pos=(0, 600), size=(1280, 200), colour=(35, 35, 155)))
-    game.add_sprite(platform(pos=(300, 350), size=(700, 2), colour=(49, 52, 63)))
-    game.add_sprite(platform(pos=(0, 550), size=(700, 100), colour=(49, 52, 63)))
+    for pos, size, colour in level_config.terrain:
+        game.add_sprite(platform(pos=pos, size=size, colour=colour))
 
     while game.run:
         game.update_keys()
@@ -276,8 +295,9 @@ game = game_info(
 
 
 while True:
-    config = text_config()
-    if mainloop(game, config):
+    player_config = text_player()
+    level_config = text_level()
+    if mainloop(game, player_config, level_config):
         game.purge_sprites()
     else:
         break
