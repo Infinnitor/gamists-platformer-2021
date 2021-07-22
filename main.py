@@ -253,8 +253,8 @@ class player(sprite):
         # Draw player and its colliders
         pygame.draw.rect(game.win, (155, 40, 40), (self.x, self.y, self.w, self.h))
 
-        for collider_rect in self.colliders.values():
-            pygame.draw.rect(game.win, (255, 255, 255), collider_rect.get_pos())
+        # for collider_rect in self.colliders.values():
+        #     pygame.draw.rect(game.win, (255, 255, 255), collider_rect.get_pos())
 
 
 class platform(sprite):
