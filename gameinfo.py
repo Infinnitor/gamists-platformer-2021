@@ -2,11 +2,14 @@ from os import environ
 environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 
 from sprite_class import sprite
+import move_utils as move
 
 import math
 import time
 import random
 import pygame
+
+from colour_manager import colours
 
 
 class game_info():
@@ -59,6 +62,39 @@ class game_info():
                         "PLAYER": [],
                         "ENEMY" : [],
                         "HIGHPARTICLE" : []}
+
+        self.camera_obj = self.camera((0, 0), (self.win_w, self.win_h))
+
+    class camera():
+        def __init__(cam, pos, size):
+            cam.x = pos[0]
+            cam.y = pos[1]
+
+            cam.w = size[0]
+            cam.h = size[1]
+
+        def update_move(cam, game):
+            if game.sprites["PLAYER"]:
+                p = game.sprites["PLAYER"][0]
+                p_x = p.x
+                p_y = p.y
+            else:
+                p_x = game.win_w//2
+                p_y = game.win_h//2
+
+            cam.x = p_x - game.win_w//2
+            cam.y = p_y - game.win_h//2
+
+        def get_relative(cam, sprite):
+            pass
+
+        def on_camera(cam, sprite):
+            if move.rect_collision(cam, sprite):
+                return True
+            return False
+
+        def update_draw(cam, game):
+            pass
 
     class particle(sprite):
         def __init__(part, pos, size, angle, speed, lifetime, colour, shape="CIRCLE", sprite=None):
@@ -286,21 +322,20 @@ class game_info():
 
             self.sprites[col] = valid_sprites
 
-        def update_draw_col(col):
-            valid_sprites = []
-            for s_draw in self.sprites[col]:
-                s_draw.update_draw(self)
-
-                if not s_draw.destroy:
-                    valid_sprites.append(s_draw)
-
-            self.sprites[col] = valid_sprites
-
         for c in self.sprites:
             update_move_col(c)
+        self.camera_obj.update_move(self)
 
+        oncam_sprites = []
         for c in self.sprites:
-            update_draw_col(c)
+            for sprite in self.sprites[c]:
+                if self.camera_obj.on_camera(sprite):
+                    oncam_sprites.append(sprite)
+
+        for cam_sprite in oncam_sprites:
+            cam_sprite.update_draw(self)
+
+        self.camera_obj.update_draw(self)
 
         self.update_particles()
         self.update_screenshake()

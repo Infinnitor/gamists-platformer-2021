@@ -15,7 +15,10 @@ class sprite():
         pass
 
     def update_draw(self, game):
-        pass
+        relative_x = game.camera_obj.x - self.x
+        relative_y = game.camera_obj.y - self.y
+
+        draw.rect(game.win, colours.green, (self.x, self.y, self.w, self.h))
 
     def update_destroy(self, game):
         pass

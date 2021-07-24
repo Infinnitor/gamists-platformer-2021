@@ -50,6 +50,7 @@ class text_player():
         self.terminal_velocity = values["vertical speed cap"]
         self.speed_cap = values["horizontal speed cap"]
         self.jump_str = values["jump strength"]
+        self.held_jump_str = values["held jump strength"]
         self.held_jump_min = values["held jump min"]
         self.held_jump_max = values["held jump max"]
 
@@ -61,7 +62,7 @@ class text_player():
 
 class text_level():
     def __init__(self):
-        file = text_clean(open("level.txt", "r"))
+        file = text_clean(open("mario 1-1.txt", "r"))
 
         self.terrain = []
         for val in file:
@@ -107,6 +108,7 @@ class player(sprite):
 
         # Upward acceleration when jumping
         self.jump_str = c.jump_str
+        self.held_jump_str = c.held_jump_str
 
         # The number of frames that the player has been jumping
         self.held_jump_frames = 0
@@ -159,8 +161,10 @@ class player(sprite):
             if self.held_jump_frames <= self.held_jump_max:
 
                 # Allow for jumping if the player is within the correct window of frames
-                if self.held_jump_frames >= self.held_jump_min or self.held_jump_frames == 0:
+                if self.held_jump_frames == 0:
                     self.y_speed -= self.jump_str
+                elif self.held_jump_frames >= self.held_jump_min:
+                    self.y_speed -= self.held_jump_str
 
             # Increment by one
             self.held_jump_frames += 1
@@ -250,8 +254,13 @@ class player(sprite):
             # print(self.y_speed)
 
     def update_draw(self, game):
+        print(self)
+
+        rel_x = self.x - game.camera_obj.x
+        rel_y = self.y - game.camera_obj.y
+
         # Draw player and its colliders
-        pygame.draw.rect(game.win, (155, 40, 40), (self.x, self.y, self.w, self.h))
+        pygame.draw.rect(game.win, (155, 40, 40), (rel_x, rel_y, self.w, self.h))
 
         # for collider_rect in self.colliders.values():
         #     pygame.draw.rect(game.win, (255, 255, 255), collider_rect.get_pos())
@@ -270,7 +279,10 @@ class platform(sprite):
         self.colour = colour
 
     def update_draw(self, game):
-        pygame.draw.rect(game.win, self.colour, (self.x, self.y, self.w, self.h))
+        rel_x = self.x - game.camera_obj.x
+        rel_y = self.y - game.camera_obj.y
+
+        pygame.draw.rect(game.win, self.colour, (rel_x, rel_y, self.w, self.h))
 
 
 def mainloop(game, player_config, level_config):
