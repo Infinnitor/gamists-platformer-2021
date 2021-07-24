@@ -254,7 +254,7 @@ class player(sprite):
             # print(self.y_speed)
 
     def update_draw(self, game):
-        print(self)
+        # print(self)
 
         rel_x = self.x - game.camera_obj.x
         rel_y = self.y - game.camera_obj.y

@@ -9,8 +9,6 @@ import time
 import random
 import pygame
 
-from colour_manager import colours
-
 
 class game_info():
     def __init__(self, name, win_w, win_h, user_w, user_h, bg, sounds=None, framecap=False, show_framerate=False, quit_key=None):
@@ -61,7 +59,8 @@ class game_info():
                         "TERRAIN": [],
                         "PLAYER": [],
                         "ENEMY" : [],
-                        "HIGHPARTICLE" : []}
+                        "HIGHPARTICLE" : [],
+                        "CAMERACOLLIDER" : []}
 
         self.camera_obj = self.camera((0, 0), (self.win_w, self.win_h))
 
@@ -327,10 +326,10 @@ class game_info():
         self.camera_obj.update_move(self)
 
         oncam_sprites = []
-        for c in self.sprites:
-            for sprite in self.sprites[c]:
-                if self.camera_obj.on_camera(sprite):
-                    oncam_sprites.append(sprite)
+        for layer in self.sprites:
+            for s in self.sprites[layer]:
+                if self.camera_obj.on_camera(s):
+                    oncam_sprites.append(s)
 
         for cam_sprite in oncam_sprites:
             cam_sprite.update_draw(self)

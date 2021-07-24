@@ -5,12 +5,12 @@ gravity : 0.7
 vertical speed cap : 15
 horizontal speed cap : 10
 
-jump strength : 500
+jump strength : 15
 held jump strength : 1
 held jump min : 2
 held jump max : 10
 
-start x : 7000
+start x : 500
 start y : 500
 player width : 50
 player height : 50
