@@ -187,15 +187,15 @@ class player(sprite):
 
         # Move on X axis, then update X collision
         self.x += self.x_speed
-        self.update_collision(game, "X")
+        self.update_collision(game, x=True)
         # Move on Y axis, then update Y collision
         self.y += self.y_speed
-        self.update_collision(game, "Y")
+        self.update_collision(game, y=True)
 
-    def update_collision(self, game, axis):
+    def update_collision(self, game, x=False, y=False):
 
         # Update collisions on X axis
-        if axis == "X":
+        if x is True:
 
             # Update colliders
             self.colliders["LEFT"].get_pos()
@@ -221,7 +221,7 @@ class player(sprite):
                     self.x -= depth
 
         # Update collisions on Y axis
-        elif axis == "Y":
+        elif y is True:
 
             # Update colliders
             self.colliders["DOWN"].get_pos()
