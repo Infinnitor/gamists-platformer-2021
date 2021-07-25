@@ -202,7 +202,9 @@ class player(sprite):
             self.colliders["RIGHT"].get_pos()
 
             # Iterate through valid collision objects
-            for t in game.sprites["TERRAIN"]:
+            for t in game.oncam_sprites:
+                if t.layer != "TERRAIN":
+                    continue
 
                 if move.rect_collision(self.colliders["LEFT"], t):
                     # Freeze X momentum to halt the player
@@ -230,6 +232,9 @@ class player(sprite):
             # On ground will be False unless the DOWN collider has a successful collision
             self.on_ground = False
             for t in game.sprites["TERRAIN"]:
+                if t.layer != "TERRAIN":
+                    continue
+
                 if move.rect_collision(self.colliders["DOWN"], t):
 
                     # If a collision occurs, on_ground is True and jump_frames are reset

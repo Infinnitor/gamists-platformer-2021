@@ -63,6 +63,7 @@ class game_info():
                         "CAMERACOLLIDER" : []}
 
         self.camera_obj = self.camera((0, 0), (self.win_w, self.win_h))
+        self.oncam_sprites = []
 
     class camera():
         def __init__(cam, pos, size):
@@ -325,13 +326,13 @@ class game_info():
             update_move_col(c)
         self.camera_obj.update_move(self)
 
-        oncam_sprites = []
+        self.oncam_sprites = []
         for layer in self.sprites:
             for s in self.sprites[layer]:
                 if self.camera_obj.on_camera(s):
-                    oncam_sprites.append(s)
+                    self.oncam_sprites.append(s)
 
-        for cam_sprite in oncam_sprites:
+        for cam_sprite in self.oncam_sprites:
             cam_sprite.update_draw(self)
 
         self.camera_obj.update_draw(self)
