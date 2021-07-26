@@ -53,7 +53,6 @@ def rect_trailpath(game, start_tile):
     c_tile = start_tile
 
     while c_tile.element == start_tile.element:
-        c_tile.c = (255, 40, 255)
         trail.append(c_tile)
         x += 1
         try:
@@ -69,6 +68,7 @@ def rect_trail(game, given_trail):
     target_element = given_trail[0].element
 
     max_x = given_trail[-1].x
+    min_x = given_trail[0].x
 
     x = given_trail[0].x
     y = given_trail[0].y + 1
@@ -88,6 +88,15 @@ def rect_trail(game, given_trail):
 
         if len(trail) == len(given_trail):
             print(f"LENGTH COMP Max: {max_x}, X: {x}, Y: {y}")
+
+            try:
+                if game.sprites[y][max_x + 1].element == target_element:
+                    return None
+                elif game.sprites[y][min_x - 1].element == target_element:
+                    return None
+            except IndexError:
+                pass
+
             return trail
 
     print(f"NONE Max: {max_x}, X: {x}, Y: {y}")
@@ -188,6 +197,8 @@ while game.run:
         a_rect = rect_finder("GroundTerrain", game)
         if a_rect is not None:
             found_rects.append(a_rect)
+        else:
+            print(None)
 
     game.update_draw()
 
