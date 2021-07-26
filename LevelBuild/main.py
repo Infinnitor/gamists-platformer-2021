@@ -90,12 +90,19 @@ level_image.set_colorkey((0, 0, 0))
 
 l_w, l_h = level_image.get_size()
 
+rows = []
 for y in range(l_h):
+    yrow = []
     for x in range(l_w):
         px_colour = level_image.get_at((x, y))
-        game.add_sprite(grid_square(x, y, 20, px_colour))
 
-assert len(game.sprites["GRID"]) <= l_w * l_h
+        obj = grid_square(x, y, 20, px_colour)
+        obj.add_default_attr(game)
+        yrow.append(obj)
+
+    rows.append(yrow)
+
+game.sprites = rows
 
 while game.run:
     game.update_keys()

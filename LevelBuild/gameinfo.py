@@ -1,3 +1,9 @@
+# MODIFICATIONS:
+# - self.sprites replace with 2D array for gridsquares
+# - Camera Removed
+
+# DO NOT COPY LOL
+
 from os import environ
 environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 
@@ -52,11 +58,7 @@ class game_info():
         self.shake = False
 
         self.particles = []
-        self.sprites = {
-                        "BACKGROUND" : [],
-                        "LOWPARTICLE" : [],
-                        "GRID" : [],
-                        "HIGHPARTICLE" : []}
+        self.sprites = []
 
     class particle(sprite):
         def __init__(part, pos, size, angle, speed, lifetime, colour, shape="CIRCLE", sprite=None):
@@ -149,16 +151,8 @@ class game_info():
 
         pygame.mixer.Channel(s[1]).play(s[0])
 
-    def add_sprite(self, new_sprite):
-        new_sprite.add_default_attr(self)
-
-        try:
-            self.sprites[new_sprite.layer].append(new_sprite)
-        except KeyError:
-            self.sprites[new_sprite.layer] = [new_sprite]
-
     def purge_sprites(self):
-        for layer in self.sprites:
+        for layer in range(len(self.sprites)):
             self.sprites[layer] = []
 
     def init_screenshake(self, magnitude, len, rand=True, spread=False):
@@ -274,33 +268,22 @@ class game_info():
 
     def update_draw(self):
 
-        def update_move_col(col):
+        for y, row in enumerate(self.sprites):
             valid_sprites = []
-            for s_move in self.sprites[col]:
-                s_move.update_move(self)
+            for x in row:
+                x.update_move(self)
+                if not x.destroy:
+                    valid_sprites.append(x)
+            self.sprites[y] = valid_sprites
 
-                if not s_move.destroy:
-                    valid_sprites.append(s_move)
-
-            self.sprites[col] = valid_sprites
-
-        def update_draw_col(col):
+        for y, row in enumerate(self.sprites):
             valid_sprites = []
-            for s_draw in self.sprites[col]:
-                s_draw.update_draw(self)
+            for x in row:
+                x.update_draw(self)
+                if not x.destroy:
+                    valid_sprites.append(x)
+            self.sprites[y] = valid_sprites
 
-                if not s_draw.destroy:
-                    valid_sprites.append(s_draw)
-
-            self.sprites[col] = valid_sprites
-
-        for c in self.sprites:
-            update_move_col(c)
-
-        for c in self.sprites:
-            update_draw_col(c)
-
-        self.update_particles()
         self.update_screenshake()
 
     # Function for scaling the design screen to the target screen
