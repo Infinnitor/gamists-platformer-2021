@@ -1,5 +1,5 @@
 # Walls
-(220, 35, 220) : W
+(10, 10, 10) : GroundTerrain
 
 # Empty space
-(0, 0, 0) : G
+(255, 255, 255) : Background
