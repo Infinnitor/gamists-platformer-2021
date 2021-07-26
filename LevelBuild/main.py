@@ -130,10 +130,11 @@ def rect_finder(given_e, game):
 class grid_square(sprite):
     layer = "GRID"
 
-    def __init__(self, x, y, side, element):
-        self.x = x
-        self.y = y
-        self.side = side
+    def __init__(self, pos, size, element):
+        self.x = pos[0]
+        self.y = pos[1]
+        self.w = size[0]
+        self.h = size[1]
 
         self.c = element
         self.element = None
@@ -148,11 +149,11 @@ class grid_square(sprite):
 
     def update_draw(self, game):
         if self.element == '!':
-            pygame.draw.rect(game.win, game.bg, (self.x * self.side, self.y * self.side, self.side, self.side))
-            pygame.draw.circle(game.win, self.c, (self.x * self.side + self.side//2, self.y * self.side + self.side//2), self.side * 0.3)
+            pygame.draw.rect(game.win, game.bg, (self.x * self.w, self.y * self.h, self.w, self.h))
+            pygame.draw.circle(game.win, self.c, (self.x * self.w + self.w//2, self.y * self.h + self.h//2), self.w * 0.3)
 
         else:
-            pygame.draw.rect(game.win, self.c, (self.x * self.side, self.y * self.side, self.side, self.side))
+            pygame.draw.rect(game.win, self.c, (self.x * self.w, self.y * self.h, self.w, self.h))
 
 
 game = game_info(
@@ -173,13 +174,15 @@ level_image.set_colorkey((0, 0, 0))
 
 level_width, level_height = level_image.get_size()
 
+gridsquare_size = (game.win_w / level_width, game.win_h / level_height)
+
 rows = []
 for y in range(level_height):
     yrow = []
     for x in range(level_width):
         px_colour = level_image.get_at((x, y))
 
-        obj = grid_square(x, y, 20, px_colour)
+        obj = grid_square((x, y), gridsquare_size, px_colour)
         obj.add_default_attr(game)
         yrow.append(obj)
 
