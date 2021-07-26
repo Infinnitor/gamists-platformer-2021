@@ -1,16 +1,16 @@
 # Player config goes here
 
-horizontal acceleration : 1
+horizontal_acceleration : 1
 gravity : 0.7
-vertical speed cap : 15
-horizontal speed cap : 10
+vertical_speed_cap : 15
+horizontal_speed_cap : 10
 
-jump strength : 15
-held jump strength : 1
-held jump min : 2
-held jump max : 10
+jump_strength : 15
+held_jump_strength : 1
+held_jump_min : 2
+held_jump_max : 10
 
-start x : 500
-start y : 500
-player width : 50
-player height : 50
+start_x : 500
+start_y : 500
+player_width : 50
+player_height : 50

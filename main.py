@@ -42,22 +42,23 @@ class text_player():
 
         values = {}
         for val in file:
-            k, v = val.split(" : ")
+            val = val.replace(" ", "")
+            k, v = val.split(":")
             values[k] = float(v)
 
-        self.x_acceleration = values["horizontal acceleration"]
+        self.x_acceleration = values["horizontal_acceleration"]
         self.gravity = values["gravity"]
-        self.terminal_velocity = values["vertical speed cap"]
-        self.speed_cap = values["horizontal speed cap"]
-        self.jump_str = values["jump strength"]
-        self.held_jump_str = values["held jump strength"]
-        self.held_jump_min = values["held jump min"]
-        self.held_jump_max = values["held jump max"]
+        self.terminal_velocity = values["vertical_speed_cap"]
+        self.speed_cap = values["horizontal_speed_cap"]
+        self.jump_str = values["jump_strength"]
+        self.held_jump_str = values["held_jump_strength"]
+        self.held_jump_min = values["held_jump_min"]
+        self.held_jump_max = values["held_jump_max"]
 
-        self.x = values["start x"]
-        self.y = values["start y"]
-        self.w = values["player width"]
-        self.h = values["player height"]
+        self.x = values["start_x"]
+        self.y = values["start_y"]
+        self.w = values["player_width"]
+        self.h = values["player_height"]
 
 
 def read_brackets(string):
