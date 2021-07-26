@@ -188,7 +188,7 @@ class game_info():
         pygame.mixer.Channel(s[1]).play(s[0])
 
     def add_sprite(self, new_sprite):
-        new_sprite.add_default_attr()
+        new_sprite.add_default_attr(self)
 
         try:
             self.sprites[new_sprite.layer].append(new_sprite)

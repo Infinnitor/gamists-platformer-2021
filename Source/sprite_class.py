@@ -1,7 +1,7 @@
 import traceback
 
 from pygame import transform, draw
-# from colour_manager import colours
+from colour_manager import colours
 
 
 # Sprite skeleton class
@@ -15,10 +15,7 @@ class sprite():
         pass
 
     def update_draw(self, game):
-        relative_x = game.camera_obj.x - self.x
-        relative_y = game.camera_obj.y - self.y
-
-        draw.rect(game.win, colours.green, (self.x, self.y, self.w, self.h))
+        pass
 
     def update_destroy(self, game):
         pass
@@ -36,7 +33,7 @@ class sprite():
 
         draw.circle(game.win, colours.green, (self.x, self.y), highlight_r)
 
-    def add_default_attr(self):
+    def add_default_attr(self, game):
         try:
             self.layer
         except AttributeError:
@@ -46,6 +43,11 @@ class sprite():
         self.destroy = False
         self.destroying = False
         self.highlight = 0
+
+        self.add_class_attr(game)
+
+    def add_class_attr(self, game):
+        pass
 
     def kill(self):
         self.destroy = True
