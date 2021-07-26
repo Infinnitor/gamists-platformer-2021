@@ -60,17 +60,30 @@ class text_player():
         self.h = values["player height"]
 
 
+def read_brackets(string):
+    b_values = []
+    for iter, char in enumerate(string):
+        if char == "(":
+            b_iter = iter
+            b_char = ""
+            while b_char != ")":
+                b_iter += 1
+                b_char = string[b_iter]
+            b_values.append(string[iter + 1 : b_iter])
+
+    return b_values
+
+
 class text_level():
     def __init__(self):
         file = text_clean(open("mario 1-1.txt", "r"))
 
         self.terrain = []
         for val in file:
-            line = val.split(" ")
+            line = read_brackets(val.replace(" ", ""))
 
             items = []
             for i in line:
-                i = i.replace("(", "").replace(")", "")
                 i = i.split(",")
                 items.append([int(v) for v in i])
 
