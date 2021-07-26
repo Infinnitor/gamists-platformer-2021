@@ -59,14 +59,17 @@ class grid_square(sprite):
                 self.element = config.dict[col]
 
         if self.element is None:
-            print(f"ERROR: unrecognised colour {element}")
+            print(f"ERROR: unrecognised colour {element}, at X: {self.x} Y: {self.y}")
             self.element = '!'
-            self.c = (0, random.randint(0, 255), random.randint(0, 255))
-            while self.c in config.dict.keys():
-                self.c = (0, random.randint(0, 255), random.randint(0, 255))
+            self.c = (255, 255, 0)
 
     def update_draw(self, game):
-        pygame.draw.rect(game.win, self.c, (self.x * self.side, self.y * self.side, self.side, self.side))
+        if self.element == '!':
+            pygame.draw.rect(game.win, game.bg, (self.x * self.side, self.y * self.side, self.side, self.side))
+            pygame.draw.circle(game.win, self.c, (self.x * self.side + self.side//2, self.y * self.side + self.side//2), self.side * 0.3)
+
+        else:
+            pygame.draw.rect(game.win, self.c, (self.x * self.side, self.y * self.side, self.side, self.side))
 
 
 game = game_info(
@@ -75,7 +78,7 @@ game = game_info(
                 win_h=720,
                 user_w=1280,
                 user_h=720,
-                bg=(155, 35, 35),
+                bg=(1, 1, 1),
                 framecap=False,
                 show_framerate=False,
                 quit_key=pygame.K_ESCAPE)
@@ -91,6 +94,8 @@ for y in range(l_h):
     for x in range(l_w):
         px_colour = level_image.get_at((x, y))
         game.add_sprite(grid_square(x, y, 20, px_colour))
+
+assert len(game.sprites["GRID"]) <= l_w * l_h
 
 while game.run:
     game.update_keys()
