@@ -116,6 +116,11 @@ class player(sprite):
         self.speed_cap = c.speed_cap
         self.min_y_speed = self.terminal_velocity * -1
 
+        if self.terminal_velocity > self.speed_cap:
+            self.collision_order = False
+        else:
+            self.collision_order = True
+
         # Player momentum on both the X and Y
         self.x_speed = 0
         self.y_speed = 0
@@ -199,12 +204,19 @@ class player(sprite):
         if self.y_speed < self.min_y_speed:
             self.y_speed = self.min_y_speed
 
-        # Move on X axis, then update X collision
-        self.x += self.x_speed
-        self.update_collision(game, x=True)
-        # Move on Y axis, then update Y collision
-        self.y += self.y_speed
-        self.update_collision(game, y=True)
+        if self.collision_order:
+            # Move on X axis, then update X collision
+            self.x += self.x_speed
+            self.update_collision(game, x=True)
+            # Move on Y axis, then update Y collision
+            self.y += self.y_speed
+            self.update_collision(game, y=True)
+
+        else:
+            self.y += self.y_speed
+            self.update_collision(game, y=True)
+            self.x += self.x_speed
+            self.update_collision(game, x=True)
 
     def update_collision(self, game, x=False, y=False):
 
