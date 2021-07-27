@@ -69,6 +69,12 @@ class text_config():
         self.dict = values
 
 
+def clear_file(name):
+    file = open(f"levels/output/{name}.txt", "w+")
+    file.write("")
+    file.close()
+
+
 def build_text(gridrect, name):
     file = open(f"levels/output/{name}.txt", "a+")
     target_element = gridrect[0].element
@@ -148,14 +154,16 @@ def rect_trail(game, given_trail):
 
             # Check what the elements are to either side of the trail
             try:
-                # If they are not the target element, they are valid
-                # Otherwise, the rect is infringing on space that could be used by other rects
+                # Handle ending the rect differently if the algo is STRATA
+                if game.algorithm == "STRATA":
+                    # If they are not the target element, they are valid
+                    # Otherwise, the rect is infringing on space that could be used by other rects
 
-                # If this is the case, declare the current trail to be invalid
-                if game.sprites[y][max_x + 1].element == target_element:
-                    return None
-                elif game.sprites[y][min_x - 1].element == target_element:
-                    return None
+                    # If this is the case, declare the current trail to be invalid
+                    if game.sprites[y][max_x + 1].element == target_element:
+                        return None
+                    elif game.sprites[y][min_x - 1].element == target_element:
+                        return None
             except IndexError:
                 pass
 
@@ -279,7 +287,6 @@ class button(sprite):
         self.click = False
         if self.mouseover(game):
             if game.check_mouse(0, buffer=True):
-                self.click = True
                 self.flash = 30
             else:
                 self.c = self.colours[1]
@@ -287,6 +294,8 @@ class button(sprite):
             self.c = self.colours[0]
 
         if self.flash > 0:
+            if self.flash == 15:
+                self.click = True
             self.flash -= 1
             self.c = self.colours[2]
 
@@ -351,7 +360,11 @@ def mainloop(game, levelpath):
 def mainmenu(game):
     load = button((530, 200), (200, 60), "LOAD LEVEL", [(90, 10, 10), (120, 20, 20), (255, 35, 35)])
     load_all = button((530, 280), (200, 60), "LOAD MULTIPLE", [(90, 10, 10), (120, 20, 20), (255, 35, 35)])
-    buttons = [load, load_all]
+
+    algo = button((500, 360), (260, 60), "ALGORITHM: STRATA", [(90, 10, 10), (120, 20, 20), (255, 35, 35)])
+    game.algorithm = "STRATA"
+
+    buttons = [load, load_all, algo]
 
     while game.run:
         game.update_keys()
@@ -360,40 +373,45 @@ def mainmenu(game):
             b.update_move(game)
             b.update_draw(game)
 
-        # bad code
-        for b in buttons:
-            if not b.click:
-                continue
+        if load.click:
+            levelpath = prompt_file()
 
-            if b.name == "LOAD LEVEL":
-                levelpath = prompt_file()
+            if levelpath and levelpath.endswith('.png'):
+                rects = mainloop(game, levelpath)
+                if rects is not None:
+                    level_name = levelpath.split('/')[-1]
+                    clear_file(level_name.replace('.png', ''))
+                    for platform in rects:
+                        build_text(platform, level_name.replace('.png', ''))
 
-                if levelpath and levelpath.endswith('.png'):
-                    rects = mainloop(game, levelpath)
+            else:
+                print("FAILED")
+
+        elif load_all.click:
+            leveldir = prompt_dir()
+
+            if leveldir:
+                level_files = glob.glob(leveldir + "/*.png")
+                for i in range(len(level_files)):
+                    level_files[i] = level_files[i].replace("\\", "/")
+
+                for f in level_files:
+                    rects = mainloop(game, f)
                     if rects is not None:
-                        level_name = levelpath.split('/')[-1]
+                        level_name = f.split('/')[-1]
+                        clear_file(level_name.replace('.png', ''))
                         for platform in rects:
                             build_text(platform, level_name.replace('.png', ''))
+            else:
+                print("FAILED")
 
-                else:
-                    print("FAILED")
-
-            elif b.name == "LOAD MULTIPLE":
-                leveldir = prompt_dir()
-
-                if leveldir:
-                    level_files = glob.glob(leveldir + "/*.png")
-                    for i in range(len(level_files)):
-                        level_files[i] = level_files[i].replace("\\", "/")
-
-                    for f in level_files:
-                        rects = mainloop(game, f)
-                        if rects is not None:
-                            level_name = f.split('/')[-1]
-                            for platform in rects:
-                                build_text(platform, level_name.replace('.png', ''))
-                else:
-                    print("FAILED")
+        elif algo.click:
+            if algo.name == "ALGORITHM: STRATA":
+                algo.name = "ALGORITHM: DROP"
+                game.algorithm = "DROP"
+            else:
+                algo.name = "ALGORITHM: STRATA"
+                game.algorithm = "STRATA"
 
         game.update_draw()
 
