@@ -196,6 +196,7 @@ def rect_finder(given_e, game):
                 # Invalid trail means that the rect can no longer be drawn further
                 while newtrail is not None:
                     rect_trails.extend(newtrail)
+                    print(f"Found rect at {newtrail[0].x}, {newtrail[0].y}")
 
                     newtrail = rect_trail(game, newtrail)
 

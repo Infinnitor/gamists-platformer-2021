@@ -2,10 +2,10 @@
 
 horizontal_acceleration : 1
 gravity : 0.7
-vertical_speed_cap : 15
+vertical_speed_cap : 35
 horizontal_speed_cap : 10
 
-jump_strength : 15
+jump_strength : 20
 held_jump_strength : 1
 held_jump_min : 2
 held_jump_max : 10

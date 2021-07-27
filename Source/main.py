@@ -77,7 +77,7 @@ def read_brackets(string):
 
 class text_level():
     def __init__(self):
-        file = text_clean(open("mario 1-1.txt", "r"))
+        file = text_clean(open("level.txt", "r"))
 
         self.terrain = []
         for val in file:
