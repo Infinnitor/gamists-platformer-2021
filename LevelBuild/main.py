@@ -360,37 +360,40 @@ def mainmenu(game):
             b.update_move(game)
             b.update_draw(game)
 
+        # bad code
         for b in buttons:
-            if b.click:
-                if b.name == "LOAD LEVEL":
-                    levelpath = prompt_file()
+            if not b.click:
+                continue
 
-                    if levelpath and levelpath.endswith('.png'):
-                        rects = mainloop(game, levelpath)
+            if b.name == "LOAD LEVEL":
+                levelpath = prompt_file()
+
+                if levelpath and levelpath.endswith('.png'):
+                    rects = mainloop(game, levelpath)
+                    if rects is not None:
+                        level_name = levelpath.split('/')[-1]
+                        for platform in rects:
+                            build_text(platform, level_name.replace('.png', ''))
+
+                else:
+                    print("FAILED")
+
+            elif b.name == "LOAD MULTIPLE":
+                leveldir = prompt_dir()
+
+                if leveldir:
+                    level_files = glob.glob(leveldir + "/*.png")
+                    for i in range(len(level_files)):
+                        level_files[i] = level_files[i].replace("\\", "/")
+
+                    for f in level_files:
+                        rects = mainloop(game, f)
                         if rects is not None:
-                            level_name = levelpath.split('/')[-1]
+                            level_name = f.split('/')[-1]
                             for platform in rects:
                                 build_text(platform, level_name.replace('.png', ''))
-
-                    else:
-                        print("FAILED")
-
-                elif b.name == "LOAD MULTIPLE":
-                    leveldir = prompt_dir()
-                    print(leveldir)
-
-                    if leveldir:
-                        level_files = glob.glob(leveldir + "/*.png")
-                        for i in range(len(level_files)):
-                            level_files[i] = level_files[i].replace("\\", "/")
-
-                        print(level_files)
-                        for f in level_files:
-                            rects = mainloop(game, f)
-                            if rects is not None:
-                                level_name = f.split('/')[-1]
-                                for platform in rects:
-                                    build_text(platform, level_name.replace('.png', ''))
+                else:
+                    print("FAILED")
 
         game.update_draw()
 
