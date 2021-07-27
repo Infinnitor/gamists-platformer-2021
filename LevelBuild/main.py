@@ -45,6 +45,25 @@ class text_config():
         self.dict = values
 
 
+def build_text(gridrect):
+    file = open("levels/output/level.txt", "a+")
+    target_element = gridrect[0].element
+
+    u_x, u_y = gridrect[0].upper()
+    l_x, l_y = gridrect[-1].lower()
+
+    rect_w = l_x - u_x
+    rect_h = l_y - u_y
+
+    c = random.randint(50, 255)
+
+    print(f"{rect_w},  {rect_h}")
+    out_text = f"({u_x}, {u_y}) ({rect_w}, {rect_h}) ({c}, {c}, {c})\n"
+    file.write(out_text)
+
+    file.close()
+
+# Function for finding out the initial parameters of a potential rectangle, given a starting tile
 def rect_trailpath(game, start_tile):
     x = start_tile.x
     y = start_tile.y
@@ -52,44 +71,61 @@ def rect_trailpath(game, start_tile):
     trail = []
     c_tile = start_tile
 
+    # Loop on the X until it hits a tile that is not of the same element
     while c_tile.element == start_tile.element:
         trail.append(c_tile)
         x += 1
         try:
             c_tile = game.sprites[y][x]
 
+        # Break if it hits the edge of the level
         except IndexError:
             break
 
     return trail
 
 
+# Function that finds another row in a rect, given a trailpath
 def rect_trail(game, given_trail):
+
     target_element = given_trail[0].element
 
+    # The rect must not go outside these boundaries, or else it will no longer be a rectangle
     max_x = given_trail[-1].x
     min_x = given_trail[0].x
 
+    # Starting pos
     x = given_trail[0].x
     y = given_trail[0].y + 1
+
+    # If the starting Y is bigger than the level height, the trail is invalid
     if y >= level_height:
         return None
 
     trail = []
     c_tile = game.sprites[y][x]
 
-    while c_tile.element == target_element and x <= max_x:
+    # Create an unbroken line with a while loop
+    while c_tile.element == target_element:
         trail.append(c_tile)
         x += 1
         try:
             c_tile = game.sprites[y][x]
+
+        # Except an IndexError because order of events is wonky
         except IndexError:
             print(f"INDEXERROR Max: {max_x}, X: {x}, Y: {y}")
 
+        # Check if length of trail is equal to that of the given trailpath
         if len(trail) == len(given_trail):
             print(f"LENGTH COMP Max: {max_x}, X: {x}, Y: {y}")
 
+            # Check what the elements are to either side of the trail
             try:
+                # If they are not the target element, they are valid
+                # Otherwise, the rect is infringing on space that could be used by other rects
+
+                # If this is the case, declare the current trail to be invalid
                 if game.sprites[y][max_x + 1].element == target_element:
                     return None
                 elif game.sprites[y][min_x - 1].element == target_element:
@@ -99,32 +135,44 @@ def rect_trail(game, given_trail):
 
             return trail
 
+    # Return None if while loop is broken by incorrect element
     print(f"NONE Max: {max_x}, X: {x}, Y: {y}")
     return None
 
 
 # Function for finding a rectangle in level.png, given a target element
 def rect_finder(given_e, game):
+
+    # Iterate through 2Darray
     for row in game.sprites:
         for tile in row:
+
+            # Begin a new rect trail if the element of the current tile matches the given element
             if tile.element == given_e:
                 rect_trails = []
+
+                # Create a trailpath to define the width of the rect
                 start_trail = rect_trailpath(game, tile)
                 rect_trails.extend(start_trail)
 
+                # Create a rect trail based on the parameters of the trailpath
                 newtrail = rect_trail(game, start_trail)
 
+                # Repeat until you get an invalid trail
+                # Invalid trail means that the rect can no longer be drawn further
                 while newtrail is not None:
                     rect_trails.extend(newtrail)
 
                     newtrail = rect_trail(game, newtrail)
 
+                # Colour and remove all grid squares from the list of potential rects
                 for tile in rect_trails:
                     tile.c = (0, 155, 0)
                     tile.element = "Found"
 
                 return rect_trails
 
+    # Return None if you looped through the list without success
     return None
 
 
@@ -141,6 +189,9 @@ class grid_square(sprite):
         # Size of the gridsquare when drawing it
         self.w = size[0]
         self.h = size[1]
+
+        # Hardcoded size of a tile in the final game
+        self.tile_side = 20
 
         self.c = element
         self.element = None
@@ -167,6 +218,11 @@ class grid_square(sprite):
         if self.warn is True:
             pygame.draw.circle(game.win, (255, 255, 0), (self.x * self.w + self.w//2, self.y * self.h + self.h//2), self.w * 0.3)
 
+    def upper(self):
+        return [self.x * self.tile_side, self.y * self.tile_side]
+
+    def lower(self):
+        return [(self.x * self.tile_side) + self.tile_side, (self.y * self.tile_side) + self.tile_side]
 
 game = game_info(
                 name="LevelBuilder",
@@ -181,7 +237,7 @@ game = game_info(
 
 config = text_config('colour_config.txt')
 
-level_image = pygame.image.load('level.png')
+level_image = pygame.image.load('levels/input/level.png')
 level_image.set_colorkey((0, 0, 0))
 
 level_width, level_height = level_image.get_size()
@@ -211,6 +267,7 @@ while game.run:
     if game.check_key(pygame.K_SPACE, buffer=True):
         a_rect = rect_finder("GroundTerrain", game)
         if a_rect is not None:
+            build_text(a_rect)
             found_rects.append(a_rect)
         else:
             print(None)
