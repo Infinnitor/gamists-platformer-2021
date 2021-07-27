@@ -247,6 +247,9 @@ class grid_square(sprite):
             self.warn = True
 
     def update_draw(self, game):
+        if game.draw_grid is False:
+            return
+
         pygame.draw.rect(game.win, self.c, (self.x * self.w, self.y * self.h, self.w, self.h))
 
         # Draw a warning circle if neccessary
@@ -272,7 +275,6 @@ class button(sprite):
         self.colours = colours
         self.c = colours[0]
 
-        self.click = False
         self.flash = 0
 
     def mouseover(self, game):
@@ -285,7 +287,6 @@ class button(sprite):
 
     def update_move(self, game):
 
-        self.click = False
         if self.mouseover(game):
             if game.check_mouse(0, buffer=True):
                 self.flash = 30
@@ -296,7 +297,7 @@ class button(sprite):
 
         if self.flash > 0:
             if self.flash == 15:
-                self.click = True
+                self.click(game)
             self.flash -= 1
             self.c = self.colours[2]
 
@@ -310,6 +311,55 @@ class button(sprite):
         button_cy = (self.y + self.h//2) - text_center[1]
 
         game.win.blit(text, (button_cx, button_cy))
+
+    def click(self, game):
+        if self.name == "LOAD LEVEL":
+            levelpath = prompt_file()
+
+            if levelpath and levelpath.endswith('.png'):
+                rects = mainloop(game, levelpath)
+                if rects is not None:
+                    level_name = levelpath.split('/')[-1]
+                    clear_file(level_name.replace('.png', ''))
+                    for platform in rects:
+                        build_text(platform, level_name.replace('.png', ''))
+
+            else:
+                print("FAILED")
+
+        elif self.name == "LOAD MULTIPLE":
+            leveldir = prompt_dir()
+
+            if leveldir:
+                level_files = glob.glob(leveldir + "/*.png")
+                for i in range(len(level_files)):
+                    level_files[i] = level_files[i].replace("\\", "/")
+
+                for f in level_files:
+                    rects = mainloop(game, f)
+                    if rects is not None:
+                        level_name = f.split('/')[-1]
+                        clear_file(level_name.replace('.png', ''))
+                        for platform in rects:
+                            build_text(platform, level_name.replace('.png', ''))
+            else:
+                print("FAILED")
+
+        elif self.name.startswith("ALGORITHM"):
+            if self.name == "ALGORITHM: STRATA":
+                self.name = "ALGORITHM: DROP"
+                game.algorithm = "DROP"
+            else:
+                self.name = "ALGORITHM: STRATA"
+                game.algorithm = "STRATA"
+
+        elif self.name.startswith("DRAW GRID"):
+            if self.name == "DRAW GRID: TRUE":
+                self.name = "DRAW GRID: FALSE"
+                game.draw_grid = False
+            else:
+                self.name = "DRAW GRID: TRUE"
+                game.draw_grid = True
 
 
 def mainloop(game, levelpath):
@@ -342,7 +392,7 @@ def mainloop(game, levelpath):
 
         game.update_keys()
 
-        if game.frames % 5 == 0:
+        if game.frames % int(gridsquare_size[0]) == 0:
             a_rect = rect_finder("GroundTerrain", game)
             if a_rect is not None:
                 found_rects.append(a_rect)
@@ -365,7 +415,10 @@ def mainmenu(game):
     algo = button((500, 360), (260, 60), "ALGORITHM: STRATA", [(90, 10, 10), (120, 20, 20), (255, 35, 35)])
     game.algorithm = "STRATA"
 
-    buttons = [load, load_all, algo]
+    draw_grid = button((500, 440), (260, 60), "DRAW GRID: TRUE", [(90, 10, 10), (120, 20, 20), (255, 35, 35)])
+    game.draw_grid = True
+
+    buttons = [load, load_all, algo, draw_grid]
 
     while game.run:
         game.update_keys()
@@ -373,46 +426,6 @@ def mainmenu(game):
         for b in buttons:
             b.update_move(game)
             b.update_draw(game)
-
-        if load.click:
-            levelpath = prompt_file()
-
-            if levelpath and levelpath.endswith('.png'):
-                rects = mainloop(game, levelpath)
-                if rects is not None:
-                    level_name = levelpath.split('/')[-1]
-                    clear_file(level_name.replace('.png', ''))
-                    for platform in rects:
-                        build_text(platform, level_name.replace('.png', ''))
-
-            else:
-                print("FAILED")
-
-        elif load_all.click:
-            leveldir = prompt_dir()
-
-            if leveldir:
-                level_files = glob.glob(leveldir + "/*.png")
-                for i in range(len(level_files)):
-                    level_files[i] = level_files[i].replace("\\", "/")
-
-                for f in level_files:
-                    rects = mainloop(game, f)
-                    if rects is not None:
-                        level_name = f.split('/')[-1]
-                        clear_file(level_name.replace('.png', ''))
-                        for platform in rects:
-                            build_text(platform, level_name.replace('.png', ''))
-            else:
-                print("FAILED")
-
-        elif algo.click:
-            if algo.name == "ALGORITHM: STRATA":
-                algo.name = "ALGORITHM: DROP"
-                game.algorithm = "DROP"
-            else:
-                algo.name = "ALGORITHM: STRATA"
-                game.algorithm = "STRATA"
 
         game.update_draw()
 
