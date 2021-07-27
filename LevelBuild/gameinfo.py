@@ -13,6 +13,7 @@ import math
 import time
 import random
 import pygame
+pygame.font.init()
 
 
 class game_info():
@@ -59,6 +60,8 @@ class game_info():
 
         self.particles = []
         self.sprites = []
+
+        self.font = pygame.font.SysFont("Comic sans", 30)
 
     class particle(sprite):
         def __init__(part, pos, size, angle, speed, lifetime, colour, shape="CIRCLE", sprite=None):

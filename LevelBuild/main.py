@@ -1,5 +1,18 @@
 # Rectfinder linemethod
 from gameinfo import game_info, pygame, sprite, random
+# pygame.font.init()
+
+import tkinter
+import tkinter.filedialog
+
+
+def prompt_file():
+    """Create a Tk file dialog and cleanup when finished"""
+    top = tkinter.Tk()
+    top.withdraw()  # Hide window
+    file_name = tkinter.filedialog.askopenfilename(parent=top)
+    top.destroy()
+    return file_name
 
 
 def text_clean(file):
@@ -57,11 +70,12 @@ def build_text(gridrect):
 
     c = random.randint(50, 255)
 
-    print(f"{rect_w},  {rect_h}")
+    # print(f"{rect_w},  {rect_h}")
     out_text = f"({u_x}, {u_y}) ({rect_w}, {rect_h}) ({c}, {c}, {c})\n"
     file.write(out_text)
 
     file.close()
+
 
 # Function for finding out the initial parameters of a potential rectangle, given a starting tile
 def rect_trailpath(game, start_tile):
@@ -99,7 +113,7 @@ def rect_trail(game, given_trail):
     y = given_trail[0].y + 1
 
     # If the starting Y is bigger than the level height, the trail is invalid
-    if y >= level_height:
+    if y >= game.level_height:
         return None
 
     trail = []
@@ -114,11 +128,12 @@ def rect_trail(game, given_trail):
 
         # Except an IndexError because order of events is wonky
         except IndexError:
-            print(f"INDEXERROR Max: {max_x}, X: {x}, Y: {y}")
+            pass
+            # print(f"INDEXERROR Max: {max_x}, X: {x}, Y: {y}")
 
         # Check if length of trail is equal to that of the given trailpath
         if len(trail) == len(given_trail):
-            print(f"LENGTH COMP Max: {max_x}, X: {x}, Y: {y}")
+            # print(f"LENGTH COMP Max: {max_x}, X: {x}, Y: {y}")
 
             # Check what the elements are to either side of the trail
             try:
@@ -136,7 +151,7 @@ def rect_trail(game, given_trail):
             return trail
 
     # Return None if while loop is broken by incorrect element
-    print(f"NONE Max: {max_x}, X: {x}, Y: {y}")
+    # print(f"NONE Max: {max_x}, X: {x}, Y: {y}")
     return None
 
 
@@ -198,9 +213,9 @@ class grid_square(sprite):
         self.warn = False
 
         # Check for corresponding string to the given element
-        for col in config.dict:
+        for col in game.config.dict:
             if col == element:
-                self.element = config.dict[col]
+                self.element = game.config.dict[col]
 
         # If invalid, print an error and set self.element to GroundTerrain
         if self.element is None:
@@ -224,6 +239,135 @@ class grid_square(sprite):
     def lower(self):
         return [(self.x * self.tile_side) + self.tile_side, (self.y * self.tile_side) + self.tile_side]
 
+
+class button(sprite):
+    def __init__(self, pos, size, name, colours):
+        self.x = pos[0]
+        self.y = pos[1]
+
+        self.w = size[0]
+        self.h = size[1]
+
+        self.name = name
+        self.colours = colours
+        self.c = colours[0]
+
+        self.click = False
+        self.flash = 0
+
+    def mouseover(self, game):
+        m_x, m_y = game.mouse_pos
+        if m_x > self.x and m_x < self.x + self.w:
+            if m_y > self.y and m_y < self.y + self.h:
+                return True
+
+        return False
+
+    def update_move(self, game):
+
+        self.click = False
+        if self.mouseover(game):
+            if game.check_mouse(0, buffer=True):
+                self.click = True
+                self.flash = 30
+            else:
+                self.c = self.colours[1]
+        else:
+            self.c = self.colours[0]
+
+        if self.flash > 0:
+            self.flash -= 1
+            self.c = self.colours[2]
+
+    def update_draw(self, game):
+        pygame.draw.rect(game.win, self.c, (self.x, self.y, self.w, self.h))
+
+        text = game.font.render(self.name, False, (255, 255, 255))
+
+        text_center = (text.get_width()//2, text.get_height()//2)
+        button_cx = (self.x + self.w//2) - text_center[0]
+        button_cy = (self.y + self.h//2) - text_center[1]
+
+        game.win.blit(text, (button_cx, button_cy))
+
+
+def mainloop(game, levelpath):
+    game.config = text_config('colour_config.txt')
+
+    level_image = pygame.image.load(levelpath)
+    level_image.set_colorkey((0, 0, 0))
+
+    game.level_width, game.level_height = level_image.get_size()
+
+    gridsquare_size = (game.win_w / game.level_width, game.win_h / game.level_height)
+
+    rows = []
+    for y in range(game.level_height):
+        yrow = []
+        for x in range(game.level_width):
+            px_colour = level_image.get_at((x, y))
+
+            obj = grid_square((x, y), gridsquare_size, px_colour)
+            obj.add_default_attr(game)
+            yrow.append(obj)
+
+        rows.append(yrow)
+
+    game.sprites = rows
+
+    found_rects = []
+
+    while game.run:
+
+        game.update_keys()
+
+        if game.frames % 20 == 0:
+            a_rect = rect_finder("GroundTerrain", game)
+            if a_rect is not None:
+                found_rects.append(a_rect)
+            else:
+                game.purge_sprites()
+                return found_rects
+
+        game.update_draw()
+
+        game.update_scaled()
+
+        game.update_state()
+
+
+def mainmenu(game):
+    buttons = []
+    load = button((560, 200), (140, 60), "LOAD LEVEL", [(90, 10, 10), (120, 20, 20), (255, 35, 35)])
+    buttons.append(load)
+
+    while game.run:
+        game.update_keys()
+
+        for b in buttons:
+            b.update_move(game)
+            b.update_draw(game)
+
+        for b in buttons:
+            if b.click:
+                if b.name == "LOAD LEVEL":
+                    levelpath = prompt_file()
+                    if levelpath and levelpath.endswith('.png'):
+                        rects = mainloop(game, levelpath)
+                        if rects is not None:
+                            for platform in rects:
+                                build_text(platform)
+
+                    else:
+                        print("FAILED")
+
+        game.update_draw()
+
+        game.update_scaled()
+
+        game.update_state()
+
+
 game = game_info(
                 name="LevelBuilder",
                 win_w=1280,
@@ -235,45 +379,5 @@ game = game_info(
                 show_framerate=False,
                 quit_key=pygame.K_ESCAPE)
 
-config = text_config('colour_config.txt')
 
-level_image = pygame.image.load('levels/input/level.png')
-level_image.set_colorkey((0, 0, 0))
-
-level_width, level_height = level_image.get_size()
-
-gridsquare_size = (game.win_w / level_width, game.win_h / level_height)
-
-rows = []
-for y in range(level_height):
-    yrow = []
-    for x in range(level_width):
-        px_colour = level_image.get_at((x, y))
-
-        obj = grid_square((x, y), gridsquare_size, px_colour)
-        obj.add_default_attr(game)
-        yrow.append(obj)
-
-    rows.append(yrow)
-
-game.sprites = rows
-
-found_rects = []
-
-while game.run:
-
-    game.update_keys()
-
-    if game.check_key(pygame.K_SPACE, buffer=True):
-        a_rect = rect_finder("GroundTerrain", game)
-        if a_rect is not None:
-            build_text(a_rect)
-            found_rects.append(a_rect)
-        else:
-            print(None)
-
-    game.update_draw()
-
-    game.update_scaled()
-
-    game.update_state()
+mainmenu(game)
