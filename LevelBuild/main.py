@@ -5,12 +5,23 @@ from gameinfo import game_info, pygame, sprite, random
 import tkinter
 import tkinter.filedialog
 
+import glob
+
 
 def prompt_file():
     """Create a Tk file dialog and cleanup when finished"""
     top = tkinter.Tk()
     top.withdraw()  # Hide window
-    file_name = tkinter.filedialog.askopenfilename(parent=top)
+    file_name = tkinter.filedialog.askopenfilename(parent=top, defaultextension='.png')
+    top.destroy()
+    return file_name
+
+
+def prompt_dir():
+    """Create a Tk file dialog and cleanup when finished"""
+    top = tkinter.Tk()
+    top.withdraw()  # Hide window
+    file_name = tkinter.filedialog.askdirectory(parent=top)
     top.destroy()
     return file_name
 
@@ -58,8 +69,8 @@ class text_config():
         self.dict = values
 
 
-def build_text(gridrect):
-    file = open("levels/output/level.txt", "a+")
+def build_text(gridrect, name):
+    file = open(f"levels/output/{name}.txt", "a+")
     target_element = gridrect[0].element
 
     u_x, u_y = gridrect[0].upper()
@@ -321,11 +332,12 @@ def mainloop(game, levelpath):
 
         game.update_keys()
 
-        if game.frames % 20 == 0:
+        if game.frames % 5 == 0:
             a_rect = rect_finder("GroundTerrain", game)
             if a_rect is not None:
                 found_rects.append(a_rect)
             else:
+                pygame.time.delay(500)
                 game.purge_sprites()
                 return found_rects
 
@@ -337,9 +349,9 @@ def mainloop(game, levelpath):
 
 
 def mainmenu(game):
-    buttons = []
-    load = button((560, 200), (140, 60), "LOAD LEVEL", [(90, 10, 10), (120, 20, 20), (255, 35, 35)])
-    buttons.append(load)
+    load = button((530, 200), (200, 60), "LOAD LEVEL", [(90, 10, 10), (120, 20, 20), (255, 35, 35)])
+    load_all = button((530, 280), (200, 60), "LOAD MULTIPLE", [(90, 10, 10), (120, 20, 20), (255, 35, 35)])
+    buttons = [load, load_all]
 
     while game.run:
         game.update_keys()
@@ -352,14 +364,33 @@ def mainmenu(game):
             if b.click:
                 if b.name == "LOAD LEVEL":
                     levelpath = prompt_file()
+
                     if levelpath and levelpath.endswith('.png'):
                         rects = mainloop(game, levelpath)
                         if rects is not None:
+                            level_name = levelpath.split('/')[-1]
                             for platform in rects:
-                                build_text(platform)
+                                build_text(platform, level_name.replace('.png', ''))
 
                     else:
                         print("FAILED")
+
+                elif b.name == "LOAD MULTIPLE":
+                    leveldir = prompt_dir()
+                    print(leveldir)
+
+                    if leveldir:
+                        level_files = glob.glob(leveldir + "/*.png")
+                        for i in range(len(level_files)):
+                            level_files[i] = level_files[i].replace("\\", "/")
+
+                        print(level_files)
+                        for f in level_files:
+                            rects = mainloop(game, f)
+                            if rects is not None:
+                                level_name = f.split('/')[-1]
+                                for platform in rects:
+                                    build_text(platform, level_name.replace('.png', ''))
 
         game.update_draw()
 
@@ -374,7 +405,7 @@ game = game_info(
                 win_h=720,
                 user_w=1280,
                 user_h=720,
-                bg=(1, 1, 1),
+                bg=(255, 255, 255),
                 framecap=False,
                 show_framerate=False,
                 quit_key=pygame.K_ESCAPE)
