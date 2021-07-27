@@ -103,9 +103,10 @@ def rect_trail(game, given_trail):
     return None
 
 
+# Function for finding a rectangle in level.png, given a target element
 def rect_finder(given_e, game):
-    for y, row in enumerate(game.sprites):
-        for x, tile in enumerate(row):
+    for row in game.sprites:
+        for tile in row:
             if tile.element == given_e:
                 rect_trails = []
                 start_trail = rect_trailpath(game, tile)
@@ -127,33 +128,44 @@ def rect_finder(given_e, game):
     return None
 
 
+# Grid square class
 class grid_square(sprite):
     layer = "GRID"
 
     def __init__(self, pos, size, element):
+
+        # Position in the grid
         self.x = pos[0]
         self.y = pos[1]
+
+        # Size of the gridsquare when drawing it
         self.w = size[0]
         self.h = size[1]
 
         self.c = element
         self.element = None
+        self.warn = False
+
+        # Check for corresponding string to the given element
         for col in config.dict:
             if col == element:
                 self.element = config.dict[col]
 
+        # If invalid, print an error and set self.element to GroundTerrain
         if self.element is None:
             print(f"ERROR: unrecognised colour {element}, at X: {self.x} Y: {self.y}")
-            self.element = '!'
-            self.c = (255, 255, 0)
+
+            self.element = "GroundTerrain"
+            self.c = (10, 10, 10)
+            # Set self.warn to True so that a warning is drawn
+            self.warn = True
 
     def update_draw(self, game):
-        if self.element == '!':
-            pygame.draw.rect(game.win, game.bg, (self.x * self.w, self.y * self.h, self.w, self.h))
-            pygame.draw.circle(game.win, self.c, (self.x * self.w + self.w//2, self.y * self.h + self.h//2), self.w * 0.3)
+        pygame.draw.rect(game.win, self.c, (self.x * self.w, self.y * self.h, self.w, self.h))
 
-        else:
-            pygame.draw.rect(game.win, self.c, (self.x * self.w, self.y * self.h, self.w, self.h))
+        # Draw a warning circle if neccessary
+        if self.warn is True:
+            pygame.draw.circle(game.win, (255, 255, 0), (self.x * self.w + self.w//2, self.y * self.h + self.h//2), self.w * 0.3)
 
 
 game = game_info(
