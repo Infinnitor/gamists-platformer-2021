@@ -2,7 +2,9 @@
 
 horizontal_acceleration : 1
 gravity : 0.7
-vertical_speed_cap : 35
+
+# Should not be above 20
+vertical_speed_cap : 20
 horizontal_speed_cap : 10
 
 jump_strength : 20
