@@ -77,7 +77,7 @@ def clear_file(name):
 
 def build_text(gridrect, name):
     file = open(f"levels/output/{name}.txt", "a+")
-    target_element = gridrect[0].element
+    target_element = gridrect[0].start_element
 
     u_x, u_y = gridrect[0].upper()
     l_x, l_y = gridrect[-1].lower()
@@ -85,10 +85,8 @@ def build_text(gridrect, name):
     rect_w = l_x - u_x
     rect_h = l_y - u_y
 
-    c = random.randint(50, 255)
-
     # print(f"{rect_w},  {rect_h}")
-    out_text = f"({u_x}, {u_y}) ({rect_w}, {rect_h}) ({c}, {c}, {c})\n"
+    out_text = f"({u_x}, {u_y}) ({rect_w}, {rect_h}) ({target_element})\n"
     file.write(out_text)
 
     file.close()
@@ -245,6 +243,8 @@ class grid_square(sprite):
             self.c = (10, 10, 10)
             # Set self.warn to True so that a warning is drawn
             self.warn = True
+
+        self.start_element = self.element
 
     def update_draw(self, game):
         if game.draw_grid is False:

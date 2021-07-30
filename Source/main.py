@@ -84,9 +84,9 @@ class text_level():
             line = read_brackets(val.replace(" ", ""))
 
             items = []
-            for i in line:
-                i = i.split(",")
-                items.append([int(v) for v in i])
+            items.append([int(i) for i in line[0].split(",")]) # pos
+            items.append([int(i) for i in line[1].split(",")]) # size
+            items.append(line[2]) # type
 
             self.terrain.append(items)
 
@@ -300,14 +300,14 @@ class player(sprite):
 class platform(sprite):
     layer = "TERRAIN"
 
-    def __init__(self, pos, size, colour):
+    def __init__(self, pos, size):
         self.x = pos[0]
         self.y = pos[1]
 
         self.w = size[0]
         self.h = size[1]
 
-        self.colour = colour
+        self.colour = (35, 35, 155)
 
     def update_draw(self, game):
         rel_x = self.x - game.camera_obj.x
@@ -319,8 +319,13 @@ class platform(sprite):
 def mainloop(game, player_config, level_config):
     game.add_sprite(player(player_config))
 
-    for pos, size, colour in level_config.terrain:
-        game.add_sprite(platform(pos=pos, size=size, colour=colour))
+    level_classes = {
+        "GroundTerrain" : platform,
+        # "Checkpoint" : checkpoint
+    }
+
+    for pos, size, sprite_type in level_config.terrain:
+        game.add_sprite(level_classes[sprite_type](pos=pos, size=size))
 
     while game.run:
         game.update_keys()

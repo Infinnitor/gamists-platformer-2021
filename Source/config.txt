@@ -14,5 +14,5 @@ held_jump_max : 10
 
 start_x : 500
 start_y : 500
-player_width : 50
-player_height : 50
+player_width : 40
+player_height : 40
