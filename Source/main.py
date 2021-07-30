@@ -272,7 +272,7 @@ class player(sprite):
                     depth = self.y + self.h - t.y
                     self.y -= depth
 
-                elif move.rect_collision(self.colliders["UP"], t):
+                if move.rect_collision(self.colliders["UP"], t):
 
                     # If a collision occurs on the UP collider, remove upward momentum
                     self.held_jump_frames = self.held_jump_max + 1
