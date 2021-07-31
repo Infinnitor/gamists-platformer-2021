@@ -57,6 +57,7 @@ class game_info():
                         "BACKGROUND" : [],
                         "LOWPARTICLE" : [],
                         "TERRAIN": [],
+                        "CHECKPOINTS" : [],
                         "PLAYER": [],
                         "ENEMY" : [],
                         "HIGHPARTICLE" : [],
@@ -97,8 +98,6 @@ class game_info():
             cam.update_collision(game, x=True)
             cam.y = p_y - game.win_h//2
             cam.update_collision(game, y=True)
-
-            print(f"{cam.x}  {cam.y}")
 
         def update_collision(cam, game, x=False, y=False):
 

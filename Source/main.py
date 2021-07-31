@@ -46,6 +46,61 @@ class camera_collider(sprite):
         self.w = size[0]
         self.h = size[1]
 
+class checkpoint(sprite):
+    layer = "CHECKPOINTS"
+
+    def __init__(self, pos, size):
+        print("YOOOO")
+
+        self.x = pos[0]
+        self.y = pos[1]
+
+        self.w = size[0]
+        self.h = size[1]
+
+        self.c = (255, 160, 20)
+        self.active_c = (35, 200, 35)
+
+        self.active = False
+
+    def update_move(self, game):
+        p_x, p_y = game.sprites["PLAYER"][0].spawnpos
+
+        # print(f"x: {self.x} px: {p_x}  y: {self.y}  py: {p_y}")
+
+        if self.x == p_x and self.y == p_y:
+            self.active = True
+        else:
+            self.active = False
+
+    def update_draw(self, game):
+        rel_x = self.x - game.camera_obj.x
+        rel_y = self.y - game.camera_obj.y
+
+        c = self.c
+        if self.active:
+            c = self.active_c
+
+        pygame.draw.rect(game.win, c, (rel_x, rel_y, self.w, self.h))
+
+
+class platform(sprite):
+    layer = "TERRAIN"
+
+    def __init__(self, pos, size):
+        self.x = pos[0]
+        self.y = pos[1]
+
+        self.w = size[0]
+        self.h = size[1]
+
+        self.c = (35, 35, 155)
+
+    def update_draw(self, game):
+        rel_x = self.x - game.camera_obj.x
+        rel_y = self.y - game.camera_obj.y
+
+        pygame.draw.rect(game.win, self.c, (rel_x, rel_y, self.w, self.h))
 
 
 class text_player():
@@ -159,7 +214,21 @@ class player(sprite):
             "RIGHT" : move.offset_rect(offset=(self.w - x_collider_h, 1), parent=self, size=(x_collider_h, self.h - 2))
         }
 
+        self.set_spawn((self.x, self.y))
+
+    def set_spawn(self, pos):
+        self.spawnpos = pos
+
+    def respawn(self):
+        self.x_speed = 0
+        self.y_speed = 0
+
+        self.x = self.spawnpos[0]
+        self.y = self.spawnpos[1]
+
     def update_move(self, game):
+        if game.check_key(pygame.K_r, buffer=True):
+            self.respawn()
 
         # Move player based on left or right key press
         if game.check_key(pygame.K_LEFT, pygame.K_a):
@@ -241,6 +310,11 @@ class player(sprite):
 
             # Iterate through valid collision objects
             for t in game.oncam_sprites:
+
+                if t.layer == "CHECKPOINTS":
+                    if move.rect_collision(self, t):
+                        self.set_spawn((t.x, t.y))
+
                 if t.layer != "TERRAIN":
                     continue
 
@@ -269,7 +343,8 @@ class player(sprite):
 
             # On ground will be False unless the DOWN collider has a successful collision
             self.on_ground = False
-            for t in game.sprites["TERRAIN"]:
+            for t in game.oncam_sprites:
+
                 if t.layer != "TERRAIN":
                     continue
 
@@ -307,32 +382,13 @@ class player(sprite):
         #     pygame.draw.rect(game.win, (255, 255, 255), collider_rect.get_pos())
 
 
-class platform(sprite):
-    layer = "TERRAIN"
-
-    def __init__(self, pos, size):
-        self.x = pos[0]
-        self.y = pos[1]
-
-        self.w = size[0]
-        self.h = size[1]
-
-        self.colour = (35, 35, 155)
-
-    def update_draw(self, game):
-        rel_x = self.x - game.camera_obj.x
-        rel_y = self.y - game.camera_obj.y
-
-        pygame.draw.rect(game.win, self.colour, (rel_x, rel_y, self.w, self.h))
-
-
 def mainloop(game, player_config, level_config):
     game.add_sprite(player(player_config))
 
     level_classes = {
         "GroundTerrain" : platform,
-        "CameraCollider" : camera_collider
-        # "Checkpoint" : checkpoint
+        "CameraCollider" : camera_collider,
+        "Checkpoint" : checkpoint
     }
 
     for pos, size, sprite_type in level_config.terrain:
@@ -345,7 +401,7 @@ def mainloop(game, player_config, level_config):
         game.update_scaled()
         game.update_state()
 
-        if game.check_key(pygame.K_r, buffer=True):
+        if game.check_key(pygame.K_q, buffer=True):
             return True
 
     return False

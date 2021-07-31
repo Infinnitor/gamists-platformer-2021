@@ -367,11 +367,6 @@ def mainloop(game, levelpath):
 
     level_image = pygame.image.load(levelpath)
     # level_image.set_colorkey((0, 0, 0))
-
-    padded_level = pygame.Surface(())
-
-    pygame.draw.rect()
-
     game.level_width, game.level_height = level_image.get_size()
 
     gridsquare_size = (game.win_w / game.level_width, game.win_h / game.level_height)

@@ -9,3 +9,6 @@
 
 # Hazard
 (155, 35, 35) : Hazard
+
+# Checkpoint
+(255, 160, 20) : Checkpoint
