@@ -50,7 +50,6 @@ class checkpoint(sprite):
     layer = "CHECKPOINTS"
 
     def __init__(self, pos, size):
-        print("YOOOO")
 
         self.x = pos[0]
         self.y = pos[1]
@@ -411,8 +410,8 @@ game = game_info(
                 name="the mario killer",
                 win_w=1280,
                 win_h=720,
-                user_w=1280,
-                user_h=720,
+                user_w=1366,
+                user_h=768,
                 bg=(0, 0, 0),
                 framecap=60,
                 show_framerate=False,
