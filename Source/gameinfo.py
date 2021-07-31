@@ -18,7 +18,7 @@ class game_info():
         self.user_w = user_w
         self.user_h = user_h
 
-        self.win_scale = pygame.display.set_mode((user_w, user_h), pygame.NOFRAME)
+        self.win_scale = pygame.display.set_mode((user_w, user_h))
         pygame.display.set_caption(name)
         self.win = pygame.Surface((win_w, win_h))
 
