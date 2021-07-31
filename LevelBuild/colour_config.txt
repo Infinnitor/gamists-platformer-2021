@@ -1,5 +1,11 @@
-# Walls
+# Walls / ground
 (10, 10, 10) : GroundTerrain
 
 # Empty space
 (255, 255, 255) : Background
+
+# Camera Collider
+(200, 100, 230) : CameraCollider
+
+# Hazard
+(155, 35, 35) : Hazard

@@ -73,6 +73,16 @@ class game_info():
             cam.w = size[0]
             cam.h = size[1]
 
+            y_collider_h = 10
+            x_collider_h = 10
+
+            cam.colliders = {
+                "DOWN" : move.offset_rect(offset=(1, cam.h - y_collider_h), parent=cam, size=(cam.w - 2, y_collider_h)),
+                "UP" : move.offset_rect(offset=(1, 0), parent=cam, size=(cam.w - 2, y_collider_h)),
+                "LEFT" : move.offset_rect(offset=(0, 1), parent=cam, size=(x_collider_h, cam.h - 2)),
+                "RIGHT" : move.offset_rect(offset=(cam.w - x_collider_h, 1), parent=cam, size=(x_collider_h, cam.h - 2))
+            }
+
         def update_move(cam, game):
             if game.sprites["PLAYER"]:
                 p = game.sprites["PLAYER"][0]
@@ -82,8 +92,61 @@ class game_info():
                 p_x = game.win_w//2
                 p_y = game.win_h//2
 
+
             cam.x = p_x - game.win_w//2
+            cam.update_collision(game, x=True)
             cam.y = p_y - game.win_h//2
+            cam.update_collision(game, y=True)
+
+            print(f"{cam.x}  {cam.y}")
+
+        def update_collision(cam, game, x=False, y=False):
+
+            # Update collisions on X axis
+            if x is True:
+
+                # Update colliders
+                cam.colliders["LEFT"].get_pos()
+                cam.colliders["RIGHT"].get_pos()
+
+                # Iterate through valid collision objects
+                for t in game.sprites["CAMERACOLLIDER"]:
+                    if t.layer != "CAMERACOLLIDER":
+                        continue
+
+                    if move.rect_collision(cam.colliders["LEFT"], t):
+
+                        # Move player back based on the overlap between player left side and collider right side
+                        depth = t.x + t.w - cam.x
+                        cam.x += depth
+
+                    elif move.rect_collision(cam.colliders["RIGHT"], t):
+
+                        # Move player back based on the overlap between player right side and collider left side
+                        depth = cam.x + cam.w - t.x
+                        cam.x -= depth
+
+            # Update collisions on Y axis
+            elif y is True:
+
+                # Update colliders
+                cam.colliders["DOWN"].get_pos()
+                cam.colliders["UP"].get_pos()
+
+                for t in game.sprites["CAMERACOLLIDER"]:
+                    if t.layer != "CAMERACOLLIDER":
+                        continue
+
+                    if move.rect_collision(cam.colliders["DOWN"], t):
+
+                        # Move the player up based on overlap between player bottom and collider top
+                        depth = cam.y + cam.h - t.y
+                        cam.y -= depth
+
+                    if move.rect_collision(cam.colliders["UP"], t):
+                        # Move the player back down based on overlap between collider bottom and player top
+                        depth = t.y + t.h - cam.y
+                        cam.y += depth
 
         def get_relative(cam, sprite):
             pass
@@ -335,7 +398,7 @@ class game_info():
         for cam_sprite in self.oncam_sprites:
             cam_sprite.update_draw(self)
 
-        self.camera_obj.update_draw(self)
+        # self.camera_obj.update_draw(self)
 
         self.update_particles()
         self.update_screenshake()

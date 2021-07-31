@@ -366,7 +366,11 @@ def mainloop(game, levelpath):
     game.config = text_config('colour_config.txt')
 
     level_image = pygame.image.load(levelpath)
-    level_image.set_colorkey((0, 0, 0))
+    # level_image.set_colorkey((0, 0, 0))
+
+    padded_level = pygame.Surface(())
+
+    pygame.draw.rect()
 
     game.level_width, game.level_height = level_image.get_size()
 
@@ -387,19 +391,25 @@ def mainloop(game, levelpath):
     game.sprites = rows
 
     found_rects = []
+    elements = list(game.config.dict.values())
+    elements.remove("Background")
+    e_iter = 0
 
     while game.run:
 
         game.update_keys()
 
+
         if game.frames % int(gridsquare_size[0]) == 0:
-            a_rect = rect_finder("GroundTerrain", game)
+            a_rect = rect_finder(elements[e_iter], game)
             if a_rect is not None:
                 found_rects.append(a_rect)
             else:
-                pygame.time.delay(500)
-                game.purge_sprites()
-                return found_rects
+                e_iter += 1
+                if e_iter >= len(elements):
+                    pygame.time.delay(500)
+                    game.purge_sprites()
+                    return found_rects
 
         game.update_draw()
 

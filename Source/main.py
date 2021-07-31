@@ -36,6 +36,18 @@ def text_clean(file):
     return valid_text
 
 
+class camera_collider(sprite):
+    layer = "CAMERACOLLIDER"
+
+    def __init__(self, pos, size):
+        self.x = pos[0]
+        self.y = pos[1]
+
+        self.w = size[0]
+        self.h = size[1]
+
+
+
 class text_player():
     def __init__(self):
         file = text_clean(open("config.txt", "r"))
@@ -282,8 +294,6 @@ class player(sprite):
                     depth = t.y + t.h - self.y
                     self.y += depth
 
-            # print(self.y_speed)
-
     def update_draw(self, game):
         # print(self)
 
@@ -321,6 +331,7 @@ def mainloop(game, player_config, level_config):
 
     level_classes = {
         "GroundTerrain" : platform,
+        "CameraCollider" : camera_collider
         # "Checkpoint" : checkpoint
     }
 
