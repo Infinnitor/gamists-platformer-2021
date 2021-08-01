@@ -1,6 +1,4 @@
-# Rectfinder linemethod
 from gameinfo import game_info, pygame, sprite, random
-# pygame.font.init()
 
 import tkinter
 import tkinter.filedialog
@@ -194,7 +192,7 @@ def rect_finder(given_e, game):
                 # Invalid trail means that the rect can no longer be drawn further
                 while newtrail is not None:
                     rect_trails.extend(newtrail)
-                    print(f"Found rect at {newtrail[0].x}, {newtrail[0].y}")
+                    # print(f"Found rect at {newtrail[0].x}, {newtrail[0].y}")
 
                     newtrail = rect_trail(game, newtrail)
 

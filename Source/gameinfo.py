@@ -47,9 +47,9 @@ class game_info():
         self.sprites = {
                         "BACKGROUND" : [],
                         "LOWPARTICLE" : [],
+                        "PLAYER": [],
                         "TERRAIN": [],
                         "CHECKPOINTS" : [],
-                        "PLAYER": [],
                         "ENEMY" : [],
                         "HIGHPARTICLE" : [],
                         "CAMERACOLLIDER" : []}

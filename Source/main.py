@@ -172,13 +172,13 @@ class player(sprite):
             for t in game.oncam_sprites:
 
                 if t.layer == "CHECKPOINTS":
-                    if move.rect_collision(self, t):
+                    if t.collide(self):
                         self.set_spawn((t.x, t.y))
 
                 if t.layer != "TERRAIN":
                     continue
 
-                if move.rect_collision(self.colliders["LEFT"], t):
+                if t.collide(self.colliders["LEFT"]):
                     # Freeze X momentum to halt the player
                     self.x_speed = 0
 
@@ -186,7 +186,7 @@ class player(sprite):
                     depth = t.x + t.w - self.x
                     self.x += depth
 
-                elif move.rect_collision(self.colliders["RIGHT"], t):
+                elif t.collide(self.colliders["RIGHT"]):
                     # Freeze X momentum
                     self.x_speed = 0
 
@@ -208,7 +208,7 @@ class player(sprite):
                 if t.layer != "TERRAIN":
                     continue
 
-                if move.rect_collision(self.colliders["DOWN"], t):
+                if t.collide(self.colliders["DOWN"]):
 
                     # If a collision occurs, on_ground is True and jump_frames are reset
                     self.on_ground = True
@@ -219,7 +219,7 @@ class player(sprite):
                     depth = self.y + self.h - t.y
                     self.y -= depth
 
-                if move.rect_collision(self.colliders["UP"], t):
+                if t.collide(self.colliders["UP"]):
 
                     # If a collision occurs on the UP collider, remove upward momentum
                     self.held_jump_frames = self.held_jump_max + 1
@@ -248,11 +248,12 @@ def mainloop(game):
     level_classes = {
         "GroundTerrain" : level.platform,
         "CameraCollider" : level.camera_collider,
-        "Checkpoint" : level.checkpoint
+        "Checkpoint" : level.checkpoint,
+        "Hazard" : level.hazard
     }
 
     for pos, size, sprite_type in config.level.terrain:
-        game.add_sprite(level_classes[sprite_type](pos=pos, size=size))
+        game.add_sprite(level_classes[sprite_type](pos, size))
 
     while game.run:
         game.update_keys()
