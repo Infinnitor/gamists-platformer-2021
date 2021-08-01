@@ -255,6 +255,7 @@ class player(sprite):
                 self.respawn_tick = move.frametick(40, game)
 
             if self.respawn_tick.get():
+                del self.respawn_tick
                 del self.destroy_start
                 self.respawn()
                 self.destroying = False
@@ -295,8 +296,8 @@ game = game_info(
                 name="the mario killer",
                 win_w=1280,
                 win_h=720,
-                user_w=1366,
-                user_h=768,
+                user_w=1920,
+                user_h=1080,
                 bg=(0, 0, 0),
                 framecap=60,
                 show_framerate=False,
