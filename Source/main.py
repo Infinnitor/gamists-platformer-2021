@@ -1,7 +1,10 @@
 from gameinfo import game_info, pygame, time, math, random
+
 from sprite_class import sprite
+import level_elements as level
 
 import move_utils as move
+import pyconfig as config
 
 
 def rect_collision(rect1, rect2):
@@ -34,73 +37,6 @@ def text_clean(file):
             valid_text.append(text[f])
 
     return valid_text
-
-
-class camera_collider(sprite):
-    layer = "CAMERACOLLIDER"
-
-    def __init__(self, pos, size):
-        self.x = pos[0]
-        self.y = pos[1]
-
-        self.w = size[0]
-        self.h = size[1]
-
-
-class checkpoint(sprite):
-    layer = "CHECKPOINTS"
-
-    def __init__(self, pos, size):
-
-        self.x = pos[0]
-        self.y = pos[1]
-
-        self.w = size[0]
-        self.h = size[1]
-
-        self.c = (255, 160, 20)
-        self.active_c = (35, 200, 35)
-
-        self.active = False
-
-    def update_move(self, game):
-        p_x, p_y = game.sprites["PLAYER"][0].spawnpos
-
-        # print(f"x: {self.x} px: {p_x}  y: {self.y}  py: {p_y}")
-
-        if self.x == p_x and self.y == p_y:
-            self.active = True
-        else:
-            self.active = False
-
-    def update_draw(self, game):
-        rel_x = self.x - game.camera_obj.x
-        rel_y = self.y - game.camera_obj.y
-
-        c = self.c
-        if self.active:
-            c = self.active_c
-
-        pygame.draw.rect(game.win, c, (rel_x, rel_y, self.w, self.h))
-
-
-class platform(sprite):
-    layer = "TERRAIN"
-
-    def __init__(self, pos, size):
-        self.x = pos[0]
-        self.y = pos[1]
-
-        self.w = size[0]
-        self.h = size[1]
-
-        self.c = (35, 35, 155)
-
-    def update_draw(self, game):
-        rel_x = self.x - game.camera_obj.x
-        rel_y = self.y - game.camera_obj.y
-
-        pygame.draw.rect(game.win, self.c, (rel_x, rel_y, self.w, self.h))
 
 
 class text_player():
@@ -382,16 +318,16 @@ class player(sprite):
         #     pygame.draw.rect(game.win, (255, 255, 255), collider_rect.get_pos())
 
 
-def mainloop(game, player_config, level_config):
-    game.add_sprite(player(player_config))
+def mainloop(game):
+    game.add_sprite(player(config.player))
 
     level_classes = {
-        "GroundTerrain" : platform,
-        "CameraCollider" : camera_collider,
-        "Checkpoint" : checkpoint
+        "GroundTerrain" : level.platform,
+        "CameraCollider" : level.camera_collider,
+        "Checkpoint" : level.checkpoint
     }
 
-    for pos, size, sprite_type in level_config.terrain:
+    for pos, size, sprite_type in config.level.terrain:
         game.add_sprite(level_classes[sprite_type](pos=pos, size=size))
 
     while game.run:
@@ -420,9 +356,7 @@ game = game_info(
 
 
 while True:
-    player_config = text_player()
-    level_config = text_level()
-    if mainloop(game, player_config, level_config):
+    if mainloop(game):
         game.purge_sprites()
     else:
         break

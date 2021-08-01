@@ -15,4 +15,4 @@ held_jump_max : 10
 start_x : 1000
 start_y : 1000
 player_width : 40
-player_height : 60
+player_height : 40
