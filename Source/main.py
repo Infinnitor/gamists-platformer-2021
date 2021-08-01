@@ -46,6 +46,7 @@ class camera_collider(sprite):
         self.w = size[0]
         self.h = size[1]
 
+
 class checkpoint(sprite):
     layer = "CHECKPOINTS"
 
@@ -104,7 +105,7 @@ class platform(sprite):
 
 class text_player():
     def __init__(self):
-        file = text_clean(open("config.txt", "r"))
+        file = text_clean(open("data/config/player.txt", "r"))
 
         values = {}
         for val in file:
@@ -143,7 +144,7 @@ def read_brackets(string):
 
 class text_level():
     def __init__(self):
-        file = text_clean(open("level.txt", "r"))
+        file = text_clean(open("data/levels/level.txt", "r"))
 
         self.terrain = []
         for val in file:
