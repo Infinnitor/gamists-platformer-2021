@@ -11,7 +11,7 @@ import pygame
 
 
 class game_info():
-    def __init__(self, name, win_w, win_h, user_w, user_h, bg, sounds=None, framecap=False, show_framerate=False, quit_key=None):
+    def __init__(self, name, win_w, win_h, user_w, user_h, bg, framecap=False, show_framerate=False, quit_key=None):
         self.win_w = win_w
         self.win_h = win_h
 
@@ -21,15 +21,6 @@ class game_info():
         self.win_scale = pygame.display.set_mode((user_w, user_h))
         pygame.display.set_caption(name)
         self.win = pygame.Surface((win_w, win_h))
-
-        if sounds:
-            self.sounds = {}
-            for i, s in enumerate(sounds):
-                self.sounds[s] = (sounds[s], i)
-            pygame.mixer.set_num_channels(len(self.sounds))
-
-        else:
-            self.sounds = None
 
         self.bg = bg
         self.run = True
@@ -92,7 +83,6 @@ class game_info():
             else:
                 p_x = game.win_w//2
                 p_y = game.win_h//2
-
 
             cam.x = p_x - game.win_w//2
             cam.update_collision(game, x=True)
@@ -241,13 +231,6 @@ class game_info():
             return v_dict[v]
 
         return False # Safety Clause
-
-    def playsound(self, name):
-
-        assert name in self.sounds, f"{name} is an undefined sound"
-        s = self.sounds[name]
-
-        pygame.mixer.Channel(s[1]).play(s[0])
 
     def add_sprite(self, new_sprite):
         new_sprite.add_default_attr(self)
