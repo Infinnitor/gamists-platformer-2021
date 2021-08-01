@@ -74,9 +74,17 @@ class texture_manager():
         return random.choice(self.platform_tex.list())
 
 
+class sprite_manager():
+    def __init__(self):
+        checkpoint = spritesheet('data/sprites/level/checkpoint_spritesheet.png', (40, 40)).list()
+        self.checkpoint_false = checkpoint[0]
+        self.checkpoint_true = checkpoint[1]
+
+
 def init():
-    global SOUND; global TEXTURE; global AMONGUS;
+    global SOUND; global TEXTURE; global AMONGUS; global SPRITE;
     SOUND = audio_manager(None)
     TEXTURE = texture_manager()
+    SPRITE = sprite_manager()
 
     AMONGUS = image.load(fix_path(('data/sprites/textures/amongus.png')))

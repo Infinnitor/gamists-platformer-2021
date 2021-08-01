@@ -54,11 +54,12 @@ class checkpoint(element):
         rel_x = self.x - game.camera_obj.x
         rel_y = self.y - game.camera_obj.y
 
-        c = self.c
         if self.active:
-            c = self.active_c
+            img = asset.SPRITE.checkpoint_true
+        else:
+            img = asset.SPRITE.checkpoint_false
 
-        draw.rect(game.win, c, (rel_x, rel_y, self.w, self.h))
+        game.win.blit(img, (rel_x, rel_y))
 
 
 class platform(element):
@@ -91,7 +92,7 @@ class platform(element):
 
 
 class hazard(element):
-    layer = "TERRAIN"
+    layer = "HAZARD"
 
     def __init__(self, pos, size):
 
@@ -118,6 +119,7 @@ class hazard(element):
     def collide(self, collider):
         if move.rect_collision(self, collider):
             collider.destroying = True
+            print(f"we got {collider}")
 
     def update_move(self, game):
         self.surface.blit(self.tv_static[self.iter], (0, 0))

@@ -49,6 +49,7 @@ class game_info():
                         "CHECKPOINTS" : [],
                         "PLAYER": [],
                         "TERRAIN": [],
+                        "HAZARD" : [],
                         "ENEMY" : [],
                         "HIGHPARTICLE" : [],
                         "CAMERACOLLIDER" : []}
@@ -344,7 +345,6 @@ class game_info():
 
     def update_draw(self):
 
-
         for c in self.sprites:
             valid_sprites = []
             for s_move in self.sprites[c]:
@@ -364,7 +364,10 @@ class game_info():
                     self.oncam_sprites.append(s)
 
         for cam_sprite in self.oncam_sprites:
-            cam_sprite.update_draw(self)
+            if cam_sprite.destroying:
+                cam_sprite.update_destroy(self)
+            else:
+                cam_sprite.update_draw(self)
 
         self.update_screenshake()
 

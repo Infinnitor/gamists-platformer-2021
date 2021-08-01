@@ -175,6 +175,9 @@ class player(sprite):
                     if t.collide(self):
                         self.set_spawn((t.x, t.y))
 
+                if t.layer == "HAZARD":
+                    t.collide(self)
+
                 if t.layer != "TERRAIN":
                     continue
 
@@ -240,6 +243,26 @@ class player(sprite):
 
         # for collider_rect in self.colliders.values():
         #     pygame.draw.rect(game.win, (255, 255, 255), collider_rect.get_pos())
+
+    def update_destroy(self, game):
+        try:
+            self.destroy_start
+        except AttributeError:
+            self.destroy_start = self.y
+
+        if self.y - self.destroy_start > 60:
+            if not hasattr(self, "respawn_tick"):
+                self.respawn_tick = move.frametick(40, game)
+
+            if self.respawn_tick.get():
+                del self.destroy_start
+                self.respawn()
+                self.destroying = False
+
+        else:
+            self.y += 1
+
+        self.update_draw(game)
 
 
 def mainloop(game):
