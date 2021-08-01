@@ -43,13 +43,12 @@ class game_info():
         self.shake_y = 0
         self.shake = False
 
-        self.particles = []
         self.sprites = {
                         "BACKGROUND" : [],
                         "LOWPARTICLE" : [],
+                        "CHECKPOINTS" : [],
                         "PLAYER": [],
                         "TERRAIN": [],
-                        "CHECKPOINTS" : [],
                         "ENEMY" : [],
                         "HIGHPARTICLE" : [],
                         "CAMERACOLLIDER" : []}
@@ -321,18 +320,6 @@ class game_info():
         else:
             self.shake = False
 
-    def update_particles(self):
-        if len(self.particles):
-            p_survive = []
-            for p in self.particles:
-                if p.destroy:
-                    continue
-                p.update_move()
-                p.update_draw(self)
-                p_survive.append(p)
-
-            self.particles = p_survive
-
     def update_keys(self):
         self.last_keys = self.keys
         self.last_mouse = self.mouse
@@ -357,18 +344,17 @@ class game_info():
 
     def update_draw(self):
 
-        def update_move_col(col):
+
+        for c in self.sprites:
             valid_sprites = []
-            for s_move in self.sprites[col]:
-                s_move.update_move(self)
+            for s_move in self.sprites[c]:
+                if not s_move.destroying:
+                    s_move.update_move(self)
 
                 if not s_move.destroy:
                     valid_sprites.append(s_move)
 
-            self.sprites[col] = valid_sprites
-
-        for c in self.sprites:
-            update_move_col(c)
+            self.sprites[c] = valid_sprites
         self.camera_obj.update_move(self)
 
         self.oncam_sprites = []
@@ -380,9 +366,6 @@ class game_info():
         for cam_sprite in self.oncam_sprites:
             cam_sprite.update_draw(self)
 
-        # self.camera_obj.update_draw(self)
-
-        self.update_particles()
         self.update_screenshake()
 
     # Function for scaling the design screen to the target screen
