@@ -278,6 +278,9 @@ game = game_info(
                 show_framerate=False,
                 quit_key=pygame.K_ESCAPE)
 
+# Asset must be initialised after game sets the display surface
+asset.init()
+
 
 while True:
     if mainloop(game):

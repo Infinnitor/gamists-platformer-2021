@@ -1,8 +1,6 @@
 from pygame import draw, Surface
 from sprite_class import sprite
 
-import random
-
 import move_utils as move
 
 import asset
@@ -71,20 +69,10 @@ class platform(sprite):
         self.surface = Surface((self.w, self.h))
         for y in range(0, self.h, 20):
             for x in range(0, self.w, 20):
-                self.surface.blit(asset.JERMA[0], (x, y))
-
-    def add_class_attr(self, game):
-        self.tick = move.frametick(7, game)
-        self.iter = 0
+                self.surface.blit(asset.texture.platform(), (x, y))
 
     def update_move(self, game):
-        if self.tick.get():
-            self.iter += 1
-            if self.iter > 5:
-                self.iter = 0
-            for y in range(0, self.h, 20):
-                for x in range(0, self.w, 20):
-                    self.surface.blit(asset.JERMA[self.iter], (x, y))
+        pass
 
     def update_draw(self, game):
         rel_x = self.x - game.camera_obj.x
