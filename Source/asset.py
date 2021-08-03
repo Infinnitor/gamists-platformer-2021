@@ -64,7 +64,7 @@ class audio_manager():
 
 class texture_manager():
     def __init__(self):
-        self.platform_tex = spritesheet('data/sprites/textures/platform_spritesheet.png', (20, 20))
+        self.platform_tex = spritesheet('data/sprites/textures/platformRachel.png', (20, 20))
         self.hazard_tex = spritesheet('data/sprites/textures/hazard_spritesheet.png', (20, 20))
 
     def hazard(self):
