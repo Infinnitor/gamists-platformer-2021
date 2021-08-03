@@ -34,24 +34,3 @@ example:
 Note only to have spaces between the sets of brackets as it wont work otherwise
 
 Lines that start with a "#" will be ignored
-
-
-# LevelBuild todo:
-
-- Create checkpoint tile
-    - Orange 2x2 that turns yellow when you hit it - setting it to your current checkpoint
-
-- New syntax for level.txt
-    - OLD: (pos) (size) (colour)
-    - NEW: (pos) (size) (type)
-
-types would include:
-    Ground
-    Checkpoint
-    Spike
-    Camera Collider / level edges
-
-# LevelTransition todo:
-
-- room starting position
-- multiple entrances and exits?
