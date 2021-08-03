@@ -17,4 +17,4 @@
 (0, 0, 255) : LevelTransition
 
 # Spawnkey (where the player lands after a transition)
-(40, 20, 250) : Spawnkey
+(40, 220, 250) : Spawnkey

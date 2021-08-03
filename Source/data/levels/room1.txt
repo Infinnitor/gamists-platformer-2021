@@ -79,5 +79,5 @@
 (2340, 1180) (140, 40) (Checkpoint)
 (760, 1380) (40, 40) (Checkpoint)
 (2160, 2280) (40, 40) (Checkpoint)
-(760, 1380) (40, 40) (Spawnkey : b)
-(2620, 860) (100, 100) (LevelTransition : room2.txt : a)
+(2620, 860) (100, 100) (LevelTransition : room2.txt : b)
+(2580, 920) (40, 40) (Spawnkey : a)

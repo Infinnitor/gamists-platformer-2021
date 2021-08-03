@@ -231,3 +231,4 @@
 (2320, 1280) (40, 40) (Checkpoint)
 (700, 2080) (40, 40) (Checkpoint)
 (560, 2000) (100, 100) (LevelTransition)
+(660, 2060) (40, 40) (Spawnkey)
