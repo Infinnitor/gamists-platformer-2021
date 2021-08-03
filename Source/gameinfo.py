@@ -210,18 +210,35 @@ class game_info():
             "CameraCollider" : level.camera_collider,
             "Checkpoint" : level.checkpoint,
             "Hazard" : level.hazard,
-            "LevelTransition" : level.level_transition
+            "LevelTransition" : level.level_transition,
+            "Spawnkey" : level.spawn_key
         }
+
+        self.spawnkeys = {}
 
         self.purge_sprites("CHECKPOINTS", "TERRAIN", "HAZARD", "LEVELTRANSITION")
         for pos, size, sprite_type in level_config.terrain:
             if sprite_type.startswith("LevelTransition"):
                 # print(sprite_type)
-                path = sprite_type.split(":")[1]
-                self.add_sprite(level_classes["LevelTransition"](pos, size, path))
+                t_info = sprite_type.split(":")
+
+                path = t_info[1]
+                spawnkey = t_info[2]
+
+                self.add_sprite(level_classes["LevelTransition"](pos, size, path, spawnkey))
+                continue
+
+            elif sprite_type.startswith("Spawnkey"):
+                key = sprite_type.split(":")[1]
+
+                self.spawnkeys[key] = pos
                 continue
 
             self.add_sprite(level_classes[sprite_type](pos, size))
+
+        print(self.spawnkeys)
+
+            # player_x = spawnkey[t_spawnkey].pos[0]
 
 
     # Function that converts an orientation into actual numbers
@@ -390,10 +407,10 @@ class game_info():
             self.sprites[c] = valid_sprites
         self.camera_obj.update_move(self)
 
-        self.oncam_sprites = [i for i in self.sprites["LEVELTRANSITION"]]
+        self.oncam_sprites = []
         for layer in self.sprites:
             for s in self.sprites[layer]:
-                if self.camera_obj.on_camera(s):
+                if self.camera_obj.on_camera(s) or s.persistent:
                     self.oncam_sprites.append(s)
 
         for cam_sprite in self.oncam_sprites:

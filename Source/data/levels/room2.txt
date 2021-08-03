@@ -230,4 +230,5 @@
 (800, 620) (40, 40) (Checkpoint)
 (2320, 1280) (40, 40) (Checkpoint)
 (700, 2080) (40, 40) (Checkpoint)
-(560, 2000) (100, 100) (LevelTransition : room1.txt)
+(800, 620) (40, 40) (Spawnkey : a)
+(560, 2000) (100, 100) (LevelTransition : room1.txt : b)

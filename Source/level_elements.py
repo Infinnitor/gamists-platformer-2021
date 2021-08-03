@@ -135,7 +135,7 @@ class hazard(element):
     def collide(self, collider):
         if move.rect_collision(self, collider):
             collider.destroying = True
-            print(f"we got {collider}")
+            # print(f"we got {collider}")
 
     def update_move(self, game):
         self.surface.blit(self.tv_static[self.iter], (0, 0))
@@ -154,8 +154,9 @@ class hazard(element):
 
 class level_transition(element):
     layer = "LEVELTRANSITION"
+    persistent = True
 
-    def __init__(self, pos, size, target_level):
+    def __init__(self, pos, size, target_level, spawnkey):
         self.x = pos[0]
         self.y = pos[1]
 
@@ -165,6 +166,8 @@ class level_transition(element):
         self.c = (35, 35, 155)
 
         self.target = target_level
+        self.k = spawnkey
+
 
     def update_draw(self, game):
 
@@ -178,8 +181,19 @@ class level_transition(element):
         if collider.layer == "PLAYER":
             if move.rect_collision(self, collider):
                 self.game.load_level(self.target)
+                spawnpos = self.game.spawnkeys[self.k]
+                collider.set_spawn(spawnpos)
+                collider.respawn()
+
         else:
             if move.rect_collision(self, collider):
                 return True
 
         return False
+
+
+class spawn_key(element):
+    def __init__(self, pos, key):
+        self.x = pos[0]
+        self.y = pos[1]
+        self.k = key

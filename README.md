@@ -50,3 +50,8 @@ types would include:
     Checkpoint
     Spike
     Camera Collider / level edges
+
+# LevelTransition todo:
+
+- room starting position
+- multiple entrances and exits?

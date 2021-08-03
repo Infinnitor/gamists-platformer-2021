@@ -34,11 +34,12 @@ class sprite():
         draw.circle(game.win, colours.green, (self.x, self.y), highlight_r)
 
     def add_default_attr(self, game):
+
+        self.layer
         try:
-            self.layer
+            self.persistent
         except AttributeError:
-            self.layer = str(type(self))
-            traceback.print_exc()
+            self.persistent = False
 
         self.destroy = False
         self.destroying = False
