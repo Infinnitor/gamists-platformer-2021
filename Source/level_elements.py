@@ -3,6 +3,7 @@ from sprite_class import sprite
 
 import move_utils as move
 
+import random
 import asset
 
 
@@ -22,6 +23,21 @@ class camera_collider(element):
 
         self.w = size[0]
         self.h = size[1]
+
+        self.c = (random.randint(155, 255), random.randint(155, 255), random.randint(155, 255),)
+
+    def update_draw(self, game):
+        self.game = game
+        rel_x = self.x - game.camera_obj.x
+        rel_y = self.y - game.camera_obj.y
+
+        draw.rect(game.win, self.c, (rel_x, rel_y, self.w, self.h))
+
+    def collide(self, collider):
+        if move.rect_collision(self, collider):
+            self.c = (random.randint(155, 255), random.randint(155, 255), random.randint(155, 255),)
+            return True
+        return False
 
 
 class checkpoint(element):
@@ -134,3 +150,36 @@ class hazard(element):
         # draw.rect(game.win, self.c, (rel_x, rel_y, self.w, self.h))
 
         game.win.blit(self.surface, (rel_x, rel_y))
+
+
+class level_transition(element):
+    layer = "LEVELTRANSITION"
+
+    def __init__(self, pos, size, target_level):
+        self.x = pos[0]
+        self.y = pos[1]
+
+        self.w = size[0]
+        self.h = size[1]
+
+        self.c = (35, 35, 155)
+
+        self.target = target_level
+
+    def update_draw(self, game):
+
+            self.game = game
+            rel_x = self.x - game.camera_obj.x
+            rel_y = self.y - game.camera_obj.y
+
+            draw.rect(game.win, self.c, (rel_x, rel_y, self.w, self.h))
+
+    def collide(self, collider):
+        if collider.layer == "PLAYER":
+            if move.rect_collision(self, collider):
+                self.game.load_level(self.target)
+        else:
+            if move.rect_collision(self, collider):
+                return True
+
+        return False

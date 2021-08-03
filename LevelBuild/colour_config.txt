@@ -12,3 +12,6 @@
 
 # Checkpoint
 (255, 160, 20) : Checkpoint
+
+# Level Transition
+(0, 0, 255) : LevelTransition

@@ -52,8 +52,8 @@ class text_player():
 
 
 class text_level():
-    def __init__(self):
-        file = text_clean(open("data/levels/level.txt", "r"))
+    def __init__(self, path):
+        file = text_clean(open(path, "r"))
 
         self.terrain = []
         for val in file:
@@ -70,7 +70,7 @@ class text_level():
 def load():
     global player; global level
     player = text_player()
-    level = text_level()
+    level = text_level('data/levels/level.txt')
 
 
 load()

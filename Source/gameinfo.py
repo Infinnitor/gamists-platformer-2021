@@ -3,6 +3,9 @@ environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 
 from sprite_class import sprite
 import move_utils as move
+import level_elements as level
+
+import pyconfig
 
 import math
 import time
@@ -48,6 +51,7 @@ class game_info():
                         "LOWPARTICLE" : [],
                         "CHECKPOINTS" : [],
                         "PLAYER": [],
+                        "LEVELTRANSITION" : [],
                         "TERRAIN": [],
                         "HAZARD" : [],
                         "ENEMY" : [],
@@ -65,8 +69,8 @@ class game_info():
             cam.w = size[0]
             cam.h = size[1]
 
-            y_collider_h = 10
-            x_collider_h = 10
+            x_collider_h = cam.w // 2
+            y_collider_h = cam.h // 2
 
             cam.colliders = {
                 "DOWN" : move.offset_rect(offset=(1, cam.h - y_collider_h), parent=cam, size=(cam.w - 2, y_collider_h)),
@@ -91,6 +95,8 @@ class game_info():
 
         def update_collision(cam, game, x=False, y=False):
 
+            cam_colliders = game.sprites["CAMERACOLLIDER"] + game.sprites["LEVELTRANSITION"]
+
             # Update collisions on X axis
             if x is True:
 
@@ -99,9 +105,10 @@ class game_info():
                 cam.colliders["RIGHT"].get_pos()
 
                 # Iterate through valid collision objects
-                for t in game.sprites["CAMERACOLLIDER"]:
-                    if t.layer != "CAMERACOLLIDER":
-                        continue
+                for t in cam_colliders:
+
+                    # if t.layer == "LEVELTRANSITION":
+                    #     print("yooo")
 
                     if move.rect_collision(cam.colliders["LEFT"], t):
 
@@ -109,7 +116,7 @@ class game_info():
                         depth = t.x + t.w - cam.x
                         cam.x += depth
 
-                    elif move.rect_collision(cam.colliders["RIGHT"], t):
+                    if move.rect_collision(cam.colliders["RIGHT"], t):
 
                         # Move player back based on the overlap between player right side and collider left side
                         depth = cam.x + cam.w - t.x
@@ -122,9 +129,7 @@ class game_info():
                 cam.colliders["DOWN"].get_pos()
                 cam.colliders["UP"].get_pos()
 
-                for t in game.sprites["CAMERACOLLIDER"]:
-                    if t.layer != "CAMERACOLLIDER":
-                        continue
+                for t in cam_colliders:
 
                     if move.rect_collision(cam.colliders["DOWN"], t):
 
@@ -196,6 +201,29 @@ class game_info():
                 else:
                     raise AttributeError(f"{part.shape} is not a valid shape for a particle")
 
+    def load_level(self, name):
+        levelpath = f"data/levels/{name}"
+        level_config = pyconfig.text_level(levelpath)
+
+        level_classes = {
+            "GroundTerrain" : level.platform,
+            "CameraCollider" : level.camera_collider,
+            "Checkpoint" : level.checkpoint,
+            "Hazard" : level.hazard,
+            "LevelTransition" : level.level_transition
+        }
+
+        self.purge_sprites("CHECKPOINTS", "TERRAIN", "HAZARD", "LEVELTRANSITION")
+        for pos, size, sprite_type in level_config.terrain:
+            if sprite_type.startswith("LevelTransition"):
+                # print(sprite_type)
+                path = sprite_type.split(":")[1]
+                self.add_sprite(level_classes["LevelTransition"](pos, size, path))
+                continue
+
+            self.add_sprite(level_classes[sprite_type](pos, size))
+
+
     # Function that converts an orientation into actual numbers
     def orientate(self, h=False, v=False):
 
@@ -240,9 +268,14 @@ class game_info():
         except KeyError:
             self.sprites[new_sprite.layer] = [new_sprite]
 
-    def purge_sprites(self):
-        for layer in self.sprites:
-            self.sprites[layer] = []
+    def purge_sprites(self, *layers):
+        if not layers:
+            for layer in self.sprites:
+                self.sprites[layer] = []
+
+        else:
+            for l in layers:
+                self.sprites[l] = []
 
     def init_screenshake(self, magnitude, len, rand=True, spread=False):
         self.shake = True
@@ -357,7 +390,7 @@ class game_info():
             self.sprites[c] = valid_sprites
         self.camera_obj.update_move(self)
 
-        self.oncam_sprites = []
+        self.oncam_sprites = [i for i in self.sprites["LEVELTRANSITION"]]
         for layer in self.sprites:
             for s in self.sprites[layer]:
                 if self.camera_obj.on_camera(s):

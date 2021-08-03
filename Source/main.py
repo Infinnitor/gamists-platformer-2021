@@ -178,6 +178,9 @@ class player(sprite):
                 if t.layer == "HAZARD":
                     t.collide(self)
 
+                if t.layer == "LEVELTRANSITION":
+                    t.collide(self)
+
                 if t.layer != "TERRAIN":
                     continue
 
@@ -269,15 +272,18 @@ class player(sprite):
 def mainloop(game):
     game.add_sprite(player(config.player))
 
-    level_classes = {
-        "GroundTerrain" : level.platform,
-        "CameraCollider" : level.camera_collider,
-        "Checkpoint" : level.checkpoint,
-        "Hazard" : level.hazard
-    }
+    # level_classes = {
+    #     "GroundTerrain" : level.platform,
+    #     "CameraCollider" : level.camera_collider,
+    #     "Checkpoint" : level.checkpoint,
+    #     "Hazard" : level.hazard
+    # }
+    #
+    # for pos, size, sprite_type in config.level.terrain:
+    #     game.add_sprite(level_classes[sprite_type](pos, size))
 
-    for pos, size, sprite_type in config.level.terrain:
-        game.add_sprite(level_classes[sprite_type](pos, size))
+
+    game.load_level('room1.txt')
 
     while game.run:
         game.update_keys()
