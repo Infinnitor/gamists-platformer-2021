@@ -116,7 +116,7 @@ class player(sprite):
     def set_spawn(self, pos):
         self.spawnpos = pos
 
-    def respawn(self, halt=False, boost_y=0):
+    def respawn(self, halt=True, boost_y=0):
         if halt is True:
             self.x_speed = 0
             self.y_speed = 0

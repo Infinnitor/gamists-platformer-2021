@@ -37,11 +37,11 @@ class game_camera():
             p_x = game.win_w//2
             p_y = game.win_h//2
 
-        target = (p_x - game.win_w//2, p_y - game.win_h//2)
+        player_pos = (p_x - game.win_w//2, p_y - game.win_h//2)
 
-        cam.x = move.value_to(value=cam.x, target=target[0], prox=20, step=cam.camera_speed)
+        cam.x = player_pos[0]
         cam.update_collision(game, x=True)
-        cam.y = move.value_to(value=cam.y, target=target[1], prox=20, step=cam.camera_speed)
+        cam.y = player_pos[1]
         cam.update_collision(game, y=True)
 
     def update_collision(cam, game, x=False, y=False):
