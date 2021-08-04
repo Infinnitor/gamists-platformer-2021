@@ -162,7 +162,7 @@
 (3700, 1840) (140, 700) (LevelTransition : cave3.txt : g)
 (360, 2620) (140, 940) (LevelTransition : cave1.txt : a)
 (3700, 2740) (140, 680) (LevelTransition : cave3.txt : h)
-(500, 2020) (40, 40) (Spawnkey : c)
+(500, 2020) (40, 40) (Spawnkey : upper-left)
 (3660, 2380) (40, 40) (Spawnkey : e)
 (3660, 3240) (40, 40) (Spawnkey : f)
 (500, 3400) (40, 40) (Spawnkey : d)

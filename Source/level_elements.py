@@ -24,10 +24,9 @@ class camera_collider(element):
         self.w = size[0]
         self.h = size[1]
 
-        self.c = (random.randint(155, 255), random.randint(155, 255), random.randint(155, 255),)
+        self.c = (155, 35, 155)
 
     def update_draw(self, game):
-        self.game = game
         rel_x = self.x - game.camera_obj.x
         rel_y = self.y - game.camera_obj.y
 
@@ -35,7 +34,6 @@ class camera_collider(element):
 
     def collide(self, collider):
         if move.rect_collision(self, collider):
-            self.c = (random.randint(155, 255), random.randint(155, 255), random.randint(155, 255),)
             return True
         return False
 
@@ -94,9 +92,6 @@ class platform(element):
         for y in range(0, self.h, 20):
             for x in range(0, self.w, 20):
                 self.surface.blit(asset.TEXTURE.platform(), (x, y))
-
-    def update_move(self, game):
-        pass
 
     def update_draw(self, game):
         rel_x = self.x - game.camera_obj.x
@@ -186,7 +181,7 @@ class level_transition(element):
                 self.game.load_level(self.target)
                 spawnpos = self.game.spawnkeys[self.k]
                 collider.set_spawn(spawnpos)
-                collider.respawn(halt=False)
+                collider.respawn(halt=True)
 
         else:
             if move.rect_collision(self, collider):

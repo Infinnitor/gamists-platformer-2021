@@ -9,6 +9,8 @@ class game_camera():
         cam.w = size[0]
         cam.h = size[1]
 
+        cam.camera_speed = 20
+
         x_collider_h = cam.w // 2
         y_collider_h = cam.h // 2
 
@@ -19,18 +21,27 @@ class game_camera():
             "RIGHT" : move.offset_rect(offset=(cam.w - x_collider_h, 1), parent=cam, size=(x_collider_h, cam.h - 2))
         }
 
+    def jump(self, pos):
+        self.x = pos[0]
+        self.y = pos[1]
+
     def update_move(cam, game):
         if game.sprites["PLAYER"]:
             p = game.sprites["PLAYER"][0]
+            cam.camera_speed = abs(p.x_speed)
+            if cam.camera_speed < 5:
+                cam.camera_speed = 5
             p_x = p.x
             p_y = p.y
         else:
             p_x = game.win_w//2
             p_y = game.win_h//2
 
-        cam.x = p_x - game.win_w//2
+        target = (p_x - game.win_w//2, p_y - game.win_h//2)
+
+        cam.x = move.value_to(value=cam.x, target=target[0], prox=20, step=cam.camera_speed)
         cam.update_collision(game, x=True)
-        cam.y = p_y - game.win_h//2
+        cam.y = move.value_to(value=cam.y, target=target[1], prox=20, step=cam.camera_speed)
         cam.update_collision(game, y=True)
 
     def update_collision(cam, game, x=False, y=False):
@@ -46,10 +57,6 @@ class game_camera():
 
             # Iterate through valid collision objects
             for t in cam_colliders:
-
-                # if t.layer == "LEVELTRANSITION":
-                #     print("yooo")
-
 
                 if move.rect_collision(cam.body["RIGHT"], t):
 

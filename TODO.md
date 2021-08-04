@@ -5,7 +5,7 @@
     - [ ] - Create more optimised behaviour for generative textures
     - [ ] - Make pixels on tv static texture larger
 
-- [ ] Refactor text_level
+- [x] Refactor text_level
 
 - [ ] Refactor text_player
 

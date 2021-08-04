@@ -132,7 +132,7 @@
 (3700, 1640) (100, 460) (CameraCollider)
 (3700, 3000) (100, 700) (CameraCollider)
 (0, 3700) (3800, 500) (CameraCollider)
-(3700, 580) (100, 1060) (LevelTransition : cave2.txt : c)
+(3700, 580) (100, 1060) (LevelTransition : cave2.txt : upper-left)
 (3700, 2100) (100, 900) (LevelTransition : cave2.txt : d)
 (3660, 2880) (40, 40) (Spawnkey : a)
 (3660, 1500) (40, 40) (Spawnkey : b)

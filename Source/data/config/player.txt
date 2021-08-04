@@ -4,15 +4,15 @@ horizontal_acceleration : 1
 gravity : 0.9
 
 # Should not be above 20
-vertical_speed_cap : 20
+vertical_speed_cap : 17
 horizontal_speed_cap : 10
 
-jump_strength : 15
+jump_strength : 17
 held_jump_strength : 1.3
 held_jump_min : 2
 held_jump_max : 10
 
 start_x : 600
-start_y : 600
+start_y : 2880
 player_width : 40
 player_height : 40
