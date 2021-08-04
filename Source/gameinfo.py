@@ -4,6 +4,7 @@ environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 from sprite_class import sprite
 import move_utils as move
 import level_elements as level
+import camera
 
 import pyconfig
 
@@ -58,100 +59,8 @@ class game_info():
                         "HIGHPARTICLE" : [],
                         "CAMERACOLLIDER" : []}
 
-        self.camera_obj = self.camera((0, 0), (self.win_w, self.win_h))
+        self.camera_obj = camera.game_camera((0, 0), (self.win_w, self.win_h))
         self.oncam_sprites = []
-
-    class camera():
-        def __init__(cam, pos, size):
-            cam.x = pos[0]
-            cam.y = pos[1]
-
-            cam.w = size[0]
-            cam.h = size[1]
-
-            x_collider_h = cam.w // 2
-            y_collider_h = cam.h // 2
-
-            cam.colliders = {
-                "DOWN" : move.offset_rect(offset=(1, cam.h - y_collider_h), parent=cam, size=(cam.w - 2, y_collider_h)),
-                "UP" : move.offset_rect(offset=(1, 0), parent=cam, size=(cam.w - 2, y_collider_h)),
-                "LEFT" : move.offset_rect(offset=(0, 1), parent=cam, size=(x_collider_h, cam.h - 2)),
-                "RIGHT" : move.offset_rect(offset=(cam.w - x_collider_h, 1), parent=cam, size=(x_collider_h, cam.h - 2))
-            }
-
-        def update_move(cam, game):
-            if game.sprites["PLAYER"]:
-                p = game.sprites["PLAYER"][0]
-                p_x = p.x
-                p_y = p.y
-            else:
-                p_x = game.win_w//2
-                p_y = game.win_h//2
-
-            cam.x = p_x - game.win_w//2
-            cam.update_collision(game, x=True)
-            cam.y = p_y - game.win_h//2
-            cam.update_collision(game, y=True)
-
-        def update_collision(cam, game, x=False, y=False):
-
-            cam_colliders = game.sprites["CAMERACOLLIDER"] + game.sprites["LEVELTRANSITION"]
-
-            # Update collisions on X axis
-            if x is True:
-
-                # Update colliders
-                cam.colliders["LEFT"].get_pos()
-                cam.colliders["RIGHT"].get_pos()
-
-                # Iterate through valid collision objects
-                for t in cam_colliders:
-
-                    # if t.layer == "LEVELTRANSITION":
-                    #     print("yooo")
-
-                    if move.rect_collision(cam.colliders["LEFT"], t):
-
-                        # Move player back based on the overlap between player left side and collider right side
-                        depth = t.x + t.w - cam.x
-                        cam.x += depth
-
-                    if move.rect_collision(cam.colliders["RIGHT"], t):
-
-                        # Move player back based on the overlap between player right side and collider left side
-                        depth = cam.x + cam.w - t.x
-                        cam.x -= depth
-
-            # Update collisions on Y axis
-            elif y is True:
-
-                # Update colliders
-                cam.colliders["DOWN"].get_pos()
-                cam.colliders["UP"].get_pos()
-
-                for t in cam_colliders:
-
-                    if move.rect_collision(cam.colliders["DOWN"], t):
-
-                        # Move the player up based on overlap between player bottom and collider top
-                        depth = cam.y + cam.h - t.y
-                        cam.y -= depth
-
-                    if move.rect_collision(cam.colliders["UP"], t):
-                        # Move the player back down based on overlap between collider bottom and player top
-                        depth = t.y + t.h - cam.y
-                        cam.y += depth
-
-        def get_relative(cam, sprite):
-            pass
-
-        def on_camera(cam, sprite):
-            if move.rect_collision(cam, sprite):
-                return True
-            return False
-
-        def update_draw(cam, game):
-            pass
 
     class particle(sprite):
         def __init__(part, pos, size, angle, speed, lifetime, colour, shape="CIRCLE", sprite=None):
@@ -203,7 +112,7 @@ class game_info():
 
     def load_level(self, name):
         levelpath = f"data/levels/{name}"
-        level_config = pyconfig.text_level(levelpath)
+        level_text = pyconfig.text_level(levelpath)
 
         level_classes = {
             "GroundTerrain" : level.platform,
@@ -217,7 +126,7 @@ class game_info():
         self.spawnkeys = {}
 
         self.purge_sprites("CHECKPOINTS", "TERRAIN", "HAZARD", "LEVELTRANSITION")
-        for pos, size, sprite_type in level_config.terrain:
+        for pos, size, sprite_type in level_text:
             if sprite_type.startswith("LevelTransition"):
                 # print(sprite_type)
                 t_info = sprite_type.split(":")
@@ -235,11 +144,6 @@ class game_info():
                 continue
 
             self.add_sprite(level_classes[sprite_type](pos, size))
-
-        print(self.spawnkeys)
-
-            # player_x = spawnkey[t_spawnkey].pos[0]
-
 
     # Function that converts an orientation into actual numbers
     def orientate(self, h=False, v=False):

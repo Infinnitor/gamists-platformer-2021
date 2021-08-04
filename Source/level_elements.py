@@ -168,22 +168,25 @@ class level_transition(element):
         self.target = target_level
         self.k = spawnkey
 
-
     def update_draw(self, game):
+        self.game = game
+        rel_x = self.x - game.camera_obj.x
+        rel_y = self.y - game.camera_obj.y
 
-            self.game = game
-            rel_x = self.x - game.camera_obj.x
-            rel_y = self.y - game.camera_obj.y
-
-            draw.rect(game.win, self.c, (rel_x, rel_y, self.w, self.h))
+        draw.rect(game.win, self.c, (rel_x, rel_y, self.w, self.h))
 
     def collide(self, collider):
         if collider.layer == "PLAYER":
+            # collider_center = (collider.x + collider.w/2, collider.y + collider.h/2)
+            #
+            # if self.x < collider_center[0] and self.x + self.w > collider_center[1]:
+            #     if self.y + self.h > collider.y and self.y < collider.y + collider.h:
+
             if move.rect_collision(self, collider):
                 self.game.load_level(self.target)
                 spawnpos = self.game.spawnkeys[self.k]
                 collider.set_spawn(spawnpos)
-                collider.respawn()
+                collider.respawn(halt=False)
 
         else:
             if move.rect_collision(self, collider):

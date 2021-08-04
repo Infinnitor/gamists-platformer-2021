@@ -51,26 +51,26 @@ class text_player():
         self.h = values["player_height"]
 
 
-class text_level():
-    def __init__(self, path):
-        file = text_clean(open(path, "r"))
+def text_level(path):
+    file = text_clean(open(path, "r"))
 
-        self.terrain = []
-        for val in file:
-            line = read_brackets(val.replace(" ", ""))
+    terrain = []
+    for val in file:
+        line = read_brackets(val.replace(" ", ""))
 
-            items = []
-            items.append([int(i) for i in line[0].split(",")]) # Pos
-            items.append([int(i) for i in line[1].split(",")]) # Size
-            items.append(line[2]) # Element type
+        items = []
+        items.append([int(i) for i in line[0].split(",")]) # Pos
+        items.append([int(i) for i in line[1].split(",")]) # Size
+        items.append(line[2]) # Element type
 
-            self.terrain.append(items)
+        terrain.append(items)
+
+    return terrain
 
 
 def load():
     global player; global level
     player = text_player()
-    level = text_level('data/levels/level.txt')
 
 
 load()

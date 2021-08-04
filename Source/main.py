@@ -1,7 +1,7 @@
 from gameinfo import game_info, pygame, time, math, random
+from colour_manager import colours
 
 from sprite_class import sprite
-import level_elements as level
 
 import move_utils as move
 import pyconfig as config
@@ -18,8 +18,42 @@ def rect_collision(rect1, rect2):
     return False
 
 
+class deadplayer(sprite):
+    layer = "LOWPARTICLE"
+
+    def __init__(self, player, sink_depth, sink_speed):
+        self.x = player.x
+        self.y = player.y
+
+        self.w = player.w
+        self.h = player.h
+
+        self.c = player.c
+
+        self.start_y = self.y
+        self.sink_depth = sink_depth
+        self.sink_speed = sink_speed
+
+    def update_move(self, game):
+        self.y += self.sink_speed
+
+    def update_draw(self, game):
+        rel_x = self.x - game.camera_obj.x
+        rel_y = self.y - game.camera_obj.y
+
+        # Draw player and its colliders
+        pygame.draw.rect(game.win, self.c, (rel_x, rel_y, self.w, self.h))
+
+    def sunk(self):
+        if self.y > self.start_y + self.sink_depth:
+            self.kill()
+            return True
+        return False
+
+
 class player(sprite):
     layer = "PLAYER"
+    persistent = True
 
     def __init__(self, c):
 
@@ -30,6 +64,8 @@ class player(sprite):
         # Width and height
         self.w = c.w
         self.h = c.h
+
+        self.c = colours.red
 
         # Acceleration on the X axis
         self.x_acceleration = c.x_acceleration
@@ -75,13 +111,17 @@ class player(sprite):
         }
 
         self.set_spawn((self.x, self.y))
+        self.dead_player = None
 
     def set_spawn(self, pos):
         self.spawnpos = pos
 
-    def respawn(self):
-        self.x_speed = 0
-        self.y_speed = 0
+    def respawn(self, halt=False, boost_y=0):
+        if halt is True:
+            self.x_speed = 0
+            self.y_speed = 0
+
+        self.y_speed -= boost_y
 
         self.x = self.spawnpos[0]
         self.y = self.spawnpos[1]
@@ -242,48 +282,26 @@ class player(sprite):
         rel_y = self.y - game.camera_obj.y
 
         # Draw player and its colliders
-        pygame.draw.rect(game.win, (155, 40, 40), (rel_x, rel_y, self.w, self.h))
+        pygame.draw.rect(game.win, self.c, (rel_x, rel_y, self.w, self.h))
 
         # for collider_rect in self.colliders.values():
         #     pygame.draw.rect(game.win, (255, 255, 255), collider_rect.get_pos())
 
     def update_destroy(self, game):
-        try:
-            self.destroy_start
-        except AttributeError:
-            self.destroy_start = self.y
+        if self.dead_player is None:
+            self.dead_player = deadplayer(self, 60, 1)
+            game.add_sprite(self.dead_player)
+        else:
 
-        if self.y - self.destroy_start > 60:
-            if not hasattr(self, "respawn_tick"):
-                self.respawn_tick = move.frametick(40, game)
-
-            if self.respawn_tick.get():
-                del self.respawn_tick
-                del self.destroy_start
+            if self.dead_player.sunk():
                 self.respawn()
                 self.destroying = False
-
-        else:
-            self.y += 1
-
-        self.update_draw(game)
+                self.dead_player = None
 
 
 def mainloop(game):
     game.add_sprite(player(config.player))
-
-    # level_classes = {
-    #     "GroundTerrain" : level.platform,
-    #     "CameraCollider" : level.camera_collider,
-    #     "Checkpoint" : level.checkpoint,
-    #     "Hazard" : level.hazard
-    # }
-    #
-    # for pos, size, sprite_type in config.level.terrain:
-    #     game.add_sprite(level_classes[sprite_type](pos, size))
-
-
-    game.load_level('room1.txt')
+    game.load_level('cave1.txt')
 
     while game.run:
         game.update_keys()
