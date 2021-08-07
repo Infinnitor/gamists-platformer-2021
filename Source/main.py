@@ -72,6 +72,7 @@ class physics_info():
 
         self.coyote_time = 0
 
+    # idk what we'll do with these functions lol
     def turn_left(self):
         self.right = False
         self.left = True
@@ -80,6 +81,7 @@ class physics_info():
         self.left = False
         self.right = True
 
+    # these ones are actually important
     def air_reset(self):
         self.walljump = False
         self.head_hit = False
@@ -93,7 +95,7 @@ class physics_info():
 
         self.p.held_jump_frames = 0
 
-        self.p.jumps = 3
+        self.p.jumps = self.p.num_jumps
 
     def refresh_jump(self):
         self.can_jump = True
@@ -148,7 +150,8 @@ class player(sprite):
         self.held_jump_min = c.held_jump_min
         self.held_jump_max = c.held_jump_max
 
-        self.jumps = 2
+        self.num_jumps = c.jumps
+        self.jumps = c.jumps
 
         self.PHYS = physics_info(self)
 
