@@ -4,6 +4,8 @@ from colour_manager import colours
 from sprite_class import sprite
 
 import move_utils as move
+import draw_utils as drawu
+
 import pyconfig as config
 
 import asset
@@ -49,6 +51,31 @@ class deadplayer(sprite):
             self.kill()
             return True
         return False
+
+
+# Player physics info
+class physics_info():
+    def __init__(self):
+        self.on_ground = False
+
+        self.walljump = False
+        self.head_hit = False
+
+        self.left = False
+        self.right = False
+
+    def turn_left(self):
+        self.right = False
+        self.left = True
+
+    def turn_right(self):
+        self.left = False
+        self.right = True
+
+    def air_reset(self):
+        self.on_ground = False
+        self.walljump = False
+        self.head_hit = False
 
 
 class player(sprite):
@@ -97,8 +124,7 @@ class player(sprite):
         self.held_jump_min = c.held_jump_min
         self.held_jump_max = c.held_jump_max
 
-        # If the player is on the ground
-        self.on_ground = False
+        self.PHYS = physics_info()
 
         y_collider_h = self.terminal_velocity + 1
         x_collider_h = self.speed_cap
@@ -132,6 +158,8 @@ class player(sprite):
 
         # Move player based on left or right key press
         if game.check_key(pygame.K_LEFT, pygame.K_a):
+            self.PHYS.turn_left()
+
             self.x_speed -= self.x_acceleration
 
             # If player is fighting against opposite momentum, move value closer to the inverse of current x_speed
@@ -139,6 +167,8 @@ class player(sprite):
                 self.x_speed = move.value_to(self.x_speed, self.x_speed * -1, step=self.x_acceleration, prox=0.5)
 
         elif game.check_key(pygame.K_RIGHT, pygame.K_d):
+            self.PHYS.turn_left()
+
             self.x_speed += self.x_acceleration
             if self.x_speed < 0:
                 self.x_speed = move.value_to(self.x_speed, self.x_speed * -1, step=self.x_acceleration, prox=0.5)
@@ -171,7 +201,7 @@ class player(sprite):
         else:
 
             # If pressing of space is broken, prevent further upward momentum increments
-            if not self.on_ground:
+            if not self.PHYS.on_ground:
                 self.held_jump_frames = self.held_jump_max + 1
 
         # Add gravity to y_speed
@@ -247,8 +277,7 @@ class player(sprite):
             self.colliders["DOWN"].get_pos()
             self.colliders["UP"].get_pos()
 
-            # On ground will be False unless the DOWN collider has a successful collision
-            self.on_ground = False
+            self.PHYS.air_reset()
             for t in game.oncam_sprites:
 
                 if t.layer != "TERRAIN":
@@ -257,7 +286,7 @@ class player(sprite):
                 if t.collide(self.colliders["DOWN"]):
 
                     # If a collision occurs, on_ground is True and jump_frames are reset
-                    self.on_ground = True
+                    self.PHYS.on_ground = True
                     self.held_jump_frames = 0
                     self.y_speed = 0
 
@@ -274,6 +303,10 @@ class player(sprite):
                     # Move the player back down based on overlap between collider bottom and player top
                     depth = t.y + t.h - self.y
                     self.y += depth
+
+                    if not self.PHYS.on_ground:
+                        self.PHYS.head_hit = True
+                        drawu.particles.explosion(number=20, pos=(self.x + self.w//2, self.y + self.h//2), speed=2, colour=(155, 35, 35), lifetime=60, game=game)
 
     def update_draw(self, game):
         # print(self)

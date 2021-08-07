@@ -76,6 +76,9 @@ class game_info():
                 part.sprite = sprite
                 part.sprite_bool = True
 
+            part.w = size
+            part.h = size
+
             part.speed = speed
             part.angle = angle
 
@@ -100,12 +103,15 @@ class game_info():
                 part.destroy = True
 
         def update_draw(part, game):
+            rel_x = part.x - game.camera_obj.x
+            rel_y = part.y - game.camera_obj.y
+
             if not part.sprite_bool:
                 if part.shape == "CIRCLE":
-                    pygame.draw.circle(game.win, part.colour, (part.x, part.y), part.size)
+                    pygame.draw.circle(game.win, part.colour, (rel_x, rel_y), part.size)
 
                 elif part.shape == "SQUARE":
-                    pygame.draw.rect(game.win, part.colour, (part.x, part.y, part.size, part.size))
+                    pygame.draw.rect(game.win, part.colour, (rel_x, rel_y, part.size, part.size))
 
                 else:
                     raise AttributeError(f"{part.shape} is not a valid shape for a particle")
