@@ -338,10 +338,12 @@ class player(sprite):
 
                     if not self.PHYS.on_ground:
                         self.PHYS.head_hit = True
-                        part_shortcuts.explosion(number=10, pos=(self.x + self.w//2, self.y), speed=4, colour=self.c, lifetime=60, game=game, layer="PLAYER")
 
     def update_draw(self, game):
-        # print(self)
+
+        # Effects stuff first
+        if self.PHYS.head_hit:
+            part_shortcuts.explosion(10, (self.x + self.w//2, self.y), speed=4, colour=self.c, lifetime=60, game=game, layer="PLAYER")
 
         rel_x = self.x - game.camera_obj.x
         rel_y = self.y - game.camera_obj.y
@@ -349,8 +351,8 @@ class player(sprite):
         # Draw player and its colliders
         pygame.draw.rect(game.win, self.c, (rel_x, rel_y, self.w, self.h))
 
-        # for collider_rect in self.colliders.values():
-        #     pygame.draw.rect(game.win, (255, 255, 255), collider_rect.get_pos())
+        for collider_rect in self.colliders.values():
+            pygame.draw.rect(game.win, (255, 255, 255), collider_rect.get_pos())
 
     def update_destroy(self, game):
         if self.dead_player is None:
@@ -385,8 +387,8 @@ game = game_info(
                 name="the mario killer",
                 win_w=1280,
                 win_h=720,
-                user_w=1280,
-                user_h=720,
+                user_w=1920,
+                user_h=1080,
                 bg=(0, 0, 0),
                 framecap=60,
                 show_framerate=False,

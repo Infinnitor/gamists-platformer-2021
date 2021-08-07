@@ -1,8 +1,6 @@
 import random
 from pygame import draw
 
-import particles
-
 
 class rgb():
 
@@ -66,49 +64,3 @@ class rgb():
                 self.c2 = c1
 
             return rgb.lerp(self.c1, self.c2, self.iter)
-
-
-def rounded_rect(surface, colour, rect, r):
-
-    x, y, width, height = rect
-
-    X1 = x + r
-    Y1 = y + r
-    X2 = x + width - r
-    Y2 = y + height - r
-
-    draw_circles = [
-            (X1, Y1),
-            (X2, Y1),
-            (X1, Y2),
-            (X2, Y2)]
-
-    for pos in draw_circles:
-        draw.circle(surface, colour, pos, r)
-
-    draw.rect(surface, colour, (X1, y, width - r*2, height))
-    draw.rect(surface, colour, (x, Y1, width, height - r*2))
-
-
-class particle_shortcuts:
-    def explosion(number, pos, speed, colour, game, lifetime=30, randcol=False, layer="HIGHPARTICLE"):
-        surf = particles.part_surface(pos, speed, lifetime)
-        surf.layer = layer
-
-        center = (surf.w/2, surf.h/2)
-
-        for p in range(number):
-
-            angle = random.randint(0, 360)
-
-            final_colour = colour
-            if randcol is True:
-                final_colour = rgb.randomize(colour)
-
-            new_part = particles.TEMPLATES.circle.get(pos=center, size=15, speed=speed, angle=angle, lifetime=lifetime, colour=final_colour)
-            surf.add_part(new_part)
-
-        game.add_sprite(surf)
-
-
-PARTICLES = particle_shortcuts()
