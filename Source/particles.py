@@ -9,11 +9,12 @@ from colour_manager import colours
 class particle(sprite):
     layer = "HIGHPARTICLE"
 
-    def __init__(self, pos, size, angle, colour, lifetime):
+    def __init__(self, pos, size, speed, angle, colour, lifetime):
         self.x = pos[0]
         self.y = pos[1]
         self.size = size
 
+        self.speed = speed
         self.angle_calc(angle)
 
         self.c = colour
@@ -39,7 +40,6 @@ class particle(sprite):
         self.life += 1
         if self.life > self.lifetime:
             self.destroy = True
-
 
 
 class circle(particle):
@@ -84,13 +84,23 @@ class part_surface(sprite):
         self.particles = []
 
     def add_part(self, part):
+        part.add_default_attr()
         self.particles.append(part)
 
     def update_draw(self, game):
         self.surface.fill(colours.colourkey)
+
+        valid_particles = []
         for p in self.particles:
             p.update_move(game)
             p.update_draw(self.surface)
+            if not p.destroy:
+                valid_particles.append(p)
+
+        self.particles = valid_particles
+        if not self.particles:
+            self.kill()
+            return
 
         rel_x = self.x - game.camera_obj.x
         rel_y = self.y - game.camera_obj.y
@@ -105,10 +115,12 @@ class temp():
     def copy(self):
         return copy.copy(self.template)
 
-    def get(self, pos, size=None, speed=None, angle=None, colour=None, lifetime=None):
+    def modify(self, pos=None, size=None, speed=None, angle=None, colour=None, lifetime=None):
         c = self.copy()
-        c.x = pos[0]
-        c.y = pos[1]
+
+        if pos is not None:
+            c.x = pos[0]
+            c.y = pos[1]
 
         if size is not None:
             c.size = size
@@ -119,15 +131,20 @@ class temp():
         if lifetime is not None:
             c.life_calc(lifetime)
 
-        return c
+        return temp(c)
+
+    def get(self, pos, size=None, speed=None, angle=None, colour=None, lifetime=None):
+        mod = self.modify(pos, size, speed, angle, colour, lifetime)
+
+        return mod.copy()
 
 
 class particle_templates_manager():
 
     def __init__(self):
-        self.circle = temp(circle(pos=(0, 0), size=10, angle=0, lifetime=30, colour=(0, 255, 0)))
-        self.square = temp(circle(pos=(0, 0), size=10, angle=0, lifetime=30, colour=(0, 255, 0)))
-        self.diamond = temp(circle(pos=(0, 0), size=10, angle=0, lifetime=30, colour=(0, 255, 0)))
+        self.circle = temp(circle(pos=(0, 0), size=10, speed=1, angle=0, lifetime=30, colour=(0, 255, 0)))
+        self.square = temp(circle(pos=(0, 0), size=10, speed=1, angle=0, lifetime=30, colour=(0, 255, 0)))
+        self.diamond = temp(circle(pos=(0, 0), size=10, speed=1, angle=0, lifetime=30, colour=(0, 255, 0)))
 
 
 TEMPLATES = particle_templates_manager()

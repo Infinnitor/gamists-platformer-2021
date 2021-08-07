@@ -6,6 +6,7 @@ from sprite_class import sprite
 import move_utils as move
 import draw_utils as drawu
 
+import particles
 import particles_shortcuts as part_shortcuts
 
 import pyconfig as config
@@ -64,6 +65,7 @@ class physics_info():
 
         self.walljump = False
         self.head_hit = False
+        self.ground_hit = False
 
         self.left = False
         self.right = False
@@ -85,6 +87,7 @@ class physics_info():
     def air_reset(self):
         self.walljump = False
         self.head_hit = False
+        self.ground_hit = False
 
         self.on_ground = False
         self.can_jump = False
@@ -94,8 +97,12 @@ class physics_info():
         self.can_jump = True
 
         self.p.held_jump_frames = 0
-
         self.p.jumps = self.p.num_jumps
+
+        if self.p.y_speed > self.p.gravity * 2:
+            self.ground_hit = True
+        else:
+            self.ground_hit = False
 
     def refresh_jump(self):
         self.can_jump = True
@@ -346,7 +353,12 @@ class player(sprite):
 
         # Effects stuff first
         if self.PHYS.head_hit:
-            part_shortcuts.explosion(10, (self.x + self.w//2, self.y), speed=4, colour=self.c, lifetime=60, game=game, layer="PLAYER")
+            part = particles.TEMPLATES.circle.modify(size=12, speed=3, colour=(255, 124, 0), lifetime=30)
+            part_shortcuts.explosion(10, (self.x + self.w//2, self.y), part, layer="LOWPARTICLE", game=game)
+
+        if self.PHYS.ground_hit:
+            part = particles.TEMPLATES.circle.modify(size=12, speed=3, colour=(255, 124, 0), lifetime=30)
+            part_shortcuts.explosion(20, (self.x + self.w//2, self.y + self.h), part, layer="LOWPARTICLE", game=game)
 
         rel_x = self.x - game.camera_obj.x
         rel_y = self.y - game.camera_obj.y
@@ -390,8 +402,8 @@ game = game_info(
                 name="the mario killer",
                 win_w=1280,
                 win_h=720,
-                user_w=1920,
-                user_h=1080,
+                user_w=1280,
+                user_h=720,
                 bg=(0, 0, 0),
                 framecap=60,
                 show_framerate=False,

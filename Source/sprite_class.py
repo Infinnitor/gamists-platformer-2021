@@ -33,9 +33,9 @@ class sprite():
 
         draw.circle(game.win, colours.green, (self.x, self.y), highlight_r)
 
-    def add_default_attr(self, game):
+    def add_default_attr(self, game=None):
 
-        self.layer
+        assert self.layer
         try:
             self.persistent
         except AttributeError:
@@ -45,7 +45,8 @@ class sprite():
         self.destroying = False
         self.highlight = 0
 
-        self.add_class_attr(game)
+        if game is not None:
+            self.add_class_attr(game)
 
     def add_class_attr(self, game):
         pass
