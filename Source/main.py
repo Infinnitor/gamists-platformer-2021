@@ -55,7 +55,9 @@ class deadplayer(sprite):
 
 # Player physics info
 class physics_info():
-    def __init__(self):
+    def __init__(self, player):
+        self.p = player
+
         self.on_ground = False
 
         self.walljump = False
@@ -63,6 +65,10 @@ class physics_info():
 
         self.left = False
         self.right = False
+
+        self.can_jump = False
+
+        self.coyote_time = 0
 
     def turn_left(self):
         self.right = False
@@ -73,9 +79,25 @@ class physics_info():
         self.right = True
 
     def air_reset(self):
-        self.on_ground = False
         self.walljump = False
         self.head_hit = False
+
+        self.on_ground = False
+        self.can_jump = False
+
+    def grounded(self):
+        self.on_ground = True
+        self.can_jump = True
+
+        self.p.held_jump_frames = 0
+
+        self.p.jumps = 2
+
+    def refresh_jump(self):
+        self.can_jump = True
+        self.p.held_jump_frames = 0
+
+        self.p.y_speed = 0
 
 
 class player(sprite):
@@ -124,7 +146,9 @@ class player(sprite):
         self.held_jump_min = c.held_jump_min
         self.held_jump_max = c.held_jump_max
 
-        self.PHYS = physics_info()
+        self.jumps = 2
+
+        self.PHYS = physics_info(self)
 
         y_collider_h = self.terminal_velocity + 1
         x_collider_h = self.speed_cap
@@ -153,6 +177,7 @@ class player(sprite):
         self.y = self.spawnpos[1]
 
     def update_move(self, game):
+
         if game.check_key(pygame.K_r, buffer=True):
             self.respawn()
 
@@ -187,6 +212,12 @@ class player(sprite):
         # If presses space, add vertical momentum
         if game.check_key(pygame.K_SPACE, pygame.K_UP):
 
+            if self.jumps > 0:
+
+                if game.check_key(pygame.K_SPACE, pygame.K_UP, buffer=True):
+                    self.jumps -= 1
+                    self.PHYS.refresh_jump()
+
             # Stop further additions to upward momentum if the player has hit the max height
             if self.held_jump_frames <= self.held_jump_max:
 
@@ -201,7 +232,7 @@ class player(sprite):
         else:
 
             # If pressing of space is broken, prevent further upward momentum increments
-            if not self.PHYS.on_ground:
+            if not self.PHYS.can_jump:
                 self.held_jump_frames = self.held_jump_max + 1
 
         # Add gravity to y_speed
@@ -286,8 +317,7 @@ class player(sprite):
                 if t.collide(self.colliders["DOWN"]):
 
                     # If a collision occurs, on_ground is True and jump_frames are reset
-                    self.PHYS.on_ground = True
-                    self.held_jump_frames = 0
+                    self.PHYS.grounded()
                     self.y_speed = 0
 
                     # Move the player up based on overlap between player bottom and collider top
@@ -353,8 +383,8 @@ game = game_info(
                 name="the mario killer",
                 win_w=1280,
                 win_h=720,
-                user_w=1920,
-                user_h=1080,
+                user_w=1280,
+                user_h=720,
                 bg=(0, 0, 0),
                 framecap=60,
                 show_framerate=False,
