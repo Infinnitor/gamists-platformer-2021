@@ -6,6 +6,8 @@ from sprite_class import sprite
 import move_utils as move
 import draw_utils as drawu
 
+import particles_shortcuts as part_shortcuts
+
 import pyconfig as config
 
 import asset
@@ -91,7 +93,7 @@ class physics_info():
 
         self.p.held_jump_frames = 0
 
-        self.p.jumps = 2
+        self.p.jumps = 3
 
     def refresh_jump(self):
         self.can_jump = True
@@ -336,7 +338,7 @@ class player(sprite):
 
                     if not self.PHYS.on_ground:
                         self.PHYS.head_hit = True
-                        drawu.particles.explosion(number=20, pos=(self.x + self.w//2, self.y + self.h//2), speed=2, colour=(155, 35, 35), lifetime=60, game=game)
+                        part_shortcuts.explosion(number=10, pos=(self.x + self.w//2, self.y), speed=4, colour=self.c, lifetime=60, game=game, layer="PLAYER")
 
     def update_draw(self, game):
         # print(self)
