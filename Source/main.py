@@ -144,6 +144,8 @@ class player(sprite):
         else:
             self.collision_order = True
 
+        self.walljump_speed = c.walljump_speed
+
         # Player momentum on both the X and Y
         self.x_speed = 0
         self.y_speed = 0
@@ -258,6 +260,9 @@ class player(sprite):
         if self.y_speed < self.min_y_speed:
             self.y_speed = self.min_y_speed
 
+        if self.PHYS.walljump and self.y_speed > self.walljump_speed:
+            self.y_speed = self.walljump_speed
+
         if self.collision_order:
             # Move on X axis, then update X collision
             self.x += self.x_speed
@@ -301,6 +306,9 @@ class player(sprite):
                     # Freeze X momentum to halt the player
                     self.x_speed = 0
 
+                    if not self.PHYS.on_ground:
+                        self.PHYS.walljump = True
+
                     # Move player back based on the overlap between player left side and collider right side
                     depth = t.x + t.w - self.x
                     self.x += depth
@@ -308,6 +316,9 @@ class player(sprite):
                 elif t.collide(self.colliders["RIGHT"]):
                     # Freeze X momentum
                     self.x_speed = 0
+
+                    if not self.PHYS.on_ground:
+                        self.PHYS.walljump = True
 
                     # Move player back based on the overlap between player right side and collider left side
                     depth = self.x + self.w - t.x
@@ -383,7 +394,7 @@ class player(sprite):
 
 def mainloop(game):
     game.add_sprite(player(config.player))
-    game.load_level('cave1.txt')
+    game.load_level('hub.txt')
 
     while game.run:
         game.update_keys()

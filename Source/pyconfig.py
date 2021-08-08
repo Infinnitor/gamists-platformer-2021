@@ -41,6 +41,8 @@ class text_player():
         self.terminal_velocity = values["vertical_speed_cap"]
         self.speed_cap = values["horizontal_speed_cap"]
 
+        self.walljump_speed = values['walljump_speed']
+
         self.jumps = values["extra_jumps"]
         self.jump_str = values["jump_strength"]
         self.held_jump_str = values["held_jump_strength"]
