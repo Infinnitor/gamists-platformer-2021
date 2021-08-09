@@ -6,7 +6,10 @@ gravity : 1.1
 # Should not be above 20
 horizontal_speed_cap : 9
 vertical_speed_cap : 17
-walljump_speed : 5
+
+wallslide_speed : 5
+walljump_frames : 10
+walljump_strength : 9
 
 extra_jumps : 2
 jump_strength : 17
@@ -14,7 +17,7 @@ held_jump_strength : 1.25
 held_jump_min : 2
 held_jump_max : 7
 
-start_x : 1280
-start_y : 40
+start_x : 880
+start_y : 640
 player_width : 40
 player_height : 40

@@ -120,6 +120,8 @@ class physics_info():
         self.p.held_jump_frames = 0
         self.p.jumps = self.p.num_jumps
 
+        self.refresh_jump()
+
         if self.p.y_speed > self.p.gravity * 2:
             self.ground_hit = True
         else:
@@ -184,7 +186,8 @@ class player(sprite):
         else:
             self.collision_order = True
 
-        self.walljump_speed = c.walljump_speed
+        self.wallslide_speed = c.wallslide_speed
+        self.walljump_window = c.walljump_window
 
         # Player momentum on both the X and Y
         self.x_speed = 0
@@ -266,7 +269,7 @@ class player(sprite):
         # If presses space, add vertical momentum
         if game.check_key(pygame.K_SPACE, pygame.K_UP):
 
-            if self.PHYS.walljump_frames > 0:
+            if self.PHYS.walljump_frames > 0 and game.check_key(pygame.K_SPACE, pygame.K_UP, buffer=True):
                 self.PHYS.grounded()
 
                 if self.PHYS.walljump_left:
@@ -311,8 +314,8 @@ class player(sprite):
         if self.y_speed < self.min_y_speed:
             self.y_speed = self.min_y_speed
 
-        if self.PHYS.walljump and self.y_speed > self.walljump_speed:
-            self.y_speed = self.walljump_speed
+        if self.PHYS.walljump and self.y_speed > self.wallslide_speed:
+            self.y_speed = self.wallslide_speed
 
         self.PHYS.update_move()
         if self.collision_order:
@@ -423,9 +426,11 @@ class player(sprite):
             part = particles.TEMPLATES.circle.modify(size=12, speed=3, colour=(255, 124, 0), lifetime=30)
             part_shortcuts.explosion(20, (self.x + self.w//2, self.y + self.h), part, layer="LOWPARTICLE", game=game)
 
-        c = self.c
-        if self.PHYS.walljump_frames > 0:
-            c = (0, 255, 0)
+        cols = ((35, 35, 155), (35, 155, 35), (155, 35, 35))
+        # if self.PHYS.walljump_frames > 0:
+        #     c = (0, 255, 0)
+
+        c = cols[int(self.jumps)]
 
         rel_x = self.x - game.camera_obj.x
         rel_y = self.y - game.camera_obj.y
@@ -447,7 +452,7 @@ class player(sprite):
 
 def mainloop(game):
     game.add_sprite(player(config.player))
-    game.load_level('hub.txt')
+    game.load_level('room1.txt')
 
     while game.run:
         game.update_keys()
