@@ -120,12 +120,12 @@ class physics_info():
         self.p.held_jump_frames = 0
         self.p.jumps = self.p.num_jumps
 
-        self.refresh_jump()
-
         if self.p.y_speed > self.p.gravity * 2:
             self.ground_hit = True
         else:
             self.ground_hit = False
+
+        self.refresh_jump()
 
     def refresh_jump(self):
         self.can_jump = True
@@ -298,7 +298,6 @@ class player(sprite):
             # Increment by one
             self.held_jump_frames += 1
         else:
-
             # If pressing of space is broken, prevent further upward momentum increments
             if not self.PHYS.can_jump:
                 self.held_jump_frames = self.held_jump_max + 1
@@ -317,7 +316,9 @@ class player(sprite):
         if self.PHYS.walljump and self.y_speed > self.wallslide_speed:
             self.y_speed = self.wallslide_speed
 
+        # Update other forces that may be acting on the player
         self.PHYS.update_move()
+
         if self.collision_order:
             # Move on X axis, then update X collision
             self.x += self.x_speed
@@ -424,7 +425,7 @@ class player(sprite):
 
         if self.PHYS.ground_hit:
             part = particles.TEMPLATES.circle.modify(size=12, speed=3, colour=(255, 124, 0), lifetime=30)
-            part_shortcuts.explosion(20, (self.x + self.w//2, self.y + self.h), part, layer="LOWPARTICLE", game=game)
+            part_shortcuts.explosion(20, (self.x + self.w//2, self.y + self.h), part, layer="HIGHPARTICLE", game=game)
 
         cols = ((35, 35, 155), (35, 155, 35), (155, 35, 35))
         # if self.PHYS.walljump_frames > 0:

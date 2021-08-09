@@ -4,7 +4,7 @@ import draw_utils as drawu
 
 
 def explosion(number, pos, part, randcol=False, layer="HIGHPARTICLE", game=None):
-    assert game is not None, f"Invalid argument {game} for game"
+    assert game is not None, f"You forgor to pass in game"
 
     surf = particles.part_surface(pos, part.template.speed, part.template.lifetime)
     surf.layer = layer
