@@ -49,12 +49,34 @@ class deadplayer(sprite):
 
 # Player physics info
 class physics_info():
+    class timed_force():
+        def __init__(f, vel, ticks):
+            f.x_add = vel[0]
+            f.y_add = vel[1]
+
+            f.tick_len = ticks
+            f.tick = 0
+
+        def update(f, obj):
+            obj.x_speed += f.x_add
+            obj.y_speed += f.y_add
+
+            f.tick += 1
+            if f.tick >= f.tick_len:
+                return False
+
+            return True
+
     def __init__(self, player):
         self.p = player
 
         self.on_ground = False
 
         self.walljump = False
+        self.walljump_frames = 0
+        self.walljump_left = True
+        self.walljump_right = False
+
         self.head_hit = False
         self.ground_hit = False
 
@@ -65,7 +87,11 @@ class physics_info():
 
         self.coyote_time = 0
 
-    # idk what we'll do with these functions lol
+        self.forces = []
+
+    def add_force(self, vel, ticks=1):
+        self.forces.append(self.timed_force(vel, ticks))
+
     def turn_left(self):
         self.right = False
         self.left = True
@@ -74,11 +100,15 @@ class physics_info():
         self.left = False
         self.right = True
 
-    # these ones are actually important
+    # These ones are actually important
     def air_reset(self):
-        self.walljump = False
         self.head_hit = False
         self.ground_hit = False
+
+        self.walljump = False
+        self.walljump_frames -= 1
+        if self.walljump_frames < 0:
+            self.walljump_frames = 0
 
         self.on_ground = False
         self.can_jump = False
@@ -100,6 +130,25 @@ class physics_info():
         self.p.held_jump_frames = 0
 
         self.p.y_speed = 0
+
+    def refresh_walljump(self):
+        self.walljump = True
+        self.walljump_frames = 10
+
+        if self.left is True:
+            self.walljump_right = False
+            self.walljump_left = True
+        else:
+            self.walljump_left = False
+            self.walljump_right = True
+
+    def update_move(self):
+        valid_forces = []
+        for f in self.forces:
+            if f.update(self.p):
+                valid_forces.append(f)
+
+        self.forces = valid_forces
 
 
 class player(sprite):
@@ -197,7 +246,7 @@ class player(sprite):
                 self.x_speed = move.value_to(self.x_speed, self.x_speed * -1, step=self.x_acceleration, prox=0.5)
 
         elif game.check_key(pygame.K_RIGHT, pygame.K_d):
-            self.PHYS.turn_left()
+            self.PHYS.turn_right()
 
             self.x_speed += self.x_acceleration
             if self.x_speed < 0:
@@ -217,15 +266,16 @@ class player(sprite):
         # If presses space, add vertical momentum
         if game.check_key(pygame.K_SPACE, pygame.K_UP):
 
-            if self.PHYS.walljump is True:
+            if self.PHYS.walljump_frames > 0:
                 self.PHYS.grounded()
 
-                if self.PHYS.left:
-                    print('left')
-
+                if self.PHYS.walljump_left:
                     self.x_speed = 9
-                elif self.PHYS.right:
+                    self.PHYS.add_force((self.x_acceleration * 2, 0), 10)
+
+                elif self.PHYS.walljump_right:
                     self.x_speed = -9
+                    self.PHYS.add_force((self.x_acceleration * -2, 0), 10)
 
             if self.jumps > 0:
 
@@ -264,6 +314,7 @@ class player(sprite):
         if self.PHYS.walljump and self.y_speed > self.walljump_speed:
             self.y_speed = self.walljump_speed
 
+        self.PHYS.update_move()
         if self.collision_order:
             # Move on X axis, then update X collision
             self.x += self.x_speed
@@ -308,18 +359,18 @@ class player(sprite):
                     self.x_speed = 0
 
                     if not self.PHYS.on_ground:
-                        self.PHYS.walljump = True
+                        self.PHYS.refresh_walljump()
 
                     # Move player back based on the overlap between player left side and collider right side
                     depth = t.x + t.w - self.x
                     self.x += depth
 
-                elif t.collide(self.colliders["RIGHT"]):
+                if t.collide(self.colliders["RIGHT"]):
                     # Freeze X momentum
                     self.x_speed = 0
 
                     if not self.PHYS.on_ground:
-                        self.PHYS.walljump = True
+                        self.PHYS.refresh_walljump()
 
                     # Move player back based on the overlap between player right side and collider left side
                     depth = self.x + self.w - t.x
@@ -373,7 +424,7 @@ class player(sprite):
             part_shortcuts.explosion(20, (self.x + self.w//2, self.y + self.h), part, layer="LOWPARTICLE", game=game)
 
         c = self.c
-        if self.PHYS.walljump is True:
+        if self.PHYS.walljump_frames > 0:
             c = (0, 255, 0)
 
         rel_x = self.x - game.camera_obj.x
