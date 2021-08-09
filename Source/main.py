@@ -14,15 +14,6 @@ import pyconfig as config
 import asset
 
 
-def rect_collision(rect1, rect2):
-
-    if rect1.x + rect1.w > rect2.x and rect1.x < rect2.x + rect2.w:
-        if rect1.y + rect1.h > rect2.y and rect1.y < rect2.y + rect2.h:
-            return True
-
-    return False
-
-
 class deadplayer(sprite):
     layer = "LOWPARTICLE"
 
@@ -226,6 +217,16 @@ class player(sprite):
         # If presses space, add vertical momentum
         if game.check_key(pygame.K_SPACE, pygame.K_UP):
 
+            if self.PHYS.walljump is True:
+                self.PHYS.grounded()
+
+                if self.PHYS.left:
+                    print('left')
+
+                    self.x_speed = 9
+                elif self.PHYS.right:
+                    self.x_speed = -9
+
             if self.jumps > 0:
 
                 if game.check_key(pygame.K_SPACE, pygame.K_UP, buffer=True):
@@ -371,14 +372,15 @@ class player(sprite):
             part = particles.TEMPLATES.circle.modify(size=12, speed=3, colour=(255, 124, 0), lifetime=30)
             part_shortcuts.explosion(20, (self.x + self.w//2, self.y + self.h), part, layer="LOWPARTICLE", game=game)
 
+        c = self.c
+        if self.PHYS.walljump is True:
+            c = (0, 255, 0)
+
         rel_x = self.x - game.camera_obj.x
         rel_y = self.y - game.camera_obj.y
 
         # Draw player and its colliders
-        pygame.draw.rect(game.win, self.c, (rel_x, rel_y, self.w, self.h))
-
-        for collider_rect in self.colliders.values():
-            pygame.draw.rect(game.win, (255, 255, 255), collider_rect.get_pos())
+        pygame.draw.rect(game.win, c, (rel_x, rel_y, self.w, self.h))
 
     def update_destroy(self, game):
         if self.dead_player is None:

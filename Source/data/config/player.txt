@@ -8,7 +8,7 @@ horizontal_speed_cap : 9
 vertical_speed_cap : 17
 walljump_speed : 5
 
-extra_jumps : 4
+extra_jumps : 2
 jump_strength : 17
 held_jump_strength : 1.25
 held_jump_min : 2
