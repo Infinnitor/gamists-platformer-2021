@@ -57,7 +57,8 @@ class game_info():
                         "HAZARD" : [],
                         "ENEMY" : [],
                         "HIGHPARTICLE" : [],
-                        "CAMERACOLLIDER" : []}
+                        "CAMERACOLLIDER" : [],
+                        "FOREGROUND" : []}
 
         self.camera_obj = camera.game_camera((0, 0), (self.win_w, self.win_h))
         self.oncam_sprites = []

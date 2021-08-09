@@ -283,6 +283,7 @@ class player(sprite):
             if self.jumps > 0:
 
                 if game.check_key(pygame.K_SPACE, pygame.K_UP, buffer=True):
+
                     self.jumps -= 1
                     self.PHYS.refresh_jump()
 
@@ -420,6 +421,7 @@ class player(sprite):
 
         # Effects stuff first
         if self.PHYS.head_hit:
+            game.init_screenshake(4, 4)
             part = particles.TEMPLATES.circle.modify(size=12, speed=3, colour=(255, 124, 0), lifetime=30)
             part_shortcuts.explosion(10, (self.x + self.w//2, self.y), part, layer="LOWPARTICLE", game=game)
 
