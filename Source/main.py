@@ -281,8 +281,7 @@ class player(sprite):
                     self.PHYS.add_force((self.x_acceleration * -2, 0), 10)
 
             if self.jumps > 0:
-
-                if game.check_key(pygame.K_SPACE, pygame.K_UP, buffer=True):
+                if game.check_key(pygame.K_SPACE, pygame.K_UP, buffer=True) or self.PHYS.on_ground: # Little fix here btw not sure if it causes any other problems
 
                     self.jumps -= 1
                     self.PHYS.refresh_jump()
