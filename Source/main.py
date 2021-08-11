@@ -70,6 +70,8 @@ class physics_info():
     def __init__(self, player):
         self.p = player
 
+        self.freeze = False
+
         self.on_ground = False
 
         self.walljump = False
@@ -234,6 +236,9 @@ class player(sprite):
         self.y = self.spawnpos[1]
 
     def update_move(self, game):
+
+        if self.PHYS.freeze is True:
+            return
 
         if game.check_key(pygame.K_r, buffer=True):
             self.respawn()

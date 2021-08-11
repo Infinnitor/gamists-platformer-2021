@@ -2,6 +2,7 @@ from pygame import draw, Surface
 from sprite_class import sprite
 
 import move_utils as move
+import draw_utils as drawu
 
 import random
 import asset
@@ -171,23 +172,40 @@ class level_transition(element):
         draw.rect(game.win, self.c, (rel_x, rel_y, self.w, self.h))
 
     def collide(self, collider):
-        if collider.layer == "PLAYER":
-            # collider_center = (collider.x + collider.w/2, collider.y + collider.h/2)
-            #
-            # if self.x < collider_center[0] and self.x + self.w > collider_center[1]:
-            #     if self.y + self.h > collider.y and self.y < collider.y + collider.h:
+        if self.destroying:
+            return
 
-            if move.rect_collision(self, collider):
-                self.game.load_level(self.target)
-                spawnpos = self.game.spawnkeys[self.k]
-                collider.set_spawn(spawnpos)
-                collider.respawn(halt=True)
+        if collider.layer == "PLAYER":
+            cc = (collider.x + collider.w/2, collider.y + collider.h/2, 1, 1)
+
+            if self.x + self.w > cc[0] and self.x < cc[0] + cc[2]:
+                if self.y + self.h > cc[1] and self.y < cc[1] + cc[3]:
+
+                    if collider.PHYS.left:
+                        direction = "RIGHT"
+                    elif collider.PHYS.right:
+                        direction = "LEFT"
+
+                    self.levelwipe = drawu.screenwipe(direction, (self.game.win_w * 1.3, self.game.win_h), 40, (155, 35, 35), self.game)
+                    self.game.add_sprite(self.levelwipe)
+                    collider.PHYS.freeze = True
+                    self.destroying = True
 
         else:
             if move.rect_collision(self, collider):
                 return True
 
         return False
+
+    def update_destroy(self, game):
+        if self.levelwipe.blocking:
+            self.game.load_level(self.target)
+            spawnpos = self.game.spawnkeys[self.k]
+            p = game.sprites["PLAYER"][0]
+
+            p.PHYS.freeze = False
+            p.set_spawn(spawnpos)
+            p.respawn(halt=True)
 
 
 class spawn_key(element):

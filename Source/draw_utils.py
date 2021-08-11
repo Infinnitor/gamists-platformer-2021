@@ -1,5 +1,6 @@
 import random
 from pygame import draw
+from sprite_class import sprite
 
 
 class rgb():
@@ -64,3 +65,70 @@ class rgb():
                 self.c2 = c1
 
             return rgb.lerp(self.c1, self.c2, self.iter)
+
+
+class screenwipe(sprite):
+    layer = "FOREGROUND"
+    persistent = True
+
+    def __init__(self, direction, size, speed, colour, game):
+        self.d = direction
+        # left, right, up, down
+        self.w = size[0]
+        self.h = size[1]
+
+        self.c = colour
+
+        self.blocking = False
+        self.firstframe = True
+
+        if self.d == "LEFT":
+            self.x = game.win_w
+            self.y = 0
+            self.vel = (speed * -1, 0)
+
+        elif self.d == "RIGHT":
+            self.x = game.win_w * -1
+            self.y = 0
+            self.vel = (speed, 0)
+
+        elif self.d == "UP":
+            self.x = 0
+            self.y = game.win_h
+            self.vel = (0, speed * -1)
+
+        elif self.d == "DOWN":
+            self.x = 0
+            self.y = game.win_h * -1
+            self.vel = (0, speed)
+
+        else:
+            self.d = "LEFT"
+            self.x = game.win_w
+            self.y = 0
+            self.vel = (speed * -1, 0)
+
+            print("SAVED SCREENWIPE")
+
+    def update_move(self, game):
+        self.x += self.vel[0]
+        self.y += self.vel[1]
+
+        if self.x == 0 and self.y == 0: # blocking out the whole screen
+            self.blocking = True
+            # Start loading level
+        else:
+            self.blocking = False
+
+        if not self.firstframe:
+
+            gamewin = (0, 0, game.win_w, game.win_h)
+
+            if not self.x + self.w > gamewin[0] and not self.x < gamewin[0] + gamewin[2]:
+                if not self.y + self.h > gamewin[1] and not self.y < gamewin[1] + gamewin[3]:
+                    self.kill()
+
+        self.firstframe = False
+
+    def update_draw(self, game):
+        draw.rect(game.win, self.c, (self.x, self.y, self.w, self.h))

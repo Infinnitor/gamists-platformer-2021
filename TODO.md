@@ -18,6 +18,7 @@
 - [x] Add LevelTransition:
     - [x] - Room starting position
     - [x] - Multiple entrances and exits?
+    - [ ] - Make better
 
 
 # LevelBuild todo:

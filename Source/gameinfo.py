@@ -58,6 +58,7 @@ class game_info():
                         "ENEMY" : [],
                         "HIGHPARTICLE" : [],
                         "CAMERACOLLIDER" : [],
+                        "UI" : [],
                         "FOREGROUND" : []}
 
         self.camera_obj = camera.game_camera((0, 0), (self.win_w, self.win_h))
