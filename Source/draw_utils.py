@@ -1,6 +1,7 @@
 import random
 from pygame import draw
 from sprite_class import sprite
+import asset
 
 
 class rgb():
@@ -71,13 +72,17 @@ class screenwipe(sprite):
     layer = "FOREGROUND"
     persistent = True
 
-    def __init__(self, direction, size, speed, colour, game):
+    def __init__(self, direction, sprite, speed, colour, game):
         self.d = direction
         # left, right, up, down
-        self.w = size[0]
-        self.h = size[1]
 
         self.c = colour
+
+        self.sprite = sprite
+        size = self.sprite.get_size()
+
+        self.w = size[0]
+        self.h = size[1]
 
         self.blocking = False
         self.firstframe = True
@@ -88,7 +93,7 @@ class screenwipe(sprite):
             self.vel = (speed * -1, 0)
 
         elif self.d == "RIGHT":
-            self.x = game.win_w * -1
+            self.x = self.w * -1
             self.y = 0
             self.vel = (speed, 0)
 
@@ -114,7 +119,7 @@ class screenwipe(sprite):
         self.x += self.vel[0]
         self.y += self.vel[1]
 
-        if self.x == 0 and self.y == 0: # blocking out the whole screen
+        if self.x > 0 and self.x < abs(self.vel[0]) * 2 and self.y == 0: # blocking out the whole screen
             self.blocking = True
             # Start loading level
         else:
@@ -131,4 +136,5 @@ class screenwipe(sprite):
         self.firstframe = False
 
     def update_draw(self, game):
-        draw.rect(game.win, self.c, (self.x, self.y, self.w, self.h))
+        # draw.rect(game.win, self.c, (self.x, self.y, self.w, self.h))
+        game.win.blit(self.sprite, (self.x, self.y))

@@ -204,6 +204,8 @@ class player(sprite):
         self.held_jump_min = c.held_jump_min
         self.held_jump_max = c.held_jump_max
 
+        self.dashing_frames = 0
+
         self.num_jumps = c.jumps
         self.jumps = c.jumps
 
@@ -307,8 +309,23 @@ class player(sprite):
             if not self.PHYS.can_jump:
                 self.held_jump_frames = self.held_jump_max + 1
 
-        # Add gravity to y_speed
-        self.y_speed += self.gravity
+        if game.check_key(pygame.K_LSHIFT, buffer=True):
+            self.dashing_frames = 15
+            game.init_screenshake(8, 6, rand=True, spread=(0.8, 1.2))
+
+            if self.PHYS.left is True:
+                dashforce = (self.speed_cap * -1, 0)
+            elif self.PHYS.right is True:
+                dashforce = (self.speed_cap, 0)
+
+            self.PHYS.add_force(dashforce, 15)
+
+        if self.dashing_frames > 0:
+            self.dashing_frames -= 1
+            self.y_speed = 0
+        else:
+            # Add gravity to y_speed
+            self.y_speed += self.gravity
 
         # Adjust so that downward momentum is never more than the terminal_velocity
         if self.y_speed > self.terminal_velocity:
@@ -438,6 +455,9 @@ class player(sprite):
         #     c = (0, 255, 0)
 
         c = cols[int(self.jumps)]
+        if self.dashing_frames:
+            part = particles.TEMPLATES.circle.modify(size=10, speed=3, colour=c, lifetime=15)
+            part_shortcuts.explosion(5, (self.x + self.w//2, random.randint(int(self.y), int(self.y + self.h))), part, layer="LOWPARTICLE", game=game)
 
         rel_x = self.x - game.camera_obj.x
         rel_y = self.y - game.camera_obj.y

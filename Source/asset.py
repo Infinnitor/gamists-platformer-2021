@@ -66,6 +66,7 @@ class texture_manager():
     def __init__(self):
         self.platform_tex = spritesheet('data/sprites/textures/platform_rachel.png', (20, 20))
         self.hazard_tex = spritesheet('data/sprites/textures/hazard_spritesheet.png', (20, 20))
+        self.screenwipe = image.load('data/sprites/ui/screenwipe_RED.png')
 
     def hazard(self):
         return random.choice(self.hazard_tex.list())
