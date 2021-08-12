@@ -1,6 +1,10 @@
 import random
-from pygame import draw
+from pygame import draw, Surface
 from sprite_class import sprite
+
+from colour_manager import colours
+
+import move_utils as move
 import asset
 
 
@@ -68,13 +72,168 @@ class rgb():
             return rgb.lerp(self.c1, self.c2, self.iter)
 
 
+class bubblewipe(sprite):
+    layer = "FOREGROUND"
+    persistent = True
+
+    class bubble(sprite):
+        # Layer is just there because it's a sprite ig lol
+        layer = "FOREGROUND"
+
+        def __init__(b, pos, max_r, speed, colour):
+            b.x = pos[0]
+            b.y = pos[1]
+
+            b.r = 0
+            b.max_r = max_r
+
+            b.max_size = False
+            b.reverse_bool = False
+            b.speed = speed
+
+            b.c = (155, 35, 35)
+
+        def reverse(self):
+            self.reverse_bool = True
+
+        def update_move(b, game):
+
+            if b.reverse_bool is False:
+                b.r += b.speed
+                if b.r > b.max_r:
+                    b.r = b.max_r
+                    b.max_size = True
+            else:
+                b.r -= b.speed
+                if b.r < 0:
+                    b.kill()
+
+        def update_draw(b, surface=None):
+            assert surface is not None, "You forgot to pass in the correct surface dummy"
+            draw.circle(surface, b.c, (b.x, b.y), b.r)
+
+    def __init__(self, direction, num_bubbles, tick, colour, game):
+        # LEFT, RIGHT, UP, DOWN
+        self.d = direction
+
+        self.c = colour
+        self.num_bubbles = num_bubbles
+
+        self.x = 0
+        self.y = 0
+
+        self.w = game.win_w
+        self.h = game.win_h
+
+        self.blocking = False
+
+        self.bubble_r = game.win_w // num_bubbles
+        mv = self.bubble_r
+
+        self.num_bubbles_vert = game.win_h // self.bubble_r + 1
+
+        self.bubble_speed = self.bubble_r / tick * 0.2
+
+        if self.d == "LEFT":
+            self.place_x = game.win_w
+            self.place_y = None
+            self.vel = (mv * -1, 0)
+
+        elif self.d == "RIGHT":
+            self.place_x = 0
+            self.place_y = None
+            self.vel = (mv, 0)
+
+        elif self.d == "UP":
+            self.place_x = None
+            self.place_y = game.win_h
+            self.vel = (0, mv * -1)
+
+        elif self.d == "DOWN":
+            self.place_x = None
+            self.place_y = 0
+            self.vel = (0, mv)
+
+        else:
+            raise AttributeError(f"{self.d} is not a valid direction, must be in (LEFT, RIGHT, UP, DOWN)")
+
+        self.bubble_list = []
+        self.surface = Surface((self.w, self.h))
+        self.surface.fill(colours.colourkey)
+        self.surface.set_colorkey(colours.colourkey)
+
+        self.firsttick = True
+        self.tick = move.frametick(tick=tick, game=game)
+
+    def check_cover(self):
+        check_bubbles = [b.max_size for b in self.bubble_list]
+
+        if all(check_bubbles):
+            for b in self.bubble_list:
+                b.reverse()
+            self.blocking = True
+
+    def update_move(self, game):
+
+        self.update_bubbles(game)
+
+        if self.firsttick is False:
+            self.check_cover()
+            if len(self.bubble_list) == 0:
+                self.kill()
+
+        if not self.tick.get():
+            return
+        self.firsttick = False
+
+        if self.place_y is None:
+            if self.place_x > game.win_w or self.place_x < 0:
+                return
+
+            for y in range(self.num_bubbles_vert):
+                new_b = self.bubble((self.place_x, y*self.bubble_r), self.bubble_r, self.bubble_speed, self.c)
+                new_b.add_default_attr(game)
+
+                self.bubble_list.append(new_b)
+
+            self.place_x += self.vel[0]
+
+        elif self.place_x is None:
+            if self.place_y > game.win_h or self.place_y < 0:
+                return
+
+            for x in range(self.num_bubbles):
+                new_b = self.bubble((x*self.bubble_r, self.place_y), self.bubble_r, self.bubble_speed, self.c)
+                new_b.add_default_attr(game)
+
+                self.bubble_list.append(new_b)
+
+            self.place_y += self.vel[1]
+
+    def update_bubbles(self, game):
+        valid_bubbles = []
+        for b in self.bubble_list:
+            b.update_move(game)
+            b.update_draw(self.surface)
+            if not b.destroy:
+                valid_bubbles.append(b)
+
+        self.bubble_list = valid_bubbles
+
+    def update_draw(self, game):
+        # Will always blit at (0, 0) lol
+        game.win.blit(self.surface, (self.x , self.y))
+        self.surface.fill(colours.colourkey)
+        self.surface.set_colorkey(colours.colourkey)
+
+
 class screenwipe(sprite):
     layer = "FOREGROUND"
     persistent = True
 
     def __init__(self, direction, sprite, speed, colour, game):
+        # LEFT, RIGHT, UP, DOWN
         self.d = direction
-        # left, right, up, down
 
         self.c = colour
 

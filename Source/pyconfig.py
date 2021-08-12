@@ -38,6 +38,9 @@ class text_player():
 
         self.__dict__ = values
 
+        # for k, v in zip(self.__dict__, self.__dict__.values()):
+        #     print(f"{k} : {v}")
+
 
 def text_level(path):
     file = text_clean(open(path, "r"))
