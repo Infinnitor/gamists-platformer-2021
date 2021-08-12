@@ -36,28 +36,7 @@ class text_player():
             k, v = val.split(":")
             values[k] = float(v)
 
-        self.x_acceleration = values["horizontal_acceleration"]
-        self.gravity = values["gravity"]
-        self.terminal_velocity = values["vertical_speed_cap"]
-        self.speed_cap = values["horizontal_speed_cap"]
-
-        self.wallslide_speed = values["wallslide_speed"]
-        self.walljump_window = values["walljump_frames"]
-
-        self.jumps = values["jumps_number"]
-        self.jump_str = values["jump_strength"]
-        self.held_jump_str = values["held_jump_strength"]
-        self.held_jump_min = values["held_jump_min"]
-        self.held_jump_max = values["held_jump_max"]
-
-        self.dashes_number = values["dashes_number"]
-        self.dash_length = values["dash_length"]
-        self.dash_str = values["dash_strength"]
-
-        self.x = values["start_x"]
-        self.y = values["start_y"]
-        self.w = values["player_width"]
-        self.h = values["player_height"]
+        self.__dict__ = values
 
 
 def text_level(path):

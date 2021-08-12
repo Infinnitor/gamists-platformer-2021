@@ -166,25 +166,25 @@ class player(sprite):
     def __init__(self, c):
 
         # Position
-        self.x = c.x
-        self.y = c.y
+        self.x = c.start_x
+        self.y = c.start_y
 
         # Width and height
-        self.w = c.w
-        self.h = c.h
+        self.w = c.player_width
+        self.h = c.player_height
 
         self.c = colours.red
 
         # Acceleration on the X axis
-        self.x_acceleration = c.x_acceleration
+        self.x_acceleration = c.horizontal_acceleration
         # Acceleration of gravity / downward acceleration on the Y axis
         self.gravity = c.gravity
 
         # The max force of gravity on the player
-        self.terminal_velocity = c.terminal_velocity
+        self.terminal_velocity = c.vertical_speed_cap
 
         # The max speed that the player can move at on the X and Y axis
-        self.speed_cap = c.speed_cap
+        self.speed_cap = c.horizontal_speed_cap
         self.min_y_speed = self.terminal_velocity * -1
 
         if self.terminal_velocity > self.speed_cap:
@@ -193,15 +193,16 @@ class player(sprite):
             self.collision_order = True
 
         self.wallslide_speed = c.wallslide_speed
-        self.walljump_window = c.walljump_window
+        self.walljump_window = c.walljump_frames
+        self.walljump_str = c.walljump_strength
 
         # Player momentum on both the X and Y
         self.x_speed = 0
         self.y_speed = 0
 
         # Upward acceleration when jumping
-        self.jump_str = c.jump_str
-        self.held_jump_str = c.held_jump_str
+        self.jump_str = c.jump_strength
+        self.held_jump_str = c.held_jump_strength
 
         # The number of frames that the player has been jumping
         self.held_jump_frames = 0
@@ -210,13 +211,13 @@ class player(sprite):
 
         self.num_dashes = c.dashes_number
         self.dashes = c.dashes_number
-        self.dash_str = c.dash_str
+        self.dash_str = c.dash_strength
 
         self.dash_length = c.dash_length
         self.dashing_frames = 0
 
-        self.num_jumps = c.jumps
-        self.jumps = c.jumps
+        self.num_jumps = c.jumps_number
+        self.jumps = c.jumps_number
 
         self.PHYS = physics_info(self)
 
@@ -289,11 +290,11 @@ class player(sprite):
                 self.PHYS.grounded()
 
                 if self.PHYS.walljump_left:
-                    self.x_speed = 9
+                    self.x_speed = self.walljump_str
                     self.PHYS.add_force((self.x_acceleration * 2, 0), 10)
 
                 elif self.PHYS.walljump_right:
-                    self.x_speed = -9
+                    self.x_speed = self.walljump_str * -1
                     self.PHYS.add_force((self.x_acceleration * -2, 0), 10)
 
             if self.jumps > 0:
@@ -533,5 +534,6 @@ asset.init()
 while True:
     if mainloop(game):
         game.purge_sprites()
+        config.load()
     else:
         break
