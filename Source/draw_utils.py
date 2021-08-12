@@ -104,7 +104,7 @@ class bubblewipe(sprite):
                     b.r = b.max_r
                     b.max_size = True
             else:
-                b.r -= b.speed
+                b.r -= b.speed * 0.5
                 if b.r < 0:
                     b.kill()
 

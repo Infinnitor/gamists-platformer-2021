@@ -186,7 +186,8 @@ class level_transition(element):
                     elif collider.PHYS.right:
                         direction = "LEFT"
 
-                    self.levelwipe = drawu.screenwipe(direction, asset.TEXTURE.screenwipe, 40, (155, 35, 35), self.game)
+                    # self.levelwipe = drawu.screenwipe(direction, asset.TEXTURE.screenwipe, 40, (155, 35, 35), self.game)
+                    self.levelwipe = drawu.bubblewipe(direction=direction, num_bubbles=20, tick=2, colour=(155, 35, 35), game=self.game)
                     self.game.add_sprite(self.levelwipe)
                     collider.PHYS.freeze = True
                     self.destroying = True
