@@ -44,11 +44,15 @@ class text_player():
         self.wallslide_speed = values["wallslide_speed"]
         self.walljump_window = values["walljump_frames"]
 
-        self.jumps = values["extra_jumps"]
+        self.jumps = values["jumps_number"]
         self.jump_str = values["jump_strength"]
         self.held_jump_str = values["held_jump_strength"]
         self.held_jump_min = values["held_jump_min"]
         self.held_jump_max = values["held_jump_max"]
+
+        self.dashes_number = values["dashes_number"]
+        self.dash_length = values["dash_length"]
+        self.dash_str = values["dash_strength"]
 
         self.x = values["start_x"]
         self.y = values["start_y"]

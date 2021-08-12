@@ -11,11 +11,15 @@ wallslide_speed : 5
 walljump_frames : 10
 walljump_strength : 9
 
-extra_jumps : 2
+jumps_number : 2
 jump_strength : 17
 held_jump_strength : 1.25
 held_jump_min : 2
 held_jump_max : 7
+
+dashes_number : 2
+dash_length : 15
+dash_strength : 9
 
 start_x : 880
 start_y : 640

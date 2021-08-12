@@ -79,6 +79,8 @@ class physics_info():
         self.walljump_left = True
         self.walljump_right = False
 
+        self.dash = False
+
         self.head_hit = False
         self.ground_hit = False
 
@@ -121,6 +123,8 @@ class physics_info():
 
         self.p.held_jump_frames = 0
         self.p.jumps = self.p.num_jumps
+
+        self.p.dashes = self.p.num_dashes
 
         if self.p.y_speed > self.p.gravity * 2:
             self.ground_hit = True
@@ -204,6 +208,11 @@ class player(sprite):
         self.held_jump_min = c.held_jump_min
         self.held_jump_max = c.held_jump_max
 
+        self.num_dashes = c.dashes_number
+        self.dashes = c.dashes_number
+        self.dash_str = c.dash_str
+
+        self.dash_length = c.dash_length
         self.dashing_frames = 0
 
         self.num_jumps = c.jumps
@@ -309,22 +318,34 @@ class player(sprite):
             if not self.PHYS.can_jump:
                 self.held_jump_frames = self.held_jump_max + 1
 
-        if game.check_key(pygame.K_LSHIFT, buffer=True):
-            self.dashing_frames = 15
-            game.init_screenshake(8, 6, rand=True, spread=(0.8, 1.2))
+        if game.check_key(pygame.K_LSHIFT, buffer=True) and self.PHYS.dash is False:
 
-            if self.PHYS.left is True:
-                dashforce = (self.speed_cap * -1, 0)
-            elif self.PHYS.right is True:
-                dashforce = (self.speed_cap, 0)
+            if self.dashes > 0:
+                self.dashes -= 1
 
-            self.PHYS.add_force(dashforce, 15)
+                self.dashing_frames = self.dash_length
+                game.init_screenshake(8, 6, rand=True, spread=(0.8, 1.2))
+
+                if self.PHYS.left is True:
+                    dashforce = (self.dash_str * -1, 0)
+                elif self.PHYS.right is True:
+                    dashforce = (self.dash_str, 0)
+
+                self.PHYS.add_force(dashforce, self.dash_length)
+
+            else:
+                game.init_screenshake(2, 4)
 
         if self.dashing_frames > 0:
+            self.PHYS.dash = True
+        else:
+            self.PHYS.dash = False
+
+        if self.PHYS.dash is True:
             self.dashing_frames -= 1
             self.y_speed = 0
         else:
-            # Add gravity to y_speed
+            # Gravity does not come into effect when dashing
             self.y_speed += self.gravity
 
         # Adjust so that downward momentum is never more than the terminal_velocity
@@ -455,7 +476,7 @@ class player(sprite):
         #     c = (0, 255, 0)
 
         c = cols[int(self.jumps)]
-        if self.dashing_frames:
+        if self.PHYS.dash:
             part = particles.TEMPLATES.circle.modify(size=10, speed=3, colour=c, lifetime=15)
             part_shortcuts.explosion(5, (self.x + self.w//2, random.randint(int(self.y), int(self.y + self.h))), part, layer="LOWPARTICLE", game=game)
 
