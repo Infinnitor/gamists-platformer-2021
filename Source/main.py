@@ -36,10 +36,10 @@ class deadplayer(sprite):
     def update_move(self, game):
         if self.frametick is None:
             self.frametick = move.frametick(10, game)
-            game.init_screenshake(10, 5)
+            game.init_screenshake(15, 5, rand=True)
 
         if self.death_transition is None and self.frametick.get():
-            self.death_transition = drawu.bubblewipe(direction="DOWN", num_bubbles=9, tick=3, colour=colours.red, randspeed=True, randcol=True, game=game)
+            self.death_transition = drawu.bubblewipe(direction="DOWN", num_bubbles=9, tick=1, colour=colours.red, randspeed=True, randcol=True, game=game)
             game.add_sprite(self.death_transition)
 
         self.y += self.sink_speed
@@ -545,8 +545,8 @@ game = game_info(
                 name="the mario killer",
                 win_w=1280,
                 win_h=720,
-                user_w=1280,
-                user_h=720,
+                user_w=1920,
+                user_h=1080,
                 bg=(0, 0, 0),
                 framecap=60,
                 show_framerate=False,

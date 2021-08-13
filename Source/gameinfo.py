@@ -213,7 +213,7 @@ class game_info():
         pos1 = 0 - magnitude
         pos2 = magnitude
 
-        if rand and spread:
+        if spread:
             pos1 = int(pos1 * random.uniform(spread[0], spread[1]))
             pos2 = int(pos2 * random.uniform(spread[0], spread[1]))
 
