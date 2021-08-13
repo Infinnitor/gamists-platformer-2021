@@ -80,7 +80,7 @@ class bubblewipe(sprite):
         # Layer is just there because it's a sprite ig lol
         layer = "FOREGROUND"
 
-        def __init__(b, pos, max_r, speed, colour):
+        def __init__(b, pos, max_r, colour, speed, randspeed=False, randcol=False):
             b.x = pos[0]
             b.y = pos[1]
 
@@ -90,8 +90,12 @@ class bubblewipe(sprite):
             b.max_size = False
             b.reverse_bool = False
             b.speed = speed
+            if randspeed is True:
+                b.speed *= random.uniform(0.5, 1.2)
 
-            b.c = (155, 35, 35)
+            b.c = colour
+            if randcol is True:
+                b.c = rgb.randomize(b.c, lower=-10, upper=10)
 
         def reverse(self):
             self.reverse_bool = True
@@ -117,7 +121,7 @@ class bubblewipe(sprite):
         self.d = direction
 
         self.c = colour
-        self.num_bubbles = num_bubbles
+        self.num_bubbles = num_bubbles + 1
 
         self.x = 0
         self.y = 0
@@ -132,7 +136,11 @@ class bubblewipe(sprite):
 
         self.num_bubbles_vert = game.win_h // self.bubble_r + 1
 
-        self.bubble_speed = self.bubble_r / tick * 0.2
+        try:
+            self.bubble_speed = self.bubble_r / tick * 0.3
+        except ZeroDivisionError:
+            self.bubble_speed = self.bubble_r * 0.3
+
 
         if self.d == "LEFT":
             self.place_x = game.win_w
@@ -167,10 +175,7 @@ class bubblewipe(sprite):
 
     def check_cover(self):
         check_bubbles = [b.max_size for b in self.bubble_list]
-
         if all(check_bubbles):
-            for b in self.bubble_list:
-                b.reverse()
             self.blocking = True
 
     def update_move(self, game):
@@ -182,33 +187,46 @@ class bubblewipe(sprite):
             if len(self.bubble_list) == 0:
                 self.kill()
 
-        if not self.tick.get():
+        if not self.tick.get() and self.firsttick is False:
             return
+
         self.firsttick = False
 
-        if self.place_y is None:
-            if self.place_x > game.win_w or self.place_x < 0:
-                return
+        if self.blocking is False:
+            if self.place_y is None:
+                if self.place_x > game.win_w or self.place_x < 0:
+                    return
 
-            for y in range(self.num_bubbles_vert):
-                new_b = self.bubble((self.place_x, y*self.bubble_r), self.bubble_r, self.bubble_speed, self.c)
-                new_b.add_default_attr(game)
+                for y in range(self.num_bubbles_vert):
+                    new_b = self.bubble((self.place_x, y*self.bubble_r), self.bubble_r, self.c, self.bubble_speed, True, True)
+                    new_b.add_default_attr(game)
 
-                self.bubble_list.append(new_b)
+                    self.bubble_list.append(new_b)
 
-            self.place_x += self.vel[0]
+                self.place_x += self.vel[0]
 
-        elif self.place_x is None:
-            if self.place_y > game.win_h or self.place_y < 0:
-                return
+            elif self.place_x is None:
+                if self.place_y > game.win_h or self.place_y < 0:
+                    return
 
-            for x in range(self.num_bubbles):
-                new_b = self.bubble((x*self.bubble_r, self.place_y), self.bubble_r, self.bubble_speed, self.c)
-                new_b.add_default_attr(game)
+                for x in range(self.num_bubbles):
+                    new_b = self.bubble((x*self.bubble_r, self.place_y), self.bubble_r, self.c, self.bubble_speed, True, True)
+                    new_b.add_default_attr(game)
 
-                self.bubble_list.append(new_b)
+                    self.bubble_list.append(new_b)
 
-            self.place_y += self.vel[1]
+                self.place_y += self.vel[1]
+        else:
+            reverse_bubbles = [b for b in self.bubble_list if b.reverse_bool is False]
+
+            if self.place_y is None:
+                for b in reverse_bubbles[:self.num_bubbles_vert]:
+                    b.reverse()
+
+            elif self.place_x is None:
+                for b in reverse_bubbles[:self.num_bubbles]:
+                    b.reverse()
+
 
     def update_bubbles(self, game):
         valid_bubbles = []
@@ -267,12 +285,7 @@ class screenwipe(sprite):
             self.vel = (0, speed)
 
         else:
-            self.d = "LEFT"
-            self.x = game.win_w
-            self.y = 0
-            self.vel = (speed * -1, 0)
-
-            print("SAVED SCREENWIPE")
+            raise AttributeError(f"{self.d} is not a valid direction, must be in (LEFT, RIGHT, UP, DOWN)")
 
     def update_move(self, game):
         self.x += self.vel[0]
@@ -288,9 +301,8 @@ class screenwipe(sprite):
 
             gamewin = (0, 0, game.win_w, game.win_h)
 
-            if not self.x + self.w > gamewin[0] and not self.x < gamewin[0] + gamewin[2]:
-                if not self.y + self.h > gamewin[1] and not self.y < gamewin[1] + gamewin[3]:
-                    self.kill()
+            if not move.rect_collision((self.x, self.y, self.w, self.h), gamewin, attr=False):
+                self.kill()
 
         self.firstframe = False
 

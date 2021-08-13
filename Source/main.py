@@ -507,13 +507,13 @@ def mainloop(game):
         game.update_keys()
 
         if game.check_key(pygame.K_0, buffer=True):
-            trans = drawu.bubblewipe(direction="LEFT", num_bubbles=20, tick=2, colour=(155, 35, 35), game=game)
+            trans = drawu.bubblewipe(direction="LEFT", num_bubbles=9, tick=4, colour=(155, 35, 35), game=game)
             game.add_sprite(trans)
 
         try:
             # print(trans.blocking)
             if trans.blocking is True:
-                pass
+                quit()
         except NameError:
             pass
 

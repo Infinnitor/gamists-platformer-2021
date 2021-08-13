@@ -4,6 +4,8 @@ from sprite_class import sprite
 import move_utils as move
 import draw_utils as drawu
 
+from colour_manager import colours
+
 import random
 import asset
 
@@ -187,7 +189,7 @@ class level_transition(element):
                         direction = "LEFT"
 
                     # self.levelwipe = drawu.screenwipe(direction, asset.TEXTURE.screenwipe, 40, (155, 35, 35), self.game)
-                    self.levelwipe = drawu.bubblewipe(direction=direction, num_bubbles=20, tick=2, colour=(155, 35, 35), game=self.game)
+                    self.levelwipe = drawu.bubblewipe(direction=direction, num_bubbles=9, tick=4, colour=colours.purple, game=self.game)
                     self.game.add_sprite(self.levelwipe)
                     collider.PHYS.freeze = True
                     self.destroying = True

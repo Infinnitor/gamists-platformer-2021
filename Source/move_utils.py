@@ -25,10 +25,17 @@ def circle_collide(p, q, add=[], attr=True):
     return False
 
 
-def rect_collision(rect1, rect2):
+def rect_collision(a, b, attr=True):
 
-    if rect1.x + rect1.w > rect2.x and rect1.x < rect2.x + rect2.w:
-        if rect1.y + rect1.h > rect2.y and rect1.y < rect2.y + rect2.h:
+    if attr:
+        rect1 = (a.x, a.y, a.w, a.h)
+        rect2 = (b.x, b.y, b.w, b.h)
+    else:
+        rect1 = a; rect2 = b
+
+
+    if rect1[0] + rect1[2] > rect2[0] and rect1[0] < rect2[0] + rect2[2]:
+        if rect1[1] + rect1[3] > rect2[1] and rect1[1] < rect2[1] + rect2[3]:
             return True
 
     return False
