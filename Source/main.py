@@ -30,7 +30,18 @@ class deadplayer(sprite):
         self.sink_depth = sink_depth
         self.sink_speed = sink_speed
 
+        self.death_transition = None
+        self.frametick = None
+
     def update_move(self, game):
+        if self.frametick is None:
+            self.frametick = move.frametick(10, game)
+            game.init_screenshake(10, 5)
+
+        if self.death_transition is None and self.frametick.get():
+            self.death_transition = drawu.bubblewipe(direction="DOWN", num_bubbles=9, tick=3, colour=colours.red, randspeed=True, randcol=True, game=game)
+            game.add_sprite(self.death_transition)
+
         self.y += self.sink_speed
 
     def update_draw(self, game):
@@ -41,9 +52,10 @@ class deadplayer(sprite):
         pygame.draw.rect(game.win, self.c, (rel_x, rel_y, self.w, self.h))
 
     def sunk(self):
-        if self.y > self.start_y + self.sink_depth:
-            self.kill()
-            return True
+        if self.death_transition is not None:
+            if self.death_transition.blocking:
+                self.kill()
+                return True
         return False
 
 

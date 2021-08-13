@@ -232,7 +232,6 @@ class bubblewipe(sprite):
                 for b in reverse_bubbles[:self.num_bubbles]:
                     b.reverse()
 
-
     def update_bubbles(self, game):
         valid_bubbles = []
         for b in self.bubble_list:
