@@ -523,10 +523,6 @@ def mainloop(game):
         if game.check_key(pygame.K_0):
             print(game.sprites["PLAYER"][0])
 
-        if game.check_key(pygame.K_9, buffer=True):
-            for c in game.sprites["CAMERACOLLIDER"]:
-                print(f"{c} W: {c.w}  H: {c.h}")
-
         game.update_draw()
 
         game.update_scaled()
