@@ -1,0 +1,43 @@
+(640, 360) (560, 20) (GroundTerrain)
+(1400, 360) (520, 20) (GroundTerrain)
+(640, 380) (20, 320) (GroundTerrain)
+(1900, 380) (20, 340) (GroundTerrain)
+(1140, 660) (320, 100) (GroundTerrain)
+(640, 800) (440, 120) (GroundTerrain)
+(1520, 820) (400, 120) (GroundTerrain)
+(640, 920) (20, 140) (GroundTerrain)
+(1900, 940) (20, 120) (GroundTerrain)
+(640, 1060) (580, 20) (GroundTerrain)
+(1420, 1060) (500, 20) (GroundTerrain)
+(0, 0) (2560, 280) (CameraCollider)
+(0, 280) (1140, 20) (CameraCollider)
+(1460, 280) (1100, 80) (CameraCollider)
+(0, 300) (1140, 60) (CameraCollider)
+(0, 360) (640, 20) (CameraCollider)
+(1920, 360) (640, 280) (CameraCollider)
+(0, 380) (640, 240) (CameraCollider)
+(0, 620) (540, 20) (CameraCollider)
+(0, 640) (540, 20) (CameraCollider)
+(2020, 640) (540, 800) (CameraCollider)
+(0, 660) (540, 200) (CameraCollider)
+(0, 860) (640, 220) (CameraCollider)
+(1920, 880) (100, 200) (CameraCollider)
+(0, 1080) (1140, 80) (CameraCollider)
+(1480, 1080) (540, 80) (CameraCollider)
+(0, 1160) (2020, 280) (CameraCollider)
+
+# Top
+(1140, 280) (320, 80) (LevelTransition : top.txt : TOP)
+(1280, 360) (40, 40) (Spawnkey : TOP)
+
+# Left
+(540, 620) (100, 240) (LevelTransition : left.txt : LEFT)
+(640, 760) (40, 40) (Spawnkey : LEFT)
+
+# Right
+(1920, 640) (100, 240) (LevelTransition : right.txt : RIGHT)
+(1880, 780) (40, 40) (Spawnkey : RIGHT)
+
+# Bottom
+(1140, 1080) (340, 80) (LevelTransition : bottom.txt : BOTTOM)
+(1200, 1020) (40, 40) (Spawnkey : BOTTOM)

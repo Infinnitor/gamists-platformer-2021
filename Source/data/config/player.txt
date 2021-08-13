@@ -21,7 +21,7 @@ dashes_number : 2
 dash_length : 15
 dash_strength : 9
 
-start_x : 880
+start_x : 1260
 start_y : 640
 player_width : 40
 player_height : 40

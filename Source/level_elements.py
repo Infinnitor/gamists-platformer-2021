@@ -161,6 +161,13 @@ class level_transition(element):
         self.w = size[0]
         self.h = size[1]
 
+        # Whether or not the level_transition is going to be interracted with on the x or y is decided by it's width vs height
+        # GoodCodeTM
+        if self.w > self.h:
+            self.vertical = True
+        else:
+            self.vertical = False
+
         self.c = (35, 35, 155)
 
         self.target = target_level
@@ -183,10 +190,17 @@ class level_transition(element):
             if self.x + self.w > cc[0] and self.x < cc[0] + cc[2]:
                 if self.y + self.h > cc[1] and self.y < cc[1] + cc[3]:
 
-                    if collider.PHYS.left:
-                        direction = "RIGHT"
-                    elif collider.PHYS.right:
-                        direction = "LEFT"
+                    # Decide direction of the screen transition
+                    if self.vertical is True:
+                        if collider.y_speed > 0:
+                            direction = "DOWN"
+                        else:
+                            direction = "UP"
+                    else:
+                        if collider.PHYS.left:
+                            direction = "RIGHT"
+                        elif collider.PHYS.right:
+                            direction = "LEFT"
 
                     # self.levelwipe = drawu.screenwipe(direction, asset.TEXTURE.screenwipe, 40, (155, 35, 35), self.game)
                     self.levelwipe = drawu.bubblewipe(direction=direction, num_bubbles=9, tick=1, colour=collider.c, randspeed=True, randcol=True, game=self.game)

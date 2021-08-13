@@ -514,7 +514,7 @@ class player(sprite):
 
 def mainloop(game):
     game.add_sprite(player(config.player))
-    game.load_level('room1.txt')
+    game.load_level('center.txt')
 
     while game.run:
         game.update_keys()
