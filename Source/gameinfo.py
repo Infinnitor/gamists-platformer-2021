@@ -133,7 +133,7 @@ class game_info():
 
         self.spawnkeys = {}
 
-        self.purge_sprites("CHECKPOINTS", "TERRAIN", "HAZARD", "LEVELTRANSITION")
+        self.purge_sprites("CHECKPOINTS", "TERRAIN", "HAZARD", "LEVELTRANSITION", "CAMERACOLLIDER")
         for pos, size, sprite_type in level_text:
             if sprite_type.startswith("LevelTransition"):
                 # print(sprite_type)

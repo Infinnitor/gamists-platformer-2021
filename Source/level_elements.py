@@ -27,11 +27,39 @@ class camera_collider(element):
         self.w = size[0]
         self.h = size[1]
 
+        self.startpos = (self.x, self.y)
+
+        print(*self.startpos)
+
         self.c = (155, 35, 155)
+
+    def update_move(self, game): # wtf is assert # raise error if the cond is not true # right
+        # print(f"{self.x} {self.startpos[0]}")
+        assert self.x == self.startpos[0] and self.y == self.startpos[1]
+
+        if self.x == 1960:
+            print(self.x)
 
     def update_draw(self, game):
         rel_x = self.x - game.camera_obj.x
         rel_y = self.y - game.camera_obj.y
+
+        # for s in game.sprites["CAMERACOLLIDER"]:
+        #     if s.x == 1960:
+        #         assert self is not s
+
+        assert self.x == self.startpos[0] and self.y == self.startpos[1]
+
+        # print(self.x, self) # does this work
+        print(self.startpos[0], self) # does this work
+
+        # lemme check
+
+        # testing on one i know is wrong
+        # if self.x > 1080:
+            # print(f"X: {rel_x} Y: {rel_y}")
+            # print(f"aX: {self.x} aY: {self.y}")
+            # the one we are looking for has like an x of width - 60
 
         draw.rect(game.win, self.c, (rel_x, rel_y, self.w, self.h))
 

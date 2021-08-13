@@ -428,7 +428,6 @@ class player(sprite):
 
                 if t.collide(self.colliders["RIGHT"]):
 
-                    print(t)
                     # Freeze X momentum
                     self.x_speed = 0
 
@@ -524,6 +523,10 @@ def mainloop(game):
         if game.check_key(pygame.K_0):
             print(game.sprites["PLAYER"][0])
 
+        if game.check_key(pygame.K_9, buffer=True):
+            for c in game.sprites["CAMERACOLLIDER"]:
+                print(f"{c} W: {c.w}  H: {c.h}")
+
         game.update_draw()
 
         game.update_scaled()
@@ -539,8 +542,8 @@ game = game_info(
                 name="the mario killer",
                 win_w=1280,
                 win_h=720,
-                user_w=1920,
-                user_h=1080,
+                user_w=1280,
+                user_h=720,
                 bg=(0, 0, 0),
                 framecap=60,
                 show_framerate=False,
