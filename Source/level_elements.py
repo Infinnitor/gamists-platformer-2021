@@ -222,6 +222,7 @@ class level_transition(element):
 
             p.PHYS.freeze = False
             p.set_spawn(spawnpos)
+            print(spawnpos)
             p.respawn(halt=True)
 
 

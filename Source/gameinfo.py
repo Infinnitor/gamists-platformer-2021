@@ -153,6 +153,11 @@ class game_info():
 
             self.add_sprite(level_classes[sprite_type](pos, size))
 
+        self.oncam_sprites = []
+        for layer in self.sprites:
+            for s in self.sprites[layer]:
+                self.oncam_sprites.append(s)
+
     # Function that converts an orientation into actual numbers
     def orientate(self, h=False, v=False):
 

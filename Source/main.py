@@ -427,6 +427,8 @@ class player(sprite):
                     self.x += depth
 
                 if t.collide(self.colliders["RIGHT"]):
+
+                    print(t)
                     # Freeze X momentum
                     self.x_speed = 0
 
@@ -519,16 +521,8 @@ def mainloop(game):
     while game.run:
         game.update_keys()
 
-        if game.check_key(pygame.K_0, buffer=True):
-            trans = drawu.bubblewipe(direction="LEFT", num_bubbles=9, tick=4, colour=(155, 35, 35), game=game)
-            game.add_sprite(trans)
-
-        try:
-            # print(trans.blocking)
-            if trans.blocking is True:
-                quit()
-        except NameError:
-            pass
+        if game.check_key(pygame.K_0):
+            print(game.sprites["PLAYER"][0])
 
         game.update_draw()
 

@@ -16,4 +16,4 @@
 
 # Transitions
 (1120, 1080) (320, 80) (LevelTransition : center.txt : TOP)
-(1140, 1020) (40, 40) (Spawnkey : TOP)
+(1140, 1020) (40, 40) (Spawnkey : TOPC)

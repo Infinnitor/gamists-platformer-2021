@@ -27,17 +27,17 @@
 (0, 1160) (2020, 280) (CameraCollider)
 
 # Top
-(1140, 280) (320, 80) (LevelTransition : top.txt : TOP)
+(1140, 280) (320, 80) (LevelTransition : top.txt : TOPC)
 (1280, 360) (40, 40) (Spawnkey : TOP)
 
 # Left
-(540, 620) (100, 240) (LevelTransition : left.txt : LEFT)
+(540, 620) (100, 240) (LevelTransition : left.txt : LEFTC)
 (640, 760) (40, 40) (Spawnkey : LEFT)
 
 # Right
-(1920, 640) (100, 240) (LevelTransition : right.txt : RIGHT)
+(1920, 640) (100, 240) (LevelTransition : right.txt : RIGHTC)
 (1880, 780) (40, 40) (Spawnkey : RIGHT)
 
 # Bottom
-(1140, 1080) (340, 80) (LevelTransition : bottom.txt : BOTTOM)
-(1200, 1020) (40, 40) (Spawnkey : BOTTOM)
+(1140, 1080) (340, 80) (LevelTransition : bottom.txt : BOTTOMC)
+(1200, 1000) (40, 40) (Spawnkey : BOTTOM)
