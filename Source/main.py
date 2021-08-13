@@ -241,6 +241,7 @@ class player(sprite):
         if halt is True:
             self.x_speed = 0
             self.y_speed = 0
+            self.PHYS.forces = []
 
         self.y_speed -= boost_y
 

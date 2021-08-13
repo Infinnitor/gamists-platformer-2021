@@ -116,7 +116,10 @@ class bubblewipe(sprite):
             assert surface is not None, "You forgot to pass in the correct surface dummy"
             draw.circle(surface, b.c, (b.x, b.y), b.r)
 
-    def __init__(self, direction, num_bubbles, tick, colour, game):
+    def __init__(self, direction, num_bubbles, tick, colour, randcol=False, randspeed=False, game=None):
+
+        assert game is not None, "You forgot to pass in game dummy"
+
         # LEFT, RIGHT, UP, DOWN
         self.d = direction
 
@@ -141,6 +144,8 @@ class bubblewipe(sprite):
         except ZeroDivisionError:
             self.bubble_speed = self.bubble_r * 0.3
 
+        self.randspeed = randspeed
+        self.randcol = randcol
 
         if self.d == "LEFT":
             self.place_x = game.win_w
@@ -198,7 +203,7 @@ class bubblewipe(sprite):
                     return
 
                 for y in range(self.num_bubbles_vert):
-                    new_b = self.bubble((self.place_x, y*self.bubble_r), self.bubble_r, self.c, self.bubble_speed, True, True)
+                    new_b = self.bubble((self.place_x, y*self.bubble_r), self.bubble_r, self.c, self.bubble_speed, self.randspeed, self.randcol)
                     new_b.add_default_attr(game)
 
                     self.bubble_list.append(new_b)
@@ -210,7 +215,7 @@ class bubblewipe(sprite):
                     return
 
                 for x in range(self.num_bubbles):
-                    new_b = self.bubble((x*self.bubble_r, self.place_y), self.bubble_r, self.c, self.bubble_speed, True, True)
+                    new_b = self.bubble((x*self.bubble_r, self.place_y), self.bubble_r, self.c, self.bubble_speed, self.randspeed, self.randcol)
                     new_b.add_default_attr(game)
 
                     self.bubble_list.append(new_b)
