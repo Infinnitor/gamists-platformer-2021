@@ -31,6 +31,7 @@ class game_camera():
         if self.locked is not False:
             self.x = self.locked[0]
             self.y = self.locked[1]
+            return
 
         if game.sprites["PLAYER"]:
             p = game.sprites["PLAYER"][0]

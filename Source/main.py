@@ -406,10 +406,7 @@ class player(sprite):
                     if t.collide(self):
                         self.set_spawn((t.x, t.y))
 
-                if t.layer == "HAZARD":
-                    t.collide(self)
-
-                if t.layer == "LEVELTRANSITION":
+                if t.layer in ("HAZARD", "LEVELTRANSITION", "CAMERACOLLIDER"):
                     t.collide(self)
 
                 if t.layer != "TERRAIN":
@@ -515,7 +512,7 @@ class player(sprite):
 
 def mainloop(game):
     game.add_sprite(player(config.player))
-    game.load_level('center.txt')
+    game.load_level('cave1.txt')
 
     while game.run:
         game.update_keys()

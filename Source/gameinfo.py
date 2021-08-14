@@ -165,8 +165,6 @@ class game_info():
                 self.oncam_sprites.append(s)
 
         if flagged("!camera_start"):
-            print('yeye')
-
             new_cam_pos = pyconfig.read_brackets(self.levelflags["!camera_start"])
             new_x, new_y = [int(i) for i in new_cam_pos[0].split(",")]
 
@@ -175,7 +173,7 @@ class game_info():
 
         self.camera_obj.locked = False
         if flagged("!camera_lock"):
-            cam_lock = pyconfig.read_brackets(self.levelflags["!camerastart"])
+            cam_lock = pyconfig.read_brackets(self.levelflags["!camera_lock"])
             self.camera_obj.locked = [int(i) for i in cam_lock[0].split(",")]
 
 

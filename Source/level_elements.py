@@ -19,6 +19,7 @@ class element(sprite):
 
 class camera_collider(element):
     layer = "CAMERACOLLIDER"
+    persistent = True
 
     def __init__(self, pos, size):
         self.x = pos[0]
@@ -36,6 +37,12 @@ class camera_collider(element):
         draw.rect(game.win, self.c, (rel_x, rel_y, self.w, self.h))
 
     def collide(self, collider):
+        if collider.layer == "PLAYER":
+            if self.x + self.w > collider.x + collider.w and self.x < collider.x:
+                if self.y + self.h > collider.y + collider.h and self.y < collider.y:
+                    collider.destroying = True
+                    return None
+
         if move.rect_collision(self, collider):
             return True
         return False
