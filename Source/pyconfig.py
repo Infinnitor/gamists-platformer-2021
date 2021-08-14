@@ -38,15 +38,19 @@ class text_player():
 
         self.__dict__ = values
 
-        # for k, v in zip(self.__dict__, self.__dict__.values()):
-        #     print(f"{k} : {v}")
-
 
 def text_level(path):
     file = text_clean(open(path, "r"))
 
     terrain = []
-    for val in file:
+
+    levelflags = {}
+    for val in sorted(file, reverse=True):
+        if val.startswith("!"):
+            f_name, f_value = val.replace(" ", "").split(':')
+            levelflags[f_name] = f_value
+            continue
+
         line = read_brackets(val.replace(" ", ""))
 
         items = []
@@ -56,7 +60,7 @@ def text_level(path):
 
         terrain.append(items)
 
-    return terrain
+    return terrain, levelflags
 
 
 def load():

@@ -120,7 +120,13 @@ class game_info():
 
     def load_level(self, name):
         levelpath = f"data/levels/{name}"
-        level_text = pyconfig.text_level(levelpath)
+
+        def flagged(f):
+            if self.levelflags.get(f):
+                return True
+            return False
+
+        level_text, self.levelflags = pyconfig.text_level(levelpath)
 
         level_classes = {
             "GroundTerrain" : level.platform,
@@ -157,6 +163,21 @@ class game_info():
         for layer in self.sprites:
             for s in self.sprites[layer]:
                 self.oncam_sprites.append(s)
+
+        if flagged("!camera_start"):
+            print('yeye')
+
+            new_cam_pos = pyconfig.read_brackets(self.levelflags["!camera_start"])
+            new_x, new_y = [int(i) for i in new_cam_pos[0].split(",")]
+
+            self.camera_obj.x = new_x
+            self.camera_obj.y = new_y
+
+        self.camera_obj.locked = False
+        if flagged("!camera_lock"):
+            cam_lock = pyconfig.read_brackets(self.levelflags["!camerastart"])
+            self.camera_obj.locked = [int(i) for i in cam_lock[0].split(",")]
+
 
     # Function that converts an orientation into actual numbers
     def orientate(self, h=False, v=False):

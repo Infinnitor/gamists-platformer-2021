@@ -193,9 +193,9 @@ class level_transition(element):
                     # Decide direction of the screen transition
                     if self.vertical is True:
                         if collider.y_speed > 0:
-                            direction = "DOWN"
-                        else:
                             direction = "UP"
+                        else:
+                            direction = "DOWN"
                     else:
                         if collider.PHYS.left:
                             direction = "RIGHT"
