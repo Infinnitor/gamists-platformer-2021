@@ -192,10 +192,14 @@ class game_info():
             self.camera_obj.x = new_x
             self.camera_obj.y = new_y
 
-        self.camera_obj.locked = False
-        if flagged("!camera_lock"):
-            cam_lock = pyconfig.read_brackets(self.levelflags["!camera_lock"])
-            self.camera_obj.locked = [int(i) for i in cam_lock[0].split(",")]
+        self.camera_obj.locked = [None, None]
+        if flagged("!lock_X"):
+            cam_lock_X = int(self.levelflags["!lock_X"])
+            self.camera_obj.locked[0] = cam_lock_X
+
+        if flagged("!lock_Y"):
+            cam_lock_Y = int(self.levelflags["!lock_Y"])
+            self.camera_obj.locked[1] = cam_lock_Y
 
     # Function that converts an orientation into actual numbers
     def orientate(self, h=False, v=False):

@@ -65,7 +65,7 @@ class audio_manager():
 class texture_manager():
     def __init__(self):
         self.platform_tex = spritesheet('data/sprites/textures/platform_rachel.png', (20, 20))
-        self.platform_tex1 = image.load(fix_path(('data/sprites/textures/amongus.png')))
+        self.amogus = spritesheet(fix_path(('data/sprites/textures/amongus.png')), (20, 20))
 
         self.hazard_tex = spritesheet('data/sprites/textures/hazard_spritesheet.png', (20, 20))
         self.screenwipe = image.load('data/sprites/ui/screenwipe_RED.png')
@@ -73,11 +73,11 @@ class texture_manager():
     def hazard(self):
         return random.choice(self.hazard_tex.list())
 
-    def platform(self):
+    def bean_texture(self):
         return random.choice(self.platform_tex.list())
 
-    def platform1(self):
-        return self.platform_tex1
+    def amongus(self):
+        return random.choice(self.amogus.list())
 
 
 class sprite_manager():

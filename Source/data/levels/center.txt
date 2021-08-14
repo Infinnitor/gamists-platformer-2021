@@ -1,7 +1,9 @@
 !camera_start : (640, 360)
-!camera_lock : (640, 360)
 
-!level_theme : MAIN2
+!lock_X : 640
+!lock_Y : 360
+
+!level_theme : MAIN
 
 (640, 360) (560, 20) (GroundTerrain)
 (1400, 360) (520, 20) (GroundTerrain)

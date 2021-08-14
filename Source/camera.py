@@ -11,7 +11,7 @@ class game_camera():
 
         self.camera_speed = 20
 
-        self.locked = False
+        self.locked = [None, None]
 
         x_collider_h = self.w // 2
         y_collider_h = self.h // 2
@@ -28,11 +28,6 @@ class game_camera():
         self.y = pos[1]
 
     def update_move(self, game):
-        if self.locked is not False:
-            self.x = self.locked[0]
-            self.y = self.locked[1]
-            return
-
         if game.sprites["PLAYER"]:
             p = game.sprites["PLAYER"][0]
             self.camera_speed = abs(p.x_speed)
@@ -46,10 +41,17 @@ class game_camera():
 
         player_pos = (p_x - game.win_w//2, p_y - game.win_h//2)
 
-        self.x = player_pos[0]
-        self.update_collision(game, x=True)
-        self.y = player_pos[1]
-        self.update_collision(game, y=True)
+        if self.locked[0] is not None:
+            self.x = self.locked[0]
+        else:
+            self.x = player_pos[0]
+            self.update_collision(game, x=True)
+
+        if self.locked[1] is not None:
+            self.y = self.locked[1]
+        else:
+            self.y = player_pos[1]
+            self.update_collision(game, y=True)
 
     def update_collision(self, game, x=False, y=False):
 

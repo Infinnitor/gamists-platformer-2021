@@ -100,19 +100,14 @@ class platform(element):
         self.c = (35, 35, 155)
 
     def generate_surface(self):
-
-        print('yeyeyeye')
-
-        assert self.leveltheme
-
         self.surface = Surface((self.w, self.h))
         for y in range(0, self.h, 20):
             for x in range(0, self.w, 20):
 
                 if self.leveltheme == "MAIN":
-                    choice = asset.TEXTURE.platform()
+                    choice = asset.TEXTURE.bean_texture()
                 else:
-                    choice = asset.TEXTURE.platform1()
+                    choice = asset.TEXTURE.amongus()
 
                 self.surface.blit(choice, (x, y))
 
