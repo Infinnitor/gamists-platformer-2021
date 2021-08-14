@@ -1,4 +1,7 @@
 !camera_start : (640, 360)
+!camera_lock : (640, 360)
+
+!level_theme : MAIN2
 
 (640, 360) (560, 20) (GroundTerrain)
 (1400, 360) (520, 20) (GroundTerrain)
@@ -11,22 +14,24 @@
 (1900, 940) (20, 120) (GroundTerrain)
 (640, 1060) (580, 20) (GroundTerrain)
 (1420, 1060) (500, 20) (GroundTerrain)
-(0, 0) (2560, 280) (CameraCollider)
-(0, 280) (1140, 20) (CameraCollider)
-(1460, 280) (1100, 80) (CameraCollider)
-(0, 300) (1140, 60) (CameraCollider)
-(0, 360) (640, 20) (CameraCollider)
-(1920, 360) (640, 280) (CameraCollider)
-(0, 380) (640, 240) (CameraCollider)
-(0, 620) (540, 20) (CameraCollider)
-(0, 640) (540, 20) (CameraCollider)
-(2020, 640) (540, 800) (CameraCollider)
-(0, 660) (540, 200) (CameraCollider)
-(0, 860) (640, 220) (CameraCollider)
-(1920, 880) (100, 200) (CameraCollider)
-(0, 1080) (1140, 80) (CameraCollider)
-(1480, 1080) (540, 80) (CameraCollider)
-(0, 1160) (2020, 280) (CameraCollider)
+
+
+# (0, 0) (2560, 280) (CameraCollider)
+# (0, 280) (1140, 20) (CameraCollider)
+# (1460, 280) (1100, 80) (CameraCollider)
+# (0, 300) (1140, 60) (CameraCollider)
+# (0, 360) (640, 20) (CameraCollider)
+# (1920, 360) (640, 280) (CameraCollider)
+# (0, 380) (640, 240) (CameraCollider)
+# (0, 620) (540, 20) (CameraCollider)
+# (0, 640) (540, 20) (CameraCollider)
+# (2020, 640) (540, 800) (CameraCollider)
+# (0, 660) (540, 200) (CameraCollider)
+# (0, 860) (640, 220) (CameraCollider)
+# (1920, 880) (100, 200) (CameraCollider)
+# (0, 1080) (1140, 80) (CameraCollider)
+# (1480, 1080) (540, 80) (CameraCollider)
+# (0, 1160) (2020, 280) (CameraCollider)
 
 # Top
 (1140, 280) (320, 80) (LevelTransition : top.txt : TOPC)

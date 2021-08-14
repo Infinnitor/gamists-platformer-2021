@@ -16,6 +16,9 @@ class element(sprite):
             return True
         return False
 
+    def generate_surface(self):
+        pass
+
 
 class camera_collider(element):
     layer = "CAMERACOLLIDER"
@@ -67,8 +70,6 @@ class checkpoint(element):
     def update_move(self, game):
         p_x, p_y = game.sprites["PLAYER"][0].spawnpos
 
-        # print(f"x: {self.x} px: {p_x}  y: {self.y}  py: {p_y}")
-
         if self.x == p_x and self.y == p_y:
             self.active = True
         else:
@@ -98,16 +99,26 @@ class platform(element):
 
         self.c = (35, 35, 155)
 
+    def generate_surface(self):
+
+        print('yeyeyeye')
+
+        assert self.leveltheme
+
         self.surface = Surface((self.w, self.h))
         for y in range(0, self.h, 20):
             for x in range(0, self.w, 20):
-                self.surface.blit(asset.TEXTURE.platform(), (x, y))
+
+                if self.leveltheme == "MAIN":
+                    choice = asset.TEXTURE.platform()
+                else:
+                    choice = asset.TEXTURE.platform1()
+
+                self.surface.blit(choice, (x, y))
 
     def update_draw(self, game):
         rel_x = self.x - game.camera_obj.x
         rel_y = self.y - game.camera_obj.y
-
-        # draw.rect(game.win, self.c, (rel_x, rel_y, self.w, self.h))
 
         game.win.blit(self.surface, (rel_x, rel_y))
 
@@ -125,6 +136,8 @@ class hazard(element):
 
         self.c = (35, 35, 155)
 
+    def generate_surface(self):
+
         def dead_tv_channel():
             surf = Surface((self.w, self.h))
             for y in range(0, self.h, 20):
@@ -140,7 +153,6 @@ class hazard(element):
     def collide(self, collider):
         if move.rect_collision(self, collider):
             collider.destroying = True
-            # print(f"we got {collider}")
 
     def update_move(self, game):
         self.surface.blit(self.tv_static[self.iter], (0, 0))
@@ -151,8 +163,6 @@ class hazard(element):
     def update_draw(self, game):
         rel_x = self.x - game.camera_obj.x
         rel_y = self.y - game.camera_obj.y
-
-        # draw.rect(game.win, self.c, (rel_x, rel_y, self.w, self.h))
 
         game.win.blit(self.surface, (rel_x, rel_y))
 

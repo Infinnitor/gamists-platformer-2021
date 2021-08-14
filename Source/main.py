@@ -513,7 +513,7 @@ class player(sprite):
 
 def mainloop(game):
     game.add_sprite(player(config.player))
-    game.load_level('cave2.txt', player_spawn=bool(config.player.auto_spawn))
+    game.load_level('center.txt', player_spawn=bool(config.player.auto_spawn))
 
     while game.run:
         game.update_keys()

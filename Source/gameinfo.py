@@ -3,15 +3,17 @@ environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 
 from sprite_class import sprite
 import move_utils as move
-import level_elements as level
-import camera
+import draw_utils as drawu
 
+import camera
+import level_elements as level
 import pyconfig
 
 import math
 import time
 import random
 import pygame
+pygame.font.init()
 
 
 class game_info():
@@ -139,6 +141,10 @@ class game_info():
 
         self.spawnkeys = {}
 
+        level_theme = "MAIN"
+        if flagged("!level_theme"):
+            level_theme = self.levelflags["!level_theme"]
+
         self.purge_sprites("CHECKPOINTS", "TERRAIN", "HAZARD", "LEVELTRANSITION", "CAMERACOLLIDER")
         for pos, size, sprite_type in level_text:
             if player_spawn is True:
@@ -168,7 +174,11 @@ class game_info():
                 self.spawnkeys[key] = pos
                 continue
 
-            self.add_sprite(level_classes[sprite_type](pos, size))
+            level_e = level_classes[sprite_type](pos, size)
+            level_e.leveltheme = level_theme
+            level_e.generate_surface()
+
+            self.add_sprite(level_e)
 
         self.oncam_sprites = []
         for layer in self.sprites:
@@ -186,7 +196,6 @@ class game_info():
         if flagged("!camera_lock"):
             cam_lock = pyconfig.read_brackets(self.levelflags["!camera_lock"])
             self.camera_obj.locked = [int(i) for i in cam_lock[0].split(",")]
-
 
     # Function that converts an orientation into actual numbers
     def orientate(self, h=False, v=False):
