@@ -210,7 +210,7 @@ class level_transition(element):
                             direction = "LEFT"
 
                     # self.levelwipe = drawu.screenwipe(direction, asset.TEXTURE.screenwipe, 40, (155, 35, 35), self.game)
-                    self.levelwipe = drawu.bubblewipe(direction=direction, num_bubbles=9, tick=1, colour=collider.c, randspeed=True, randcol=True, game=self.game)
+                    self.levelwipe = drawu.bubblewipe(direction=direction, num_bubbles=9, tick=1, colour=(35, 110, 125), randspeed=True, randcol=True, game=self.game)
                     self.game.add_sprite(self.levelwipe)
                     collider.PHYS.freeze = True
                     self.destroying = True

@@ -23,5 +23,7 @@ dash_strength : 9
 
 start_x : 1260
 start_y : 2000
+auto_spawn : 0
+
 player_width : 40
 player_height : 40

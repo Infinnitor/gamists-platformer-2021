@@ -118,7 +118,7 @@ class game_info():
                 else:
                     raise AttributeError(f"{part.shape} is not a valid shape for a particle")
 
-    def load_level(self, name):
+    def load_level(self, name, player_spawn=False):
         levelpath = f"data/levels/{name}"
 
         def flagged(f):
@@ -141,6 +141,17 @@ class game_info():
 
         self.purge_sprites("CHECKPOINTS", "TERRAIN", "HAZARD", "LEVELTRANSITION", "CAMERACOLLIDER")
         for pos, size, sprite_type in level_text:
+            if player_spawn is True:
+                if sprite_type == "Checkpoint" or sprite_type.startswith("Spawnkey"):
+                    p = self.sprites["PLAYER"][0]
+                    p.x = pos[0]
+                    p.y = pos[1]
+
+                    p.set_spawn(pos)
+
+                    # We only want this to happen once
+                    player_spawn = False
+
             if sprite_type.startswith("LevelTransition"):
                 # print(sprite_type)
                 t_info = sprite_type.split(":")

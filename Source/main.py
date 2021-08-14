@@ -96,8 +96,9 @@ class physics_info():
         self.head_hit = False
         self.ground_hit = False
 
+        # One has to be True by default lol
         self.left = False
-        self.right = False
+        self.right = True
 
         self.can_jump = False
 
@@ -512,7 +513,7 @@ class player(sprite):
 
 def mainloop(game):
     game.add_sprite(player(config.player))
-    game.load_level('cave1.txt')
+    game.load_level('cave2.txt', player_spawn=bool(config.player.auto_spawn))
 
     while game.run:
         game.update_keys()
