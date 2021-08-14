@@ -1,3 +1,6 @@
+!lock_X : 640
+!lock_Y : 360
+
 (680, 360) (440, 20) (GroundTerrain)
 (1320, 360) (640, 20) (GroundTerrain)
 (680, 380) (20, 420) (GroundTerrain)
@@ -40,14 +43,14 @@
 (1640, 1040) (320, 20) (GroundTerrain)
 (680, 1060) (1280, 20) (GroundTerrain)
 
-(0, 0) (2560, 300) (CameraCollider)
-(0, 300) (1060, 20) (CameraCollider)
-(1360, 300) (1200, 60) (CameraCollider)
-(0, 320) (1060, 40) (CameraCollider)
-(0, 360) (680, 20) (CameraCollider)
-(1960, 360) (600, 1080) (CameraCollider)
-(0, 380) (680, 700) (CameraCollider)
-(0, 1080) (1960, 360) (CameraCollider)
+# (0, 0) (2560, 300) (CameraCollider)
+# (0, 300) (1060, 20) (CameraCollider)
+# (1360, 300) (1200, 60) (CameraCollider)
+# (0, 320) (1060, 40) (CameraCollider)
+# (0, 360) (680, 20) (CameraCollider)
+# (1960, 360) (600, 1080) (CameraCollider)
+# (0, 380) (680, 700) (CameraCollider)
+# (0, 1080) (1960, 360) (CameraCollider)
 
 # Transitions
 (1060, 300) (300, 60) (LevelTransition : center.txt : BOTTOM)
