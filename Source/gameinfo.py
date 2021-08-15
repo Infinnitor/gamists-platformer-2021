@@ -430,6 +430,7 @@ class game_info():
         self.elapsed_time = time.time() - self.start_time
 
         self.framerate = 1 / self.delta_time
+
         if self.show_framerate:
             print(self.framerate, end="\r")
             self.add_text(self.framerate, (255, 255, 255))

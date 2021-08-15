@@ -69,6 +69,9 @@ class physics_info():
             f.tick_len = ticks
             f.tick = 0
 
+        def __repr__(f):
+            return f"Force: ({f.x_add}, {f.y_add}) Time: {f.tick_len}"
+
         def update(f, obj):
             obj.x_speed += f.x_add
             obj.y_speed += f.y_add
@@ -517,6 +520,7 @@ def mainloop(game):
     game.add_sprite(player(config.player))
     game.load_level('center.txt', player_spawn=bool(config.player.auto_spawn))
 
+    show_player_attr = False
     while game.run:
         game.update_keys()
 
@@ -525,6 +529,18 @@ def mainloop(game):
 
         if game.check_key(pygame.K_F1, buffer=True):
             game.show_framerate = not game.show_framerate
+
+        if game.check_key(pygame.K_F3, buffer=True):
+            show_player_attr = not show_player_attr
+
+        if show_player_attr is True:
+            p = game.sprites["PLAYER"][0]
+
+            for a in p.PHYS.__dict__:
+                if a == "p":
+                    continue
+
+                game.add_text(f"{a} : {p.PHYS.__dict__[a]}")
 
         game.update_draw()
 
