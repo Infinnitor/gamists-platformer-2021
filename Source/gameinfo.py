@@ -39,15 +39,23 @@ class game_info():
         self.update_keys()
 
         self.frames = 0
+        self.framerate = 0
+
         self.framecap = framecap
         self.show_framerate = show_framerate
 
         self.start_time = time.time()
+        self.last_frame_time = time.time()
+        self.delta_time = 1
+
         self.quit_key = quit_key
 
         self.shake_x = 0
         self.shake_y = 0
         self.shake = False
+
+        self.font_name = None
+        self.FONT = pygame.font.Font(self.font_name, self.win_w // 50)
 
         self.sprites = {
                         "BACKGROUND" : [],
@@ -388,6 +396,10 @@ class game_info():
         if self.framecap:
             self.clock.tick(self.framecap)
 
+        if self.show_framerate:
+            framerate_text = self.FONT.render(str(self.framerate), False, (255, 255, 255))
+            self.win.blit(framerate_text, (30, 30))
+
         # Scale the design screen to the size of the target screen
         frame = pygame.transform.scale(self.win, (self.user_w, self.user_h))
 
@@ -404,9 +416,13 @@ class game_info():
     def update_state(self):
 
         self.frames += 1
+
+        self.delta_time = time.time() - self.last_frame_time
+
+        self.last_frame_time = time.time()
         self.elapsed_time = time.time() - self.start_time
 
-        self.framerate = self.frames / self.elapsed_time
+        self.framerate = 1 / self.delta_time
         if self.show_framerate:
             print(self.framerate, end="\r")
 

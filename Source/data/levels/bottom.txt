@@ -1,4 +1,4 @@
-!lock_X : 640
+!lock_X : 680
 !lock_Y : 360
 
 (680, 360) (440, 20) (GroundTerrain)

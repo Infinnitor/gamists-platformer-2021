@@ -306,10 +306,12 @@ class player(sprite):
                 if self.PHYS.walljump_left:
                     self.x_speed = self.walljump_str
                     self.PHYS.add_force((self.x_acceleration * 2, 0), 10)
+                    self.PHYS.walljump_frames = 0
 
                 elif self.PHYS.walljump_right:
                     self.x_speed = self.walljump_str * -1
                     self.PHYS.add_force((self.x_acceleration * -2, 0), 10)
+                    self.PHYS.walljump_frames = 0
 
             if self.jumps > 0:
                 if game.check_key(pygame.K_SPACE, pygame.K_UP, buffer=True) or self.PHYS.on_ground: # Little fix here btw not sure if it causes any other problems
@@ -520,6 +522,9 @@ def mainloop(game):
 
         if game.check_key(pygame.K_0):
             print(game.sprites["PLAYER"][0])
+
+        if game.check_key(pygame.K_F1, buffer=True):
+            game.show_framerate = not game.show_framerate
 
         game.update_draw()
 
