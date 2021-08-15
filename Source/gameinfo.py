@@ -55,7 +55,9 @@ class game_info():
         self.shake = False
 
         self.font_name = None
-        self.FONT = pygame.font.Font(self.font_name, self.win_w // 50)
+        self.font_size = self.win_w // 50
+        self.FONT = pygame.font.Font(self.font_name, self.font_size)
+        self.render_text = []
 
         self.sprites = {
                         "BACKGROUND" : [],
@@ -361,6 +363,10 @@ class game_info():
         self.bg = obj.c
         obj.kill()
 
+    def add_text(self, string, c=(255, 255, 255)):
+        text_img = self.FONT.render(str(string), False, c)
+        self.render_text.append(text_img)
+
     def update_draw(self):
 
         for c in self.sprites:
@@ -387,6 +393,11 @@ class game_info():
             else:
                 cam_sprite.update_draw(self)
 
+        for y, f in enumerate(self.render_text):
+            y_pos = (y * self.font_size) + (self.font_size * 2)
+            self.win.blit(f, (self.font_size * 2, y_pos))
+        self.render_text = []
+
         self.update_screenshake()
 
     # Function for scaling the design screen to the target screen
@@ -395,10 +406,6 @@ class game_info():
         # Lock framerate
         if self.framecap:
             self.clock.tick(self.framecap)
-
-        if self.show_framerate:
-            framerate_text = self.FONT.render(str(self.framerate), False, (255, 255, 255))
-            self.win.blit(framerate_text, (30, 30))
 
         # Scale the design screen to the size of the target screen
         frame = pygame.transform.scale(self.win, (self.user_w, self.user_h))
@@ -425,6 +432,7 @@ class game_info():
         self.framerate = 1 / self.delta_time
         if self.show_framerate:
             print(self.framerate, end="\r")
+            self.add_text(self.framerate, (255, 255, 255))
 
         if not self.quit_key == None:
             if self.check_key(self.quit_key):

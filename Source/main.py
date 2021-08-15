@@ -521,7 +521,7 @@ def mainloop(game):
         game.update_keys()
 
         if game.check_key(pygame.K_0):
-            print(game.sprites["PLAYER"][0])
+            game.add_text(game.sprites["PLAYER"][0])
 
         if game.check_key(pygame.K_F1, buffer=True):
             game.show_framerate = not game.show_framerate
