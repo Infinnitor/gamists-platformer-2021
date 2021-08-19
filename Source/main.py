@@ -518,7 +518,7 @@ class player(sprite):
 
 def mainloop(game):
     game.add_sprite(player(config.player))
-    game.load_level('center.txt', player_spawn=bool(config.player.auto_spawn))
+    game.load_level('l.txt', player_spawn=bool(config.player.auto_spawn))
 
     show_player_attr = False
     while game.run:
@@ -557,8 +557,8 @@ game = game_info(
                 name="the mario killer",
                 win_w=1280,
                 win_h=720,
-                user_w=1280,
-                user_h=720,
+                user_w=1920,
+                user_h=1080,
                 bg=(0, 0, 0),
                 framecap=60,
                 show_framerate=False,
