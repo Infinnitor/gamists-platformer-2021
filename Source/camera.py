@@ -29,12 +29,12 @@ class game_camera():
 
     def update_move(self, game):
         if game.sprites["PLAYER"]:
-            p = game.sprites["PLAYER"][0]
-            self.camera_speed = abs(p.x_speed)
+            self.camera_speed = abs(game.PLAYER.x_speed)
             if self.camera_speed < 5:
                 self.camera_speed = 5
-            p_x = p.x
-            p_y = p.y
+
+            p_x = game.PLAYER.x
+            p_y = game.PLAYER.y
         else:
             p_x = game.win_w//2
             p_y = game.win_h//2

@@ -68,7 +68,7 @@ class checkpoint(element):
         self.active = False
 
     def update_move(self, game):
-        p_x, p_y = game.sprites["PLAYER"][0].spawnpos
+        p_x, p_y = game.PLAYER.spawnpos
 
         if self.x == p_x and self.y == p_y:
             self.active = True
@@ -230,11 +230,10 @@ class level_transition(element):
         if self.levelwipe.blocking:
             self.game.load_level(self.target)
             spawnpos = self.game.spawnkeys[self.k]
-            p = game.sprites["PLAYER"][0]
 
-            p.PHYS.freeze = False
-            p.set_spawn(spawnpos)
-            p.respawn(halt=True)
+            game.PLAYER.PHYS.freeze = False
+            game.PLAYER.set_spawn(spawnpos)
+            game.PLAYER.respawn(halt=True)
 
 
 class spawn_key(element):

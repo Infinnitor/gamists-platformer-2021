@@ -518,6 +518,8 @@ class player(sprite):
 
 def mainloop(game):
     game.add_sprite(player(config.player))
+    game.PLAYER = game.sprites["PLAYER"][0]
+
     game.load_level('l.txt', player_spawn=bool(config.player.auto_spawn))
 
     show_player_attr = False
@@ -525,7 +527,7 @@ def mainloop(game):
         game.update_keys()
 
         if game.check_key(pygame.K_0):
-            game.add_text(game.sprites["PLAYER"][0])
+            game.add_text(game.PLAYER)
 
         if game.check_key(pygame.K_F1, buffer=True):
             game.show_framerate = not game.show_framerate
@@ -534,13 +536,11 @@ def mainloop(game):
             show_player_attr = not show_player_attr
 
         if show_player_attr is True:
-            p = game.sprites["PLAYER"][0]
-
-            for a in p.PHYS.__dict__:
+            for a in game.PLAYER.PHYS.__dict__:
                 if a == "p":
                     continue
 
-                game.add_text(f"{a} : {p.PHYS.__dict__[a]}")
+                game.add_text(f"{a} : {game.PLAYER.PHYS.__dict__[a]}")
 
         game.update_draw()
 
@@ -557,8 +557,8 @@ game = game_info(
                 name="the mario killer",
                 win_w=1280,
                 win_h=720,
-                user_w=1920,
-                user_h=1080,
+                user_w=1280,
+                user_h=720,
                 bg=(0, 0, 0),
                 framecap=60,
                 show_framerate=False,
