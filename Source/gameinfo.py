@@ -219,6 +219,9 @@ class game_info():
 
             self.camera_obj.x = new_x
             self.camera_obj.y = new_y
+        else:
+            self.camera_obj.x = self.PLAYER.x
+            self.camera_obj.y = self.PLAYER.y
 
         self.camera_obj.locked = [None, None]
         if flagged("!lock_X"):
