@@ -3,7 +3,10 @@
 !lock_X : 640
 !lock_Y : 360
 
-!level_theme : MAIN2
+# !border_X : (640, 1920)
+# !border_Y : (360, 1080)
+
+!level_theme : MAIN
 
 (640, 360) (560, 20) (GroundTerrain)
 (1400, 360) (520, 20) (GroundTerrain)

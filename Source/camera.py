@@ -13,6 +13,8 @@ class game_camera():
         self.camera_speed = 20
 
         self.locked = [None, None]
+        self.border_x = [None, None]
+        self.border_y = [None, None]
 
         x_collider_h = self.w // 2
         y_collider_h = self.h // 2
@@ -32,60 +34,19 @@ class game_camera():
             p_x = game.win_w//2
             p_y = game.win_h//2
 
-        # if no !on_camera flag, start the level snaped to the player
-
         player_pos = (p_x - game.win_w//2, p_y - game.win_h//2)
 
-        hyp = math.dist((self.x, self.y), player_pos)
-        a = math.atan2(player_pos[1] - self.y, player_pos[0] - self.x)
+        if self.locked[0] is not None:
+            self.x = self.locked[0]
+        else:
+            self.x = player_pos[0]
+            self.update_collision(game, x=True)
 
-        xmove = math.cos(a) * hyp / self.camera_speed
-        ymove = math.sin(a) * hyp / self.camera_speed
-
-        print("X_speed: ", xmove, "Y_speed: ", ymove, "Hyp: ", hyp)
-
-        for iter in range(self.camera_speed):
-            if self.locked[0] is not None:
-                self.x = self.locked[0]
-                break
-
-            # if iter == self.camera_speed - 1:
-            if self.x - player_pos[0] < 30: # player is within threshold
-                print("x snap")
-                self.x = player_pos[0]
-                self.update_collision(game, x=True)
-                break
-
-            self.x += xmove
-            if self.update_collision(game, x=True): # camera has collided, stops moving
-                break
-
-        for iter in range(self.camera_speed):
-            if self.locked[1] is not None:
-                self.y = self.locked[1]
-                break
-
-            if self.y - player_pos[1] < 30: # player is within threshold
-                print("y snap")
-                self.y = player_pos[1]
-                self.update_collision(game, y=True)
-                break
-
-            self.y += ymove
-            if self.update_collision(game, y=True): # camera has collided, stops moving
-                break
-
-        # if self.locked[0] is not None:
-        #     self.x = self.locked[0]
-        # else:
-        #     self.x = player_pos[0]
-        #     self.update_collision(game, x=True)
-        #
-        # if self.locked[1] is not None:
-        #     self.y = self.locked[1]
-        # else:
-        #     self.y = player_pos[1]
-        #     self.update_collision(game, y=True)
+        if self.locked[1] is not None:
+            self.y = self.locked[1]
+        else:
+            self.y = player_pos[1]
+            self.update_collision(game, y=True)
 
     def update_collision(self, game, x=False, y=False):
 
@@ -106,14 +67,21 @@ class game_camera():
                     # Move player back based on the overlap between player right side and collider left side
                     depth = self.x + self.w - t.x
                     self.x -= depth
-                    return True
 
                 if move.rect_collision(self.body["LEFT"], t):
 
                     # Move player back based on the overlap between player left side and collider right side
                     depth = t.x + t.w - self.x
                     self.x += depth
-                    return True
+
+            xr1, xr2 = self.border_x
+            if xr1 is not None:
+                if self.x < xr1:
+                    self.x = xr1
+
+            if xr2 is not None:
+                if self.x + self.w > xr2:
+                    self.x = xr2 - self.w
 
         # Update collisions on Y axis
         elif y is True:
@@ -129,18 +97,20 @@ class game_camera():
                     # Move the player up based on overlap between player bottom and collider top
                     depth = self.y + self.h - t.y
                     self.y -= depth
-                    print('ycollide')
-                    return True
 
                 if move.rect_collision(self.body["UP"], t):
                     # Move the player back down based on overlap between collider bottom and player top
                     depth = t.y + t.h - self.y
                     self.y += depth
-                    print('ycollide')
-                    return True
 
-        # No collisions occurred
-        return False
+            yr1, yr2 = self.border_y
+            if yr1 is not None:
+                if self.y < yr1:
+                    self.y = yr1
+
+            if yr2 is not None:
+                if self.y + self.h > yr2:
+                    self.y = yr2 - self.h
 
     def get_relative(self, sprite):
         pass

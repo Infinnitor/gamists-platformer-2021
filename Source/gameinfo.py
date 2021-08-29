@@ -232,6 +232,14 @@ class game_info():
             cam_lock_Y = int(self.levelflags["!lock_Y"])
             self.camera_obj.locked[1] = cam_lock_Y
 
+        if flagged("!border_X"):
+            cam_range_X = pyconfig.read_brackets(self.levelflags["!border_X"])
+            self.camera_obj.border_x = [int(i) for i in cam_range_X[0].split(",")]
+
+        if flagged("!border_Y"):
+            cam_range_Y = pyconfig.read_brackets(self.levelflags["!border_Y"])
+            self.camera_obj.border_y = [int(i) for i in cam_range_Y[0].split(",")]
+
     # Function that converts an orientation into actual numbers
     def orientate(self, h=False, v=False):
 
