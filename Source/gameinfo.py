@@ -9,6 +9,9 @@ import camera
 import level_elements as level
 import pyconfig
 
+from asset import fix_path
+import asset
+
 import math
 import time
 import random
@@ -75,6 +78,8 @@ class game_info():
 
         self.camera_obj = camera.game_camera((0, 0), (self.win_w, self.win_h))
         self.oncam_sprites = []
+
+        self.last_mapsize = (0, 0)
 
     class particle(sprite):
         def __init__(part, pos, size, angle, speed, lifetime, colour, shape="CIRCLE", sprite=None):
@@ -155,6 +160,19 @@ class game_info():
         if flagged("!level_theme"):
             level_theme = self.levelflags["!level_theme"]
 
+        map = None
+        if flagged("!platform_map"):
+            map_size = pyconfig.read_brackets(self.levelflags["!platform_map"])
+            map_size = [int(i) for i in map_size[0].split(",")]
+
+            map = pygame.Surface(map_size)
+            platform_BG = asset.TEXTURE.platform_map
+            pbg_x, pbg_y = platform_BG.get_size()
+
+            for y in range(0, (map_size[1] // pbg_y) + pbg_y, pbg_y):
+                for x in range(0, (map_size[0] // pbg_x) + pbg_x, pbg_x):
+                    map.blit(platform_BG, (x, y))
+
         self.purge_sprites("CHECKPOINTS", "TERRAIN", "HAZARD", "LEVELTRANSITION", "CAMERACOLLIDER")
         for pos, size, sprite_type in level_text:
             if player_spawn is True:
@@ -186,7 +204,7 @@ class game_info():
 
             level_e = level_classes[sprite_type](pos, size)
             level_e.leveltheme = level_theme
-            level_e.generate_surface()
+            level_e.generate_surface(map)
 
             self.add_sprite(level_e)
 

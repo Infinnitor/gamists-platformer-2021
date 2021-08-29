@@ -63,6 +63,7 @@
 (1300, 2280) (140, 20) (GroundTerrain)
 (880, 2300) (620, 20) (GroundTerrain)
 (660, 2320) (1960, 20) (GroundTerrain)
+
 (0, 0) (3280, 380) (CameraCollider)
 (0, 380) (660, 20) (CameraCollider)
 (2620, 380) (660, 480) (CameraCollider)

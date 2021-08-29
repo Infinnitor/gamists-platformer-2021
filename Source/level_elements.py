@@ -6,7 +6,6 @@ import draw_utils as drawu
 
 from colour_manager import colours
 
-import random
 import asset
 
 
@@ -16,7 +15,7 @@ class element(sprite):
             return True
         return False
 
-    def generate_surface(self):
+    def generate_surface(self, map=None):
         pass
 
 
@@ -97,19 +96,24 @@ class platform(element):
         self.w = size[0]
         self.h = size[1]
 
-        self.c = (35, 35, 155)
+        self.c = colours.blue
 
-    def generate_surface(self):
+    def generate_surface(self, platform_map=None):
         self.surface = Surface((self.w, self.h))
-        for y in range(0, self.h, 20):
-            for x in range(0, self.w, 20):
 
-                if self.leveltheme == "MAIN":
-                    choice = asset.TEXTURE.bean_texture()
-                else:
-                    choice = asset.TEXTURE.amongus()
+        if platform_map is None:
+            for y in range(0, self.h, 20):
+                for x in range(0, self.w, 20):
 
-                self.surface.blit(choice, (x, y))
+                    if self.leveltheme == "MAIN":
+                        choice = asset.TEXTURE.bean_texture()
+                    else:
+                        choice = asset.TEXTURE.amongus()
+
+                    self.surface.blit(choice, (x, y))
+
+        else:
+            self.surface.blit(platform_map, (0, 0), (self.x, self.y, self.w, self.h))
 
     def update_draw(self, game):
         rel_x = self.x - game.camera_obj.x
@@ -131,7 +135,7 @@ class hazard(element):
 
         self.c = (35, 35, 155)
 
-    def generate_surface(self):
+    def generate_surface(self, map=None):
 
         def dead_tv_channel():
             surf = Surface((self.w, self.h))

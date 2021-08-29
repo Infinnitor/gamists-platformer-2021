@@ -520,7 +520,7 @@ def mainloop(game):
     game.add_sprite(player(config.player))
     game.PLAYER = game.sprites["PLAYER"][0]
 
-    game.load_level('l.txt', player_spawn=bool(config.player.auto_spawn))
+    game.load_level('room1.txt', player_spawn=bool(config.player.auto_spawn))
 
     show_player_attr = False
     while game.run:

@@ -1,11 +1,25 @@
 from pygame import image, mixer, Surface
 from colour_manager import colours
 import random
+import os
+import sys
 
 
-# This will actually do something later on trust me bro
-def fix_path(p):
-    return p
+if getattr(sys, 'frozen', False):
+    EXE_PATH = os.path.dirname(sys.executable)
+elif __file__:
+    EXE_PATH = os.path.dirname(__file__)
+
+
+def fix_path(relative_path):
+    abs_path = os.path.join(EXE_PATH, relative_path)
+
+    if sys.platform in ('linux', 'linux2'):
+        abs_path = abs_path.replace('\\', '/')
+    else:
+        abs_path = abs_path.replace('/', '\\')
+
+    return abs_path
 
 
 # Wacky spritesheet innit??
@@ -68,7 +82,9 @@ class texture_manager():
         self.amogus = spritesheet(fix_path(('data/sprites/textures/amongus.png')), (20, 20))
 
         self.hazard_tex = spritesheet('data/sprites/textures/hazard_spritesheet.png', (20, 20))
+
         self.screenwipe = image.load('data/sprites/ui/screenwipe_RED.png')
+        self.platform_map = image.load(fix_path('data/sprites/textures/ape_out.png'))
 
     def hazard(self):
         return random.choice(self.hazard_tex.list())
