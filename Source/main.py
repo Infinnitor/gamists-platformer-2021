@@ -32,6 +32,7 @@ class deadplayer(sprite):
 
         self.death_transition = None
         self.frametick = None
+        self.surface = None
 
     def update_move(self, game):
         if self.frametick is None:
@@ -42,6 +43,9 @@ class deadplayer(sprite):
             self.death_transition = drawu.bubblewipe(direction="DOWN", num_bubbles=9, tick=1, colour=colours.red, randspeed=True, randcol=True, game=game)
             game.add_sprite(self.death_transition)
 
+        if self.surface is None:
+            self.surface = game.PLAYER.surface
+
         self.y += self.sink_speed
 
     def update_draw(self, game):
@@ -49,7 +53,8 @@ class deadplayer(sprite):
         rel_y = self.y - game.camera_obj.y
 
         # Draw player and its colliders
-        pygame.draw.rect(game.win, self.c, (rel_x, rel_y, self.w, self.h))
+        # pygame.draw.rect(game.win, self.c, (rel_x, rel_y, self.w, self.h))
+        game.win.blit(self.surface, (rel_x, rel_y))
 
     def sunk(self):
         if self.death_transition is not None:
