@@ -250,6 +250,9 @@ class player(sprite):
         self.set_spawn((self.x, self.y))
         self.dead_player = None
 
+        self.surface = pygame.Surface((self.w, self.h))
+        self.surface.blit(asset.TEXTURE.platform_map, (0, 0, self.w, self.h))
+
     def set_spawn(self, pos):
         self.spawnpos = pos
 
@@ -502,7 +505,8 @@ class player(sprite):
         rel_y = self.y - game.camera_obj.y
 
         # Draw player and its colliders
-        pygame.draw.rect(game.win, c, (rel_x, rel_y, self.w, self.h))
+        # pygame.draw.rect(game.win, c, (rel_x, rel_y, self.w, self.h))
+        game.win.blit(self.surface, (rel_x, rel_y))
 
     def update_destroy(self, game):
         if self.dead_player is None:

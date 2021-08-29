@@ -85,6 +85,7 @@ class texture_manager():
 
         self.screenwipe = image.load('data/sprites/ui/screenwipe_RED.png')
         self.platform_map = image.load(fix_path('data/sprites/textures/ape_out.png'))
+        self.bg_texture = image.load(fix_path('data/sprites/textures/ape_bg.png'))
 
     def hazard(self):
         return random.choice(self.hazard_tex.list())

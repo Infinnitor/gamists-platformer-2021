@@ -9,6 +9,35 @@ from colour_manager import colours
 import asset
 
 
+class background(sprite):
+    layer = "BACKGROUND"
+    persistent = True
+
+    def __init__(self, pos, size):
+        self.x = pos[0]
+        self.y = pos[1]
+
+        self.w = size[0]
+        self.h = size[1]
+
+        self.surface = Surface((self.w, self.h))
+
+    def generate_surface(self, map=None):
+        self.texture = asset.TEXTURE.bg_texture
+        pbg_x, pbg_y = self.texture.get_size()
+
+        # Made a surface the size of the entire level, with a repeated texture on it
+        for y in range(0, (self.h // pbg_y) * pbg_y + pbg_y, pbg_y):
+            for x in range(0, (self.w // pbg_x) * pbg_x + pbg_x, pbg_x):
+                self.surface.blit(self.texture, (x, y))
+
+    def update_draw(self, game):
+        rel_x = self.x - game.camera_obj.x
+        rel_y = self.y - game.camera_obj.y
+
+        game.win.blit(self.surface, (rel_x, rel_y))
+
+
 class element(sprite):
     def collide(self, collider):
         if move.rect_collision(self, collider):

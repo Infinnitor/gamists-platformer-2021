@@ -151,7 +151,8 @@ class game_info():
             "Checkpoint" : level.checkpoint,
             "Hazard" : level.hazard,
             "LevelTransition" : level.level_transition,
-            "Spawnkey" : level.spawn_key
+            "Spawnkey" : level.spawn_key,
+            "Background" : level.background,
         }
 
         self.spawnkeys = {}
@@ -169,11 +170,14 @@ class game_info():
             platform_BG = asset.TEXTURE.platform_map
             pbg_x, pbg_y = platform_BG.get_size()
 
-            for y in range(0, (map_size[1] // pbg_y) + pbg_y, pbg_y):
-                for x in range(0, (map_size[0] // pbg_x) + pbg_x, pbg_x):
+            # Made a surface the size of the entire level, with a repeated texture on it
+            for y in range(0, (map_size[1] // pbg_y) * pbg_y + pbg_y, pbg_y):
+                for x in range(0, (map_size[0] // pbg_x) * pbg_x + pbg_x, pbg_x):
                     map.blit(platform_BG, (x, y))
 
-        self.purge_sprites("CHECKPOINTS", "TERRAIN", "HAZARD", "LEVELTRANSITION", "CAMERACOLLIDER")
+        self.purge_sprites("CHECKPOINTS", "TERRAIN", "HAZARD", "LEVELTRANSITION", "CAMERACOLLIDER", "BACKGROUND")
+
+        surface_sprites = ("GroundTerrain", "Hazard", "Background")
         for pos, size, sprite_type in level_text:
             if player_spawn is True:
                 if sprite_type == "Checkpoint" or sprite_type.startswith("Spawnkey"):
@@ -204,7 +208,9 @@ class game_info():
 
             level_e = level_classes[sprite_type](pos, size)
             level_e.leveltheme = level_theme
-            level_e.generate_surface(map)
+
+            if sprite_type in surface_sprites:
+                level_e.generate_surface(map)
 
             self.add_sprite(level_e)
 

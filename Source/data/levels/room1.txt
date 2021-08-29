@@ -1,6 +1,9 @@
 !border_X : (660, 2620)
 !border_Y : (380, 2340)
 
+!platform_map : (2700, 2500)
+(660, 380) (2620, 2340) (Background)
+
 (660, 380) (1960, 20) (GroundTerrain)
 (660, 400) (1520, 20) (GroundTerrain)
 (2600, 400) (20, 460) (GroundTerrain)
