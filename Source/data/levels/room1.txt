@@ -1,6 +1,7 @@
 !border_X : (660, 2620)
 !border_Y : (380, 2340)
 
+!level_theme : APEOUT
 !platform_map : (2700, 2500)
 (660, 380) (2620, 2340) (Background)
 

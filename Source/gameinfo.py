@@ -157,17 +157,23 @@ class game_info():
 
         self.spawnkeys = {}
 
+        # Define defaults for theme
+        map = None
+        platform_BG = asset.TEXTURE._blank
         level_theme = "MAIN"
+
         if flagged("!level_theme"):
             level_theme = self.levelflags["!level_theme"]
+            assert level_theme in asset.VALID_LEVELTHEMES, f"{level_theme} is an invalid level theme. Must be in {asset.VALID_LEVELTHEMES}"
 
-        map = None
+            if level_theme == "APEOUT" and flagged("!platform_map"):
+                platform_BG = asset.TEXTURE.platform_map
+
         if flagged("!platform_map"):
             map_size = pyconfig.read_brackets(self.levelflags["!platform_map"])
             map_size = [int(i) for i in map_size[0].split(",")]
 
             map = pygame.Surface(map_size)
-            platform_BG = asset.TEXTURE.platform_map
             pbg_x, pbg_y = platform_BG.get_size()
 
             # Made a surface the size of the entire level, with a repeated texture on it

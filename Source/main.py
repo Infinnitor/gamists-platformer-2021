@@ -485,18 +485,18 @@ class player(sprite):
         # Effects stuff first
         if self.PHYS.head_hit:
             game.init_screenshake(4, 4)
-            part = particles.TEMPLATES.circle.modify(size=12, speed=3, colour=(255, 124, 0), lifetime=30)
+            part = particles.TEMPLATES.circle.modify(size=12, speed=3, colour=colours.black, lifetime=30)
             part_shortcuts.explosion(10, (self.x + self.w//2, self.y), part, layer="LOWPARTICLE", game=game)
 
         if self.PHYS.ground_hit:
-            part = particles.TEMPLATES.circle.modify(size=12, speed=3, colour=(255, 124, 0), lifetime=30)
+            part = particles.TEMPLATES.circle.modify(size=12, speed=3, colour=colours.black, lifetime=30)
             part_shortcuts.explosion(20, (self.x + self.w//2, self.y + self.h), part, layer="HIGHPARTICLE", game=game)
 
-        cols = ((35, 35, 155), (35, 155, 35), (155, 35, 35))
+        # cols = ((35, 35, 155), (35, 155, 35), (155, 35, 35))
         # if self.PHYS.walljump_frames > 0:
         #     c = (0, 255, 0)
 
-        c = cols[int(self.jumps)]
+        c = colours.black
         if self.PHYS.dash:
             part = particles.TEMPLATES.circle.modify(size=10, speed=3, colour=c, lifetime=15)
             part_shortcuts.explosion(5, (self.x + self.w//2, random.randint(int(self.y), int(self.y + self.h))), part, layer="LOWPARTICLE", game=game)

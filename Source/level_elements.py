@@ -9,9 +9,21 @@ from colour_manager import colours
 import asset
 
 
-class background(sprite):
+class element(sprite):
+    def collide(self, collider):
+        if move.rect_collision(self, collider):
+            return True
+        return False
+
+    def generate_surface(self, map=None):
+        pass
+
+
+class background(element):
     layer = "BACKGROUND"
     persistent = True
+
+    leveltheme = "MAIN"
 
     def __init__(self, pos, size):
         self.x = pos[0]
@@ -23,7 +35,13 @@ class background(sprite):
         self.surface = Surface((self.w, self.h))
 
     def generate_surface(self, map=None):
-        self.texture = asset.TEXTURE.bg_texture
+        self.texture = asset.TEXTURE._blank
+
+        if self.leveltheme == "APEOUT":
+            self.texture = asset.TEXTURE.bg_texture
+        elif self.leveltheme == "MAIN":
+            self.texture = asset.TEXTURE.bg_texture
+
         pbg_x, pbg_y = self.texture.get_size()
 
         # Made a surface the size of the entire level, with a repeated texture on it
@@ -36,16 +54,6 @@ class background(sprite):
         rel_y = self.y - game.camera_obj.y
 
         game.win.blit(self.surface, (rel_x, rel_y))
-
-
-class element(sprite):
-    def collide(self, collider):
-        if move.rect_collision(self, collider):
-            return True
-        return False
-
-    def generate_surface(self, map=None):
-        pass
 
 
 class camera_collider(element):
@@ -117,6 +125,7 @@ class checkpoint(element):
 
 class platform(element):
     layer = "TERRAIN"
+    leveltheme = "MAIN"
 
     def __init__(self, pos, size):
         self.x = pos[0]
@@ -127,22 +136,24 @@ class platform(element):
 
         self.c = colours.blue
 
-    def generate_surface(self, platform_map=None):
+    def generate_surface(self, map=None):
         self.surface = Surface((self.w, self.h))
 
-        if platform_map is None:
+        self.texture = asset.TEXTURE._blank
+        if self.leveltheme == "BEAN":
+            self.texture = asset.TEXTURE.bean_texture()
+        elif self.leveltheme == "MAIN":
+            self.texture = asset.TEXTURE.bean_texture()
+
+        if map is None:
             for y in range(0, self.h, 20):
                 for x in range(0, self.w, 20):
 
-                    if self.leveltheme == "MAIN":
-                        choice = asset.TEXTURE.bean_texture()
-                    else:
-                        choice = asset.TEXTURE.amongus()
+                    self.surface.blit(self.texture, (x, y))
 
-                    self.surface.blit(choice, (x, y))
-
+        # If there is an active platform map
         else:
-            self.surface.blit(platform_map, (0, 0), (self.x, self.y, self.w, self.h))
+            self.surface.blit(map, (0, 0), (self.x, self.y, self.w, self.h))
 
     def update_draw(self, game):
         rel_x = self.x - game.camera_obj.x

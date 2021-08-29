@@ -78,9 +78,9 @@ class audio_manager():
 
 class texture_manager():
     def __init__(self):
-        self.platform_tex = spritesheet('data/sprites/textures/platform_rachel.png', (20, 20))
-        self.amogus = spritesheet(fix_path(('data/sprites/textures/amongus.png')), (20, 20))
+        self._blank = image.load(fix_path(('data/sprites/textures/amongus.png')))
 
+        self.platform_tex = spritesheet('data/sprites/textures/platform_rachel.png', (20, 20))
         self.hazard_tex = spritesheet('data/sprites/textures/hazard_spritesheet.png', (20, 20))
 
         self.screenwipe = image.load('data/sprites/ui/screenwipe_RED.png')
@@ -92,9 +92,6 @@ class texture_manager():
 
     def bean_texture(self):
         return random.choice(self.platform_tex.list())
-
-    def amongus(self):
-        return random.choice(self.amogus.list())
 
 
 class sprite_manager():
@@ -111,3 +108,6 @@ def init():
     SPRITE = sprite_manager()
 
     AMONGUS = image.load(fix_path(('data/sprites/textures/amongus.png')))
+
+
+VALID_LEVELTHEMES = ("MAIN", "APEOUT", "BEAN")
