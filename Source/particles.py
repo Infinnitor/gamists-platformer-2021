@@ -23,8 +23,8 @@ class particle(sprite):
 
     def angle_calc(self, angle):
         self.a = angle
-        self.xmove = math.cos(self.a)
-        self.ymove = math.sin(self.a)
+        self.xmove = math.cos(self.a) * self.speed
+        self.ymove = math.sin(self.a) * self.speed
 
     def life_calc(self, lifetime):
         self.lifetime = lifetime
@@ -124,6 +124,8 @@ class temp():
 
         if size is not None:
             c.size = size
+        if speed is not None:
+            c.speed = speed
         if angle is not None:
             c.angle_calc(angle)
         if colour is not None:
