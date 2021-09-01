@@ -557,9 +557,9 @@ def mainloop(game):
         game.update_state()
 
         if game.check_key(pygame.K_q, buffer=True):
-            return True
-
-    return False
+            game.purge_sprites()
+            config.load()
+            mainloop(game)
 
 
 game = game_info(
@@ -575,11 +575,4 @@ game = game_info(
 
 # Asset must be initialised after game sets the display surface
 asset.init()
-
-
-while True:
-    if mainloop(game):
-        game.purge_sprites()
-        config.load()
-    else:
-        break
+mainloop(game)
