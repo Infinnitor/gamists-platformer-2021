@@ -392,7 +392,6 @@ def mainloop(game, levelpath):
 
         game.update_keys()
 
-
         if game.frames % int(gridsquare_size[0]) == 0:
             a_rect = rect_finder(elements[e_iter], game)
             if a_rect is not None:

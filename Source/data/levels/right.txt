@@ -1,4 +1,10 @@
-!camera_start : (640, 360)
+!border_X : (640, 1920)
+!border_Y : (360, 1080)
+
+!level_theme : APEOUT
+!platform_map : (1920, 1080)
+
+(640, 360) (4000, 1380) (Background)
 
 (640, 360) (1280, 20) (GroundTerrain)
 (640, 380) (20, 300) (GroundTerrain)
@@ -21,14 +27,6 @@
 (640, 1040) (700, 20) (GroundTerrain)
 (640, 1060) (1280, 20) (GroundTerrain)
 
-(0, 0) (2560, 360) (CameraCollider)
-(0, 360) (640, 20) (CameraCollider)
-(1920, 360) (640, 1080) (CameraCollider)
-(0, 380) (640, 340) (CameraCollider)
-(0, 720) (560, 220) (CameraCollider)
-(0, 940) (640, 140) (CameraCollider)
-(0, 1080) (1920, 360) (CameraCollider)
-
 # Transitions
-(560, 720) (80, 220) (LevelTransition : center.txt : RIGHT)
+(560, 720) (80, 220) (LevelTransition : hazard_tutorial.txt : RIGHT)
 (640, 840) (40, 40) (Spawnkey : RIGHTC)

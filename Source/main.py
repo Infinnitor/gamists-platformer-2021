@@ -529,7 +529,7 @@ def mainloop(game):
     game.add_sprite(player(config.player))
     game.PLAYER = game.sprites["PLAYER"][0]
 
-    game.load_level('room1.txt', player_spawn=bool(config.player.auto_spawn))
+    game.load_level('center.txt', player_spawn=bool(config.player.auto_spawn))
 
     show_player_attr = False
     while game.run:
@@ -545,6 +545,7 @@ def mainloop(game):
             show_player_attr = not show_player_attr
 
         if show_player_attr is True:
+            game.add_text(f'X: {round(game.PLAYER.x)} Y: {round(game.PLAYER.y)}')
             for a in game.PLAYER.PHYS.__dict__:
                 if a == "p":
                     continue

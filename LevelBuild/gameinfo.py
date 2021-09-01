@@ -7,13 +7,80 @@
 from os import environ
 environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 
-from sprite_class import sprite
-
 import math
 import time
 import random
 import pygame
 pygame.font.init()
+
+
+class sprite():
+
+    def __repr__(self):
+        self.highlight = 30
+        return f"{self.layer} at position {self.x}, {self.y}"
+
+    def update_move(self, game):
+        pass
+
+    def update_draw(self, game):
+        pass
+
+    def update_destroy(self, game):
+        pass
+
+    def update_highlight(self, game):
+        if self.highlight > 0:
+            self.draw_highlight(game)
+            self.highlight -= 1
+
+    def draw_highlight(self, game):
+        try:
+            highlight_r = self.r
+        except AttributeError:
+            highlight_r = 10
+
+        pygame.draw.circle(game.win, colours.green, (self.x, self.y), highlight_r)
+
+    def add_default_attr(self, game):
+        self.destroy = False
+        self.destroying = False
+        self.highlight = 0
+
+    def kill(self):
+        self.destroy = True
+
+    def onscreen(self, game):
+        if self.x < 0 or self.x > game.win_w:
+            return False
+        if self.y < 0 or self.y > game.win_h:
+            return False
+
+        return True
+
+    def onscreen_info(self, game):
+        if self.x < 0 or self.x > game.win_w:
+            return "X"
+        if self.y < 0 or self.y > game.win_h:
+            return "Y"
+
+        return ""
+
+    def center_image_pos(self, sprite, pos):
+        i = sprite.get_size()
+
+        x = pos[0] - (i[0] // 2)
+        y = pos[1] - (i[0] // 2)
+
+        return x, y
+
+    def blit_rotate(self, image, angle, game):
+        img = pygame.transform.rotate(image, angle)
+
+        b_x = self.x - img.get_width()//2
+        b_y = self.y - img.get_height()//2
+
+        game.win.blit(img, (b_x, b_y))
 
 
 class game_info():
@@ -62,54 +129,6 @@ class game_info():
         self.sprites = []
 
         self.font = pygame.font.SysFont("Comic sans", 30)
-
-    class particle(sprite):
-        def __init__(part, pos, size, angle, speed, lifetime, colour, shape="CIRCLE", sprite=None):
-            part.x = pos[0]
-            part.y = pos[1]
-            if not sprite:
-                part.size = size
-                part.sprite_bool = False
-
-                part.shape = shape
-
-            else:
-                part.sprite = sprite
-                part.sprite_bool = True
-
-            part.speed = speed
-            part.angle = angle
-
-            part.lifetime = lifetime
-            part.life = 0
-            part.lifeloss = size / lifetime
-
-            part.xmove = math.cos(math.radians(part.angle)) * speed
-            part.ymove = math.sin(math.radians(part.angle)) * speed
-
-            part.colour = colour
-            part.destroy = False
-
-        def update_move(part, game):
-            part.x += part.xmove
-            part.y += part.ymove
-
-            part.size -= part.lifeloss
-
-            part.life += 1
-            if part.life > part.lifetime:
-                part.destroy = True
-
-        def update_draw(part, game):
-            if not part.sprite_bool:
-                if part.shape == "CIRCLE":
-                    pygame.draw.circle(game.win, part.colour, (part.x, part.y), part.size)
-
-                elif part.shape == "SQUARE":
-                    pygame.draw.rect(game.win, part.colour, (part.x, part.y, part.size, part.size))
-
-                else:
-                    raise AttributeError(f"{part.shape} is not a valid shape for a particle")
 
     # Function that converts an orientation into actual numbers
     def orientate(self, h=False, v=False):

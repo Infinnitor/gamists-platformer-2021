@@ -50,7 +50,7 @@ class game_camera():
 
     def update_collision(self, game, x=False, y=False):
 
-        cam_colliders = game.sprites["CAMERACOLLIDER"] + game.sprites["LEVELTRANSITION"]
+        cam_colliders = game.sprites["CAMERACOLLIDER"]
 
         # Update collisions on X axis
         if x is True:

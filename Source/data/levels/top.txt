@@ -1,5 +1,10 @@
-!lock_X : 640
-!lock_Y : 360
+!border_X : (640, 1920)
+!border_Y : (360, 1080)
+
+!level_theme : APEOUT
+!platform_map : (1920, 1080)
+
+(640, 360) (4000, 1380) (Background)
 
 (640, 360) (1280, 20) (GroundTerrain)
 (640, 380) (20, 540) (GroundTerrain)
@@ -9,14 +14,6 @@
 (640, 920) (220, 140) (GroundTerrain)
 (640, 1060) (540, 20) (GroundTerrain)
 (1380, 1060) (540, 20) (GroundTerrain)
-
-# (0, 0) (2560, 360) (CameraCollider)
-# (0, 360) (640, 20) (CameraCollider)
-# (1920, 360) (640, 1080) (CameraCollider)
-# (0, 380) (640, 700) (CameraCollider)
-# (0, 1080) (1120, 80) (CameraCollider)
-# (1440, 1080) (480, 80) (CameraCollider)
-# (0, 1160) (1920, 280) (CameraCollider)
 
 # Transitions
 (1120, 1080) (320, 80) (LevelTransition : center.txt : TOP)
