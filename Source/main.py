@@ -278,7 +278,7 @@ class player(sprite):
             return
 
         if game.check_key(pygame.K_r, buffer=True):
-            self.respawn()
+            self.destroying = True
 
         # Move player based on left or right key press
         if game.check_key(pygame.K_LEFT, pygame.K_a):
