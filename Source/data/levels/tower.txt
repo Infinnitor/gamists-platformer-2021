@@ -1,5 +1,5 @@
-!border_X : (60, 1380)
-!border_Y : (80, 3720)
+!border_X : (60, 1340)
+!border_Y : (80, 3400)
 
 !level_theme : APEOUT
 !platform_map : (1380, 4000)
