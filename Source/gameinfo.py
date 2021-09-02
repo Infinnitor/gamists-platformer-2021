@@ -1,10 +1,6 @@
 from os import environ
 environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 
-from sprite_class import sprite
-import move_utils as move
-import draw_utils as drawu
-
 import camera
 import level_elements as level
 import pyconfig
@@ -17,6 +13,122 @@ import time
 import random
 import pygame
 pygame.font.init()
+
+
+# Sprite skeleton class
+class sprite():
+
+    def __repr__(self):
+        self.highlight = 30
+        return f"{self.layer} at position {self.x}, {self.y}"
+
+    def update_move(self, game):
+        pass
+
+    def update_draw(self, game):
+        pass
+
+    def update_destroy(self, game):
+        pass
+
+    def update_highlight(self, game):
+        if self.highlight > 0:
+            self.draw_highlight(game)
+            self.highlight -= 1
+
+    def draw_highlight(self, game):
+        try:
+            highlight_r = self.r
+        except AttributeError:
+            highlight_r = 10
+
+        pygame.draw.circle(game.win, (35, 155, 35), (self.x, self.y), highlight_r)
+
+    def add_default_attr(self, game):
+        self.destroy = False
+        self.destroying = False
+        self.highlight = 0
+
+        self.add_class_attr(game)
+
+    def add_class_attr(self, game):
+        pass
+
+    def kill(self):
+        self.destroy = True
+
+    def onscreen(self, game):
+        try:
+            r = self.r
+        except AttributeError:
+            r = 0
+
+        if self.x < 0 - r or self.x > game.win_w + r:
+            return False
+        if self.y < 0 - r or self.y > game.win_h + r:
+            return False
+
+        return True
+
+    def onscreen_info(self, game):
+        if self.x < 0 or self.x > game.win_w:
+            return "X"
+        if self.y < 0 or self.y > game.win_h:
+            return "Y"
+
+        return ""
+
+    def center_blit(self, sprite, pos=None):
+        i = sprite.get_size()
+
+        if pos is None:
+            pos = (self.x, self.y)
+
+        x = pos[0] - (i[0] // 2)
+        y = pos[1] - (i[0] // 2)
+
+        return x, y
+
+    def blit_rotate(self, image, angle, game):
+        img = pygame.transform.rotate(image, angle)
+
+        b_x = self.x - img.get_width()//2
+        b_y = self.y - img.get_height()//2
+
+        game.win.blit(img, (b_x, b_y))
+
+
+class gameloop_manager(sprite):
+    layer = "MANAGER"
+
+    def __init__(self, loop_func, *func_args, reset_key=pygame.K_r):
+        self.func = loop_func
+        self.func_args = func_args
+
+        self.current_loop = loop_func.__name__
+
+        self.reset_key = reset_key
+
+    def update_move(self, game):
+        if game.check_key(self.reset_key, buffer=True):
+            game.purge_sprites()
+            self.func(*self.func_args)
+
+
+def gameloop(setup):
+    def run_loop(game, *args):
+        setup(game, *args)
+        game.add_sprite(gameloop_manager(setup, game, *args))
+
+        while game.run:
+            game.update_keys()
+            game.update_draw()
+            game.update_scaled()
+            game.update_state()
+
+        pygame.quit()
+
+    return run_loop
 
 
 class game_info():
@@ -80,60 +192,6 @@ class game_info():
         self.oncam_sprites = []
 
         self.last_mapsize = (0, 0)
-
-    class particle(sprite):
-        def __init__(part, pos, size, angle, speed, lifetime, colour, shape="CIRCLE", sprite=None):
-            part.x = pos[0]
-            part.y = pos[1]
-            if not sprite:
-                part.size = size
-                part.sprite_bool = False
-
-                part.shape = shape
-
-            else:
-                part.sprite = sprite
-                part.sprite_bool = True
-
-            part.w = size
-            part.h = size
-
-            part.speed = speed
-            part.angle = angle
-
-            part.lifetime = lifetime
-            part.life = 0
-            part.lifeloss = size / lifetime
-
-            part.xmove = math.cos(math.radians(part.angle)) * speed
-            part.ymove = math.sin(math.radians(part.angle)) * speed
-
-            part.colour = colour
-            part.destroy = False
-
-        def update_move(part, game):
-            part.x += part.xmove
-            part.y += part.ymove
-
-            part.size -= part.lifeloss
-
-            part.life += 1
-            if part.life > part.lifetime:
-                part.destroy = True
-
-        def update_draw(part, game):
-            rel_x = part.x - game.camera_obj.x
-            rel_y = part.y - game.camera_obj.y
-
-            if not part.sprite_bool:
-                if part.shape == "CIRCLE":
-                    pygame.draw.circle(game.win, part.colour, (rel_x, rel_y), part.size)
-
-                elif part.shape == "SQUARE":
-                    pygame.draw.rect(game.win, part.colour, (rel_x, rel_y, part.size, part.size))
-
-                else:
-                    raise AttributeError(f"{part.shape} is not a valid shape for a particle")
 
     def load_level(self, name, player_spawn=False):
         levelpath = f"data/levels/{name}"
@@ -252,42 +310,6 @@ class game_info():
             cam_range_Y = pyconfig.read_brackets(self.levelflags["!border_Y"])
             self.camera_obj.border_y = [int(i) for i in cam_range_Y[0].split(",")]
 
-    # Function that converts an orientation into actual numbers
-    def orientate(self, h=False, v=False):
-
-        h_dict = {
-            "Left" : 0,
-            "Left-Center" : self.win_w // 4,
-            "Center" : self.win_w // 2,
-            "Right-Center" : (self.win_w // 4) * 3,
-            "Right" : self.win_w,
-            "Rand" : random.randint(0, self.win_w)
-            }
-
-        v_dict = {
-            "Top" : 0,
-            "Top-Center" : self.win_h // 4,
-            "Center" : self.win_h // 2,
-            "Bottom-Center" : (self.win_h // 4) * 3,
-            "Bottom" : self.win_h,
-            "Rand" : random.randint(0, self.win_h)
-            }
-
-        # We have to check that the orientation exists first
-        if h:
-            assert h in h_dict, f"{h} is not a valid orientation"
-        if v:
-            assert v in v_dict, f"{v} is not a valid orientation"
-
-        if h and v:
-            return (h_dict[h], v_dict[v])
-        elif h and not v:
-            return h_dict[h]
-        elif v and not h:
-            return v_dict[v]
-
-        return False # Safety Clause
-
     def add_sprite(self, new_sprite):
         new_sprite.add_default_attr(self)
 
@@ -394,15 +416,6 @@ class game_info():
         h_ratio = self.win_h / self.user_h
 
         self.mouse_pos = (m[0] * w_ratio, m[1] * h_ratio)
-
-    def bg_kill(self, obj):
-        for iter, s in enumerate(self.sprites["BACKGROUND"]):
-            if s is obj:
-                for d in self.sprites["BACKGROUND"][0:iter]:
-                    d.kill()
-
-        self.bg = obj.c
-        obj.kill()
 
     def add_text(self, string, c=(255, 255, 255)):
         text_img = self.FONT.render(str(string), False, c)

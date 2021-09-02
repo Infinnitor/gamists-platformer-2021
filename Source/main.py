@@ -1,7 +1,5 @@
-from gameinfo import game_info, pygame, time, math, random
+from gameinfo import game_info, pygame, time, math, random, sprite
 from colour_manager import colours
-
-from sprite_class import sprite
 
 import move_utils as move
 import draw_utils as drawu
