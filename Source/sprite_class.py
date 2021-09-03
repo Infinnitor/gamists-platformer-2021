@@ -1,5 +1,3 @@
-import traceback
-
 from pygame import transform, draw
 from colour_manager import colours
 
@@ -37,8 +35,13 @@ class sprite():
         try:
             self.layer
         except AttributeError:
-            self.layer = str(type(self))
-            traceback.print_exc()
+            print(f'No layer for {self}')
+            raise AttributeError
+
+        try:
+            self.persistent
+        except AttributeError:
+            self.persistent = False
 
         self.destroy = False
         self.destroying = False
@@ -73,7 +76,7 @@ class sprite():
 
         return ""
 
-    def center_image_pos(self, sprite, pos=None):
+    def center_pos(self, sprite, pos=None):
         i = sprite.get_size()
 
         if pos is None:

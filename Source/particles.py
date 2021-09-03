@@ -83,8 +83,8 @@ class part_surface(sprite):
 
         self.particles = []
 
-    def add_part(self, part):
-        part.add_default_attr()
+    def add_part(self, part, game):
+        part.add_default_attr(game)
         self.particles.append(part)
 
     def update_draw(self, game):

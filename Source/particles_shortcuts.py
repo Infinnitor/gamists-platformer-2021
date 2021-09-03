@@ -20,6 +20,6 @@ def explosion(number, pos, part, randcol=False, layer="HIGHPARTICLE", game=None)
             final_colour = drawu.rgb.randomize(final_colour)
 
         new_part = part.get(pos=center, angle=angle, colour=final_colour)
-        surf.add_part(new_part)
+        surf.add_part(new_part, game)
 
     game.add_sprite(surf)
