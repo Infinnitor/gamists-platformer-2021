@@ -29,7 +29,7 @@ class sprite():
         except AttributeError:
             highlight_r = 10
 
-        draw.circle(game.win, colours.green, (self.x, self.y), highlight_r)
+        draw.circle(game.win, (35, 155, 35), (self.x, self.y), highlight_r)
 
     def add_default_attr(self, game):
         try:
@@ -68,29 +68,29 @@ class sprite():
 
         return True
 
-    def onscreen_info(self, game):
-        if self.x < 0 or self.x > game.win_w:
-            return "X"
-        if self.y < 0 or self.y > game.win_h:
-            return "Y"
-
-        return ""
-
-    def center_pos(self, sprite, pos=None):
-        i = sprite.get_size()
+    def center_pos(self, image, pos=None):
 
         if pos is None:
             pos = (self.x, self.y)
 
-        x = pos[0] - (i[0] // 2)
-        y = pos[1] - (i[0] // 2)
+        x = pos[0] - (image.get_width() // 2)
+        y = pos[1] - (image.get_height() // 2)
 
         return x, y
 
-    def blit_rotate(self, image, angle, game):
+    def blit_center(self, surface, image, dest=None):
+        if dest is None:
+            dest = (self.x, self.y)
+
+        b_x = dest[0] - image.get_width()//2
+        b_y = dest[1] - image.get_height()//2
+
+        surface.blit(image, (b_x, b_y))
+
+    def blit_rotate(self, surface, image, angle):
         img = transform.rotate(image, angle)
 
         b_x = self.x - img.get_width()//2
         b_y = self.y - img.get_height()//2
 
-        game.win.blit(img, (b_x, b_y))
+        surface.blit(img, (b_x, b_y))

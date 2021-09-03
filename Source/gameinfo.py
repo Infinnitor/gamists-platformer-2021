@@ -1,6 +1,8 @@
 from os import environ
 environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 
+from sprite_class import sprite
+
 import camera
 import level_elements as level
 import pyconfig
@@ -13,89 +15,6 @@ import time
 import random
 import pygame
 pygame.font.init()
-
-
-# Sprite skeleton class
-class sprite():
-
-    def __repr__(self):
-        self.highlight = 30
-        return f"{self.layer} at position {self.x}, {self.y}"
-
-    def update_move(self, game):
-        pass
-
-    def update_draw(self, game):
-        pass
-
-    def update_destroy(self, game):
-        pass
-
-    def update_highlight(self, game):
-        if self.highlight > 0:
-            self.draw_highlight(game)
-            self.highlight -= 1
-
-    def draw_highlight(self, game):
-        try:
-            highlight_r = self.r
-        except AttributeError:
-            highlight_r = 10
-
-        pygame.draw.circle(game.win, (35, 155, 35), (self.x, self.y), highlight_r)
-
-    def add_default_attr(self, game):
-        self.destroy = False
-        self.destroying = False
-        self.highlight = 0
-
-        self.add_class_attr(game)
-
-    def add_class_attr(self, game):
-        pass
-
-    def kill(self):
-        self.destroy = True
-
-    def onscreen(self, game):
-        try:
-            r = self.r
-        except AttributeError:
-            r = 0
-
-        if self.x < 0 - r or self.x > game.win_w + r:
-            return False
-        if self.y < 0 - r or self.y > game.win_h + r:
-            return False
-
-        return True
-
-    def onscreen_info(self, game):
-        if self.x < 0 or self.x > game.win_w:
-            return "X"
-        if self.y < 0 or self.y > game.win_h:
-            return "Y"
-
-        return ""
-
-    def center_blit(self, sprite, pos=None):
-        i = sprite.get_size()
-
-        if pos is None:
-            pos = (self.x, self.y)
-
-        x = pos[0] - (i[0] // 2)
-        y = pos[1] - (i[0] // 2)
-
-        return x, y
-
-    def blit_rotate(self, image, angle, game):
-        img = pygame.transform.rotate(image, angle)
-
-        b_x = self.x - img.get_width()//2
-        b_y = self.y - img.get_height()//2
-
-        game.win.blit(img, (b_x, b_y))
 
 
 class gameloop_manager(sprite):
