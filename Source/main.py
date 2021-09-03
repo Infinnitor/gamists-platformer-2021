@@ -490,21 +490,21 @@ class player(sprite):
         # Effects stuff first
         if self.PHYS.head_hit:
             game.init_screenshake(4, 4)
-            part = particles.TEMPLATES.circle.modify(size=12, speed=3, colour=colours.black, lifetime=30)
-            part_shortcuts.explosion(10, (self.x + self.w//2, self.y), part, layer="LOWPARTICLE", game=game)
+            part_shortcuts.explosion(
+                                        game, particles.circle, 10, (self.x + self.w//2, self.y),
+                                        size=12,
+                                        speed=3,
+                                        colour=(6, 6, 6),
+                                        randspeed=1,
+                                        randcol=3,
+                                        layer="LOWPARTICLE"
+                                    )
 
         if self.PHYS.ground_hit:
-            part = particles.TEMPLATES.circle.modify(size=12, speed=3, colour=colours.black, lifetime=30)
-            part_shortcuts.explosion(20, (self.x + self.w//2, self.y + self.h), part, layer="HIGHPARTICLE", game=game)
+            part_shortcuts.explosion(game, particles.circle, 10, (self.x + self.w//2, self.y + self.h), size=12, speed=3, colour=(6, 6, 6), lifetime=25, randspeed=1, randcol=3, layer="LOWPARTICLE")
 
-        # cols = ((35, 35, 155), (35, 155, 35), (155, 35, 35))
-        # if self.PHYS.walljump_frames > 0:
-        #     c = (0, 255, 0)
-
-        c = colours.black
         if self.PHYS.dash:
-            part = particles.TEMPLATES.circle.modify(size=10, speed=3, colour=c, lifetime=15)
-            part_shortcuts.explosion(5, (self.x + self.w//2, random.randint(int(self.y), int(self.y + self.h))), part, layer="LOWPARTICLE", game=game)
+            part_shortcuts.explosion(game, particles.circle, 5, (self.x + self.w//2, random.randint(int(self.y), int(self.y + self.h))), size=12, speed=1, colour=(6, 6, 6), lifetime=25, randspeed=1, randcol=3, layer="LOWPARTICLE")
 
         rel_x = self.x - game.camera_obj.x
         rel_y = self.y - game.camera_obj.y

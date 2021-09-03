@@ -3,23 +3,45 @@ import random
 import draw_utils as drawu
 
 
-def explosion(number, pos, part, randcol=False, layer="HIGHPARTICLE", game=None):
-    assert game is not None, f"You forgor to pass in game"
+def explosion(game, part, number, pos, **kwargs):
 
-    surf = particles.part_surface(pos, part.template.speed, part.template.lifetime)
-    surf.layer = layer
+    defaults = {
+        "randcol" : False,
+        "layer" : "HIGHPARTICLE",
+        "randspeed" : False,
+        "lifetime" : 30
+    }
 
-    center = (surf.w/2, surf.h/2)
+    non_params = ("randcol", "layer", "randspeed")
+
+    for d in defaults:
+        if d not in kwargs:
+            kwargs[d] = defaults[d]
+
+    params = {}
+    for k in kwargs:
+        if k not in non_params:
+            params[k] = kwargs[k]
+
+    # yo converT bool to int?????
+    expand_speed = int(kwargs['randcol']) + kwargs['speed']
+    surf = particles.part_surface(pos, expand_speed, kwargs['lifetime'])
+    surf.layer = kwargs['layer']
+
+    params['pos'] = (surf.w/2, surf.h/2)
 
     for p in range(number):
+        params['angle'] = random.randint(0, 360)
 
-        angle = random.randint(0, 360)
+        r_speed = kwargs['randspeed']
+        if r_speed is not False:
+            params['speed'] = random.randint(kwargs['speed'] - r_speed, kwargs['speed'] + r_speed)
 
-        final_colour = part.template.c
-        if randcol is True:
-            final_colour = drawu.rgb.randomize(final_colour)
+        r_col = kwargs['randcol']
+        if r_col is not False:
+            params['colour'] = drawu.rgb.randomize(kwargs['colour'], r_col*-1, r_col)
 
-        new_part = part.get(pos=center, angle=angle, colour=final_colour)
+        new_part = part(**params)
         surf.add_part(new_part, game)
 
     game.add_sprite(surf)
