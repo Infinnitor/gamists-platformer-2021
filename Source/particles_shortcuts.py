@@ -14,6 +14,9 @@ def explosion(game, part, number, pos, **kwargs):
 
     non_params = ("randcol", "layer", "randspeed")
 
+    # Particles need <pos, size, speed, angle, colour, lifetime>
+    # Provided by this function: angle
+
     for d in defaults:
         if d not in kwargs:
             kwargs[d] = defaults[d]

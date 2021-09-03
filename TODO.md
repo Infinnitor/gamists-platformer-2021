@@ -1,8 +1,8 @@
 # Game todo:
 
 - [ ] - Change generation of surfaces for level_elements:
-    - [ ] - Allow for the use of larger textures
-    - [ ] - Create more optimised behaviour for generative textures
+    - [x] - Allow for the use of larger textures
+    - [x] - Create more optimised behaviour for generative textures
     - [ ] - Make pixels on tv static texture larger
 
 - [x] Refactor text_level
@@ -18,18 +18,32 @@
 - [x] Add LevelTransition:
     - [x] - Room starting position
     - [x] - Multiple entrances and exits?
-    - [ ] - Make better
+    - [x] - Make better
 
 
 # LevelBuild todo:
 
-- [ ] - Change camera collider generation in LevelBuild:
-    - [ ] - LevelBuild will automatically create camera colliders around the level
-    - [ ] - Camera colliders can overlap level transitions (maybe???)
+- [ ] - Create moving blocks
+    -  Player could ride on them (hard)
+    - Maybe enemies???
+    - Moving hazard blocks
+
+- [ ] - New(er) syntax for <level>.txt???
+    - OLD: (pos) (size) (type) <some args>
+    - NEW: (pos) (size) (type) (type-converted args)
 
 - [x] - Create checkpoint tile
     - Orange 2x2 that turns yellow when you hit it - setting it to your current checkpoint
 
-- [x] - New syntax for level.txt
+- [x] - New syntax for <level>.txt
     - OLD: (pos) (size) (colour)
     - NEW: (pos) (size) (type)
+
+
+# cANCELLED
+
+>this sucks
+
+- [ ] - Change camera collider generation in LevelBuild:
+    - [ ] - LevelBuild will automatically create camera colliders around the level
+    - [ ] - Camera colliders can overlap level transitions (maybe???)
