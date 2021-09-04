@@ -13,36 +13,56 @@ class particle_shortcuts:
     def __init__(self, game):
         self.gameref = game
 
-    def explosion(self, part, number, pos, **kwargs):
+    # Function decorator that standardizes the creation of a particle surface
+    def surfacemethod(func):
+        def makesurf(self, *args, **kwargs):
+            # If we want to modify the args then this must be a list
+            args = list(args)
 
-        defaults = {
-            "randcol" : False,
-            "layer" : "HIGHPARTICLE",
-            "randspeed" : False,
-            "lifetime" : 30
-        }
+            defaults = {
+                "randcol" : False,
+                "layer" : "HIGHPARTICLE",
+                "randspeed" : False,
+                "lifetime" : 30
+            }
+
+            for d in defaults:
+                if d not in kwargs:
+                    kwargs[d] = defaults[d]
+
+            pos = args[2]
+
+            # yo converT bool to int?????
+            expand_speed = int(kwargs['randcol']) + kwargs['speed']
+            surf = particles.part_surface(pos, expand_speed, kwargs['lifetime'])
+            surf.layer = kwargs['layer']
+
+            args[2] = (surf.w/2, surf.h/2)
+
+            part_list = func(self, *args, **kwargs)
+            for p in part_list:
+                surf.add_part(p, self.gameref)
+
+            self.gameref.add_sprite(surf)
+
+        return makesurf
+
+    @surfacemethod
+    def explosion(self, part, number, pos, **kwargs):
 
         non_params = ("randcol", "layer", "randspeed")
 
         # Particles need <pos, size, speed, angle, colour, lifetime>
         # Provided by this function: angle
 
-        for d in defaults:
-            if d not in kwargs:
-                kwargs[d] = defaults[d]
-
         params = {}
         for k in kwargs:
             if k not in non_params:
                 params[k] = kwargs[k]
 
-        # yo converT bool to int?????
-        expand_speed = int(kwargs['randcol']) + kwargs['speed']
-        surf = particles.part_surface(pos, expand_speed, kwargs['lifetime'])
-        surf.layer = kwargs['layer']
+        params['pos'] = pos
 
-        params['pos'] = (surf.w/2, surf.h/2)
-
+        ret_particles = []
         for p in range(number):
             params['angle'] = random.randint(0, 360)
 
@@ -55,9 +75,9 @@ class particle_shortcuts:
                 params['colour'] = rgb.randomize(kwargs['colour'], r_col*-1, r_col)
 
             new_part = part(**params)
-            surf.add_part(new_part, self.gameref)
+            ret_particles.append(new_part)
 
-        self.gameref.add_sprite(surf)
+        return ret_particles
 
 
 class rgb():
