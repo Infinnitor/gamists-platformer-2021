@@ -490,7 +490,7 @@ class player(sprite):
         if self.PHYS.head_hit:
             game.init_screenshake(4, 4)
             game.particles.explosion(
-                                        particles.circle, 10, (self.x + self.w//2, self.y),
+                                        particles.circle, (self.x + self.w//2, self.y), 10,
                                         size=12,
                                         speed=3,
                                         colour=(6, 6, 6),
@@ -500,10 +500,19 @@ class player(sprite):
                                     )
 
         if self.PHYS.ground_hit:
-            game.particles.explosion(particles.circle, 10, (self.x + self.w//2, self.y + self.h), size=12, speed=3, colour=(6, 6, 6), lifetime=25, randspeed=1, randcol=3, layer="LOWPARTICLE")
+            game.particles.explosion(particles.circle, (self.x + self.w//2, self.y + self.h), 10, size=12, speed=3, colour=(6, 6, 6), lifetime=25, randspeed=1, randcol=3, layer="LOWPARTICLE")
 
         if self.PHYS.dash:
-            game.particles.explosion(particles.circle, 5, (self.x + self.w//2, random.randint(int(self.y), int(self.y + self.h))), size=12, speed=1, colour=(6, 6, 6), lifetime=25, randspeed=1, randcol=2, layer="LOWPARTICLE")
+            # game.particles.explosion(particles.circle, 5, (self.x + self.w//2, random.randint(int(self.y), int(self.y + self.h))), size=12, speed=1, colour=(6, 6, 6), lifetime=25, randspeed=1, randcol=2, layer="LOWPARTICLE")
+            game.particles.cone(
+                                        particles.diamond, (self.x + self.w//2, random.randint(int(self.y), int(self.y + self.h))), 10,
+                                        (-90, 90),
+                                        size=25,
+                                        speed=3,
+                                        colour=(6, 6, 6),
+                                        randspeed=1,
+                                        layer="LOWPARTICLE"
+                                    )
 
         rel_x = self.x - game.camera_obj.x
         rel_y = self.y - game.camera_obj.y

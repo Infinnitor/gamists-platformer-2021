@@ -22,7 +22,7 @@ class particle(sprite):
         self.life_calc(lifetime)
 
     def angle_calc(self, angle):
-        self.a = angle
+        self.a = math.radians(angle)
         self.xmove = math.cos(self.a) * self.speed
         self.ymove = math.sin(self.a) * self.speed
 
@@ -59,9 +59,9 @@ class diamond(particle):
         s = self.size//2
         shape = (
             (self.x + s, self.y),
-            (self.x + self.side, self.y + s),
-            (self.x + s, self.y + self.side),
-            (self.x, self.y + s)
+            (self.x, self.y + s),
+            (self.x - s, self.y),
+            (self.x, self.y - s)
         )
 
         draw.polygon(surface, self.c, shape)
