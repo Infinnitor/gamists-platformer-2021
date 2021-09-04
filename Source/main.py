@@ -7,7 +7,6 @@ import move_utils as move
 import draw_utils as drawu
 
 import particles
-import particles_shortcuts as part_shortcuts
 
 import pyconfig as config
 
@@ -36,7 +35,7 @@ class deadplayer(sprite):
 
     def update_move(self, game):
         if self.frametick is None:
-            self.frametick = move.frametick(10, game)
+            self.frametick = move.frametick(15, game)
             game.init_screenshake(15, 5, rand=True)
 
         if self.death_transition is None and self.frametick.get():
@@ -490,8 +489,8 @@ class player(sprite):
         # Effects stuff first
         if self.PHYS.head_hit:
             game.init_screenshake(4, 4)
-            part_shortcuts.explosion(
-                                        game, particles.circle, 10, (self.x + self.w//2, self.y),
+            game.particles.explosion(
+                                        particles.circle, 10, (self.x + self.w//2, self.y),
                                         size=12,
                                         speed=3,
                                         colour=(6, 6, 6),
@@ -501,10 +500,10 @@ class player(sprite):
                                     )
 
         if self.PHYS.ground_hit:
-            part_shortcuts.explosion(game, particles.circle, 10, (self.x + self.w//2, self.y + self.h), size=12, speed=3, colour=(6, 6, 6), lifetime=25, randspeed=1, randcol=3, layer="LOWPARTICLE")
+            game.particles.explosion(particles.circle, 10, (self.x + self.w//2, self.y + self.h), size=12, speed=3, colour=(6, 6, 6), lifetime=25, randspeed=1, randcol=3, layer="LOWPARTICLE")
 
         if self.PHYS.dash:
-            part_shortcuts.explosion(game, particles.circle, 5, (self.x + self.w//2, random.randint(int(self.y), int(self.y + self.h))), size=12, speed=1, colour=(6, 6, 6), lifetime=25, randspeed=1, randcol=3, layer="LOWPARTICLE")
+            game.particles.explosion(particles.circle, 5, (self.x + self.w//2, random.randint(int(self.y), int(self.y + self.h))), size=12, speed=1, colour=(6, 6, 6), lifetime=25, randspeed=1, randcol=2, layer="LOWPARTICLE")
 
         rel_x = self.x - game.camera_obj.x
         rel_y = self.y - game.camera_obj.y

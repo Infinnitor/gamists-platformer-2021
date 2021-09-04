@@ -2,6 +2,7 @@ from os import environ
 environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 
 from sprite_class import sprite
+import draw_utils as drawu
 
 import camera
 import level_elements as level
@@ -93,6 +94,8 @@ class game_info():
         self.FONT = pygame.font.Font(self.font_name, self.font_size)
         self.render_text = []
 
+        self.particles = drawu.particle_shortcuts(self)
+
         self.sprites = {
                         "BACKGROUND" : [],
                         "LOWPARTICLE" : [],
@@ -109,8 +112,6 @@ class game_info():
 
         self.camera_obj = camera.game_camera((0, 0), (self.win_w, self.win_h))
         self.oncam_sprites = []
-
-        self.last_mapsize = (0, 0)
 
     def load_level(self, name, player_spawn=False):
         levelpath = f"data/levels/{name}"
