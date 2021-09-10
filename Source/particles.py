@@ -22,7 +22,7 @@ class particle(sprite):
         self.life_calc(lifetime)
 
     def angle_calc(self, angle):
-        self.a = angle
+        self.a = math.radians(angle)
         self.xmove = math.cos(self.a) * self.speed
         self.ymove = math.sin(self.a) * self.speed
 
@@ -59,9 +59,9 @@ class diamond(particle):
         s = self.size//2
         shape = (
             (self.x + s, self.y),
-            (self.x + self.side, self.y + s),
-            (self.x + s, self.y + self.side),
-            (self.x, self.y + s)
+            (self.x, self.y + s),
+            (self.x - s, self.y),
+            (self.x, self.y - s)
         )
 
         draw.polygon(surface, self.c, shape)
@@ -106,47 +106,3 @@ class part_surface(sprite):
         rel_y = self.y - game.camera_obj.y
 
         game.win.blit(self.surface, (rel_x - self.w/2, rel_y-self.h/2))
-
-
-class temp():
-    def __init__(self, particle):
-        self.template = particle
-
-    def copy(self):
-        return copy.copy(self.template)
-
-    def modify(self, pos=None, size=None, speed=None, angle=None, colour=None, lifetime=None):
-        c = self.copy()
-
-        if pos is not None:
-            c.x = pos[0]
-            c.y = pos[1]
-
-        if size is not None:
-            c.size = size
-        if speed is not None:
-            c.speed = speed
-        if angle is not None:
-            c.angle_calc(angle)
-        if colour is not None:
-            c.c = colour
-        if lifetime is not None:
-            c.life_calc(lifetime)
-
-        return temp(c)
-
-    def get(self, pos, size=None, speed=None, angle=None, colour=None, lifetime=None):
-        mod = self.modify(pos, size, speed, angle, colour, lifetime)
-
-        return mod.copy()
-
-
-class particle_templates_manager():
-
-    def __init__(self):
-        self.circle = temp(circle(pos=(0, 0), size=10, speed=1, angle=0, lifetime=30, colour=(0, 255, 0)))
-        self.square = temp(circle(pos=(0, 0), size=10, speed=1, angle=0, lifetime=30, colour=(0, 255, 0)))
-        self.diamond = temp(circle(pos=(0, 0), size=10, speed=1, angle=0, lifetime=30, colour=(0, 255, 0)))
-
-
-TEMPLATES = particle_templates_manager()

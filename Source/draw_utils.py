@@ -3,9 +3,121 @@ from pygame import draw, Surface
 from sprite_class import sprite
 
 from colour_manager import colours
+import particles
 
 import move_utils as move
 import asset
+
+
+class particle_shortcuts:
+    def __init__(self, game):
+        self.gameref = game
+
+    @staticmethod
+    def get_params(dict):
+        non_params = ("randcol", "layer", "randspeed")
+
+        params = {}
+        for k in dict:
+            if k not in non_params:
+                params[k] = dict[k]
+
+        return params
+
+    # Function decorator that standardizes the creation of a particle surface
+    def surfacemethod(func):
+        def makesurf(self, *args, **kwargs):
+            # If we want to modify the args then this must be a list
+            args = list(args)
+
+            defaults = {
+                "randcol" : False,
+                "layer" : "HIGHPARTICLE",
+                "randspeed" : False,
+                "lifetime" : 30
+            }
+
+            for d in defaults:
+                if d not in kwargs:
+                    kwargs[d] = defaults[d]
+
+            pos = args[1]
+
+            # yo converT bool to int?????
+            expand_speed = int(kwargs['randcol']) + kwargs['speed']
+            surf = particles.part_surface(pos, expand_speed, kwargs['lifetime'])
+            surf.layer = kwargs['layer']
+
+            args[1] = (surf.w/2, surf.h/2)
+
+            # IMPORTANT!!!!!
+            part_list = func(self, *args, **kwargs)
+            for p in part_list:
+                surf.add_part(p, self.gameref)
+
+            self.gameref.add_sprite(surf)
+
+        return makesurf
+
+    @surfacemethod
+    def explosion(self, part, pos, number, **kwargs):
+        # Particles need <pos, size, speed, angle, colour, lifetime>
+        # Provided by this function: angle
+
+        params = self.get_params(kwargs)
+        params['pos'] = pos
+
+        ret_particles = []
+        for p in range(number):
+            params['angle'] = random.randint(0, 360)
+
+            r_speed = kwargs['randspeed']
+            if r_speed is not False:
+                params['speed'] = random.randint(kwargs['speed'] - r_speed, kwargs['speed'] + r_speed)
+
+            r_col = kwargs['randcol']
+            if r_col is not False:
+                params['colour'] = rgb.randomize(kwargs['colour'], r_col*-1, r_col)
+
+            new_part = part(**params)
+            ret_particles.append(new_part)
+
+        return ret_particles
+
+    @surfacemethod
+    def cross(self, part, pos, **kwargs):
+        params = self.get_params(kwargs)
+        params['pos'] = pos
+
+        ret_particles = []
+        for a in range(0, 360, 90):
+            params['angle'] = a
+
+            ret_particles.append(part(**params))
+
+        return ret_particles
+
+    @surfacemethod
+    def cone(self, part, pos, number, a_range, **kwargs):
+        params = self.get_params(kwargs)
+        params['pos'] = pos
+
+        ret_particles = []
+        for p in range(number):
+            params['angle'] = random.randint(a_range[0], a_range[1])
+
+            r_speed = kwargs['randspeed']
+            if r_speed is not False:
+                params['speed'] = random.randint(kwargs['speed'] - r_speed, kwargs['speed'] + r_speed)
+
+            r_col = kwargs['randcol']
+            if r_col is not False:
+                params['colour'] = rgb.randomize(kwargs['colour'], r_col*-1, r_col)
+
+            new_part = part(**params)
+            ret_particles.append(new_part)
+
+        return ret_particles
 
 
 class rgb():
