@@ -2,8 +2,9 @@ from pygame import draw, Surface
 from sprite_class import sprite
 
 import move_utils as move
-import draw_utils as drawu
+import math
 
+import draw_utils as drawu
 from colour_manager import colours
 
 import asset
@@ -193,17 +194,61 @@ class hazard(element):
         if move.rect_collision(self, collider):
             collider.destroying = True
 
-    def update_move(self, game):
+    def update_draw(self, game):
         self.surface.blit(self.tv_static[self.iter], (0, 0))
         self.iter += 1
         if self.iter == len(self.tv_static):
             self.iter = 0
 
-    def update_draw(self, game):
         rel_x = self.x - game.camera_obj.x
         rel_y = self.y - game.camera_obj.y
 
         game.win.blit(self.surface, (rel_x, rel_y))
+
+
+class moving_hazard(hazard):
+    def __init__(self, start_pos, size, positions, speed):
+        self.x = start_pos[0]
+        self.y = start_pos[1]
+
+        self.w = size[0]
+        self.h = size[1]
+
+        self.c = (35, 35, 155)
+
+        self.positions = positions
+        self.m_iter = 0
+
+        self.speed = speed
+        self.moving = False
+
+        self.a = 0
+        self.xmove = 0
+        self.ymove = 0
+
+    def angle_calc(self):
+        y_d = self.positions[self.m_iter][0] - self.x
+        x_d = self.positions[self.m_iter][1] - self.y
+
+        self.a = math.atan2(y_d, x_d)
+
+        self.xmove = math.cos(self.a)
+        self.ymove = math.sin(self.a)
+
+    def update_move(self, game):
+        if self.moving is False:
+            self.m_iter += 1
+            if self.m_iter == len(self.positions):
+                self.m_iter = 0
+
+            self.angle_calc()
+            self.moving = True
+
+        self.x += self.xmove * self.speed
+        self.y += self.ymove * self.speed
+
+        if math.dist((self.x, self.y), self.positions[self.m_iter]) < self.w//4:
+            self.moving = False
 
 
 class level_transition(element):
