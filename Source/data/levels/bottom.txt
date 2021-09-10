@@ -49,5 +49,5 @@
 (680, 1060) (1280, 20) (GroundTerrain)
 
 # Transitions
-(1060, 300) (300, 60) (LevelTransition : center.txt : BOTTOM)
-(1200, 360) (40, 40) (Spawnkey : BOTTOMC)
+(1060, 300) (300, 60) (LevelTransition) (center.txt : BOTTOM)
+(1200, 360) (40, 40) (Spawnkey) (BOTTOMC)

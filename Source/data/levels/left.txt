@@ -19,5 +19,5 @@
 (640, 1080) (1280, 20) (GroundTerrain)
 
 # Transitions
-(1920, 740) (80, 220) (LevelTransition : center.txt : LEFT)
-(1880, 860) (40, 40) (Spawnkey : LEFTC)
+(1920, 740) (80, 220) (LevelTransition) (center.txt : LEFT)
+(1880, 860) (40, 40) (Spawnkey) (LEFTC)

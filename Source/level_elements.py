@@ -247,7 +247,7 @@ class moving_hazard(hazard):
         self.x += self.xmove * self.speed
         self.y += self.ymove * self.speed
 
-        if math.dist((self.x, self.y), self.positions[self.m_iter]) < self.w//4:
+        if math.dist((self.x + self.w/2, self.y + self.h/2), self.positions[self.m_iter]) < self.w//4:
             self.moving = False
 
 
@@ -323,10 +323,3 @@ class level_transition(element):
             game.PLAYER.PHYS.freeze = False
             game.PLAYER.set_spawn(spawnpos)
             game.PLAYER.respawn(halt=True)
-
-
-class spawn_key(element):
-    def __init__(self, pos, key):
-        self.x = pos[0]
-        self.y = pos[1]
-        self.k = key

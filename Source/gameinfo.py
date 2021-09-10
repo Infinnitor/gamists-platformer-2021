@@ -129,7 +129,6 @@ class game_info():
             "Checkpoint" : level.checkpoint,
             "Hazard" : level.hazard,
             "LevelTransition" : level.level_transition,
-            "Spawnkey" : level.spawn_key,
             "Background" : level.background,
         }
 
@@ -159,38 +158,31 @@ class game_info():
                 for x in range(0, (map_size[0] // pbg_x) * pbg_x + pbg_x, pbg_x):
                     map.blit(platform_BG, (x, y))
 
-        self.purge_sprites("CHECKPOINTS", "TERRAIN", "HAZARD", "LEVELTRANSITION", "CAMERACOLLIDER", "BACKGROUND")
+        self.purge_sprites("CHECKPOINTS", "TERRAIN", "HAZARD", "LEVELTRANSITION", "CAMERACOLLIDER", "BACKGROUND", "HIGHPARTICLE", "LOWPARTICLE")
 
         surface_sprites = ("GroundTerrain", "Hazard", "Background")
-        for pos, size, sprite_type in level_text:
-            if player_spawn is True:
-                if sprite_type == "Checkpoint" or sprite_type.startswith("Spawnkey"):
-                    p = self.sprites["PLAYER"][0]
-                    p.x = pos[0]
-                    p.y = pos[1]
 
-                    p.set_spawn(pos)
+        for pos, size, sprite_type, args in level_text:
+            if player_spawn is True:
+                if sprite_type == "Checkpoint" or sprite_type == "Spawnkey":
+                    self.PLAYER.x = pos[0]
+                    self.PLAYER.y = pos[1]
+
+                    self.PLAYER.set_spawn(pos)
 
                     # We only want this to happen once
                     player_spawn = False
 
-            if sprite_type.startswith("LevelTransition"):
-                # print(sprite_type)
-                t_info = sprite_type.split(":")
-
-                path = t_info[1]
-                spawnkey = t_info[2]
-
-                self.add_sprite(level_classes["LevelTransition"](pos, size, path, spawnkey))
-                continue
-
-            elif sprite_type.startswith("Spawnkey"):
-                key = sprite_type.split(":")[1]
+            if sprite_type == "Spawnkey":
+                key = args[0]
 
                 self.spawnkeys[key] = pos
                 continue
 
-            level_e = level_classes[sprite_type](pos, size)
+            if args:
+                level_e = level_classes[sprite_type](pos, size, *args)
+            else:
+                level_e = level_classes[sprite_type](pos, size)
             level_e.leveltheme = level_theme
 
             if sprite_type in surface_sprites:

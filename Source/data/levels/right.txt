@@ -28,5 +28,5 @@
 (640, 1060) (1280, 20) (GroundTerrain)
 
 # Transitions
-(560, 720) (80, 220) (LevelTransition : hazard_tutorial.txt : RIGHT)
-(640, 840) (40, 40) (Spawnkey : RIGHTC)
+(560, 720) (80, 220) (LevelTransition) (hazard_tutorial.txt : RIGHT)
+(640, 840) (40, 40) (Spawnkey) (RIGHTC)

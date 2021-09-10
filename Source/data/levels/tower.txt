@@ -144,8 +144,8 @@
 (120, 1820) (40, 40) (Checkpoint)
 (140, 2420) (40, 40) (Checkpoint)
 
-(0, 3160) (60, 160) (LevelTransition : center.txt : RIGHT)
-(60, 3280) (40, 40) (Spawnkey : RIGHTC)
+(0, 3160) (60, 160) (LevelTransition) (center.txt : RIGHT)
+(60, 3280) (40, 40) (Spawnkey) (RIGHTC)
 
-(0, 240) (60, 120) (LevelTransition : room1.txt : a)
-(60, 320) (40, 40) (Spawnkey : b)
+(0, 240) (60, 120) (LevelTransition) (room1.txt : a)
+(60, 320) (40, 40) (Spawnkey) (b)

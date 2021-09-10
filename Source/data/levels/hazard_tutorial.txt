@@ -91,8 +91,8 @@
 (1700, 720) (40, 40) (Checkpoint)
 (160, 1160) (40, 40) (Checkpoint)
 
-(120, 0) (120, 60) (LevelTransition : center.txt : BOTTOM)
-(160, 60) (40, 40) (Spawnkey : BOTTOMC)
+(120, 0) (120, 60) (LevelTransition) (center.txt : BOTTOM)
+(160, 60) (40, 40) (Spawnkey) (BOTTOMC)
 
-(3960, 900) (60, 140) (LevelTransition : right.txt : RIGHTC)
-(3920, 1000) (40, 40) (Spawnkey : RIGHT)
+(3960, 900) (60, 140) (LevelTransition) (right.txt : RIGHTC)
+(3920, 1000) (40, 40) (Spawnkey) (RIGHT)

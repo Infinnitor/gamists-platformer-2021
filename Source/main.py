@@ -493,14 +493,14 @@ class player(sprite):
                                         particles.circle, (self.x + self.w//2, self.y), 10,
                                         size=12,
                                         speed=3,
-                                        colour=(6, 6, 6),
+                                        colour=(3, 3, 3),
                                         randspeed=1,
                                         randcol=3,
                                         layer="LOWPARTICLE"
                                     )
 
         if self.PHYS.ground_hit:
-            game.particles.explosion(particles.circle, (self.x + self.w//2, self.y + self.h), 10, size=12, speed=3, colour=(6, 6, 6), lifetime=25, randspeed=1, randcol=3, layer="LOWPARTICLE")
+            game.particles.explosion(particles.circle, (self.x + self.w//2, self.y + self.h), 10, size=12, speed=3, colour=(3, 3, 3), lifetime=25, randspeed=1, randcol=3, layer="LOWPARTICLE")
 
         if self.PHYS.dash:
             # game.particles.explosion(particles.circle, 5, (self.x + self.w//2, random.randint(int(self.y), int(self.y + self.h))), size=12, speed=1, colour=(6, 6, 6), lifetime=25, randspeed=1, randcol=2, layer="LOWPARTICLE")
@@ -509,7 +509,7 @@ class player(sprite):
                                         (-90, 90),
                                         size=25,
                                         speed=3,
-                                        colour=(6, 6, 6),
+                                        colour=(3, 3, 3),
                                         randspeed=1,
                                         layer="LOWPARTICLE"
                                     )

@@ -45,7 +45,7 @@ def text_level(path):
     terrain = []
 
     levelflags = {}
-    for val in sorted(file, reverse=True):
+    for val in file:
         if val.startswith("!"):
             f_name, f_value = val.replace(" ", "").split(':')
             levelflags[f_name] = f_value
@@ -58,13 +58,18 @@ def text_level(path):
         items.append([int(i) for i in line[1].split(",")]) # Size
         items.append(line[2]) # Element type
 
+        if len(line) == 4:
+            items.append(line[3].split(":"))
+        else:
+            items.append([])
+
         terrain.append(items)
 
     return terrain, levelflags
 
 
 def load():
-    global player; global level
+    global player
     player = text_player()
 
 
