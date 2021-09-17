@@ -102,8 +102,8 @@ class game_info():
                         "CHECKPOINTS" : [],
                         "PLAYER": [],
                         "LEVELTRANSITION" : [],
-                        "TERRAIN": [],
                         "HAZARD" : [],
+                        "TERRAIN": [],
                         "ENEMY" : [],
                         "HIGHPARTICLE" : [],
                         "CAMERACOLLIDER" : [],
@@ -128,6 +128,7 @@ class game_info():
             "CameraCollider" : level.camera_collider,
             "Checkpoint" : level.checkpoint,
             "Hazard" : level.hazard,
+            "MovingHazard" : level.moving_hazard,
             "LevelTransition" : level.level_transition,
             "Background" : level.background,
         }
@@ -160,7 +161,7 @@ class game_info():
 
         self.purge_sprites("CHECKPOINTS", "TERRAIN", "HAZARD", "LEVELTRANSITION", "CAMERACOLLIDER", "BACKGROUND", "HIGHPARTICLE", "LOWPARTICLE")
 
-        surface_sprites = ("GroundTerrain", "Hazard", "Background")
+        surface_sprites = ("GroundTerrain", "Hazard", "Background", "MovingHazard")
 
         for pos, size, sprite_type, args in level_text:
             if player_spawn is True:

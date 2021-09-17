@@ -7,6 +7,7 @@ import math
 import draw_utils as drawu
 from colour_manager import colours
 
+import bracket_match as bracket
 import asset
 
 
@@ -207,6 +208,12 @@ class hazard(element):
 
 
 class moving_hazard(hazard):
+    layer = "HAZARD"
+
+    @staticmethod
+    def m_array(s):
+        return bracket.read_brackets(s, split_on="'", chars=("[", "]"), t=int)
+
     def __init__(self, start_pos, size, positions, speed):
         self.x = start_pos[0]
         self.y = start_pos[1]
@@ -216,10 +223,15 @@ class moving_hazard(hazard):
 
         self.c = (35, 35, 155)
 
-        self.positions = positions
+        self.positions = []
+        for p in positions.split(","):
+            r = self.m_array(p)
+            self.positions.append(r)
+
         self.m_iter = 0
 
-        self.speed = speed
+        self.speed = float(speed)
+
         self.moving = False
 
         self.a = 0
@@ -227,8 +239,8 @@ class moving_hazard(hazard):
         self.ymove = 0
 
     def angle_calc(self):
-        y_d = self.positions[self.m_iter][0] - self.x
-        x_d = self.positions[self.m_iter][1] - self.y
+        x_d = self.positions[self.m_iter][0] - self.x
+        y_d = self.positions[self.m_iter][1] - self.y
 
         self.a = math.atan2(y_d, x_d)
 
@@ -243,11 +255,12 @@ class moving_hazard(hazard):
 
             self.angle_calc()
             self.moving = True
+        game.add_text(f"{self.xmove}, {self.ymove}")
 
         self.x += self.xmove * self.speed
         self.y += self.ymove * self.speed
 
-        if math.dist((self.x + self.w/2, self.y + self.h/2), self.positions[self.m_iter]) < self.w//4:
+        if math.dist((self.x, self.y), self.positions[self.m_iter]) < 2:
             self.moving = False
 
 
