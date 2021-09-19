@@ -77,8 +77,8 @@ class pogo(sprite):
         self.h = size[1]
 
         self.force = force_vel
-        # self.collide_sprites = ("POGO", "TERRAIN", "HAZARD")
-        self.collide_sprites = ["POGO"]
+        self.collide_sprites = ("POGO", "TERRAIN", "HAZARD")
+        # self.collide_sprites = ["POGO"]
 
         self.lifetime = lifetime
 
@@ -108,6 +108,8 @@ class pogo(sprite):
 
                 self.p.PHYS.pogo_active = False
                 self.destroying = True
+
+                break # We need to break because otherwise it can collide multiple times
 
     def update_draw(self, game):
         rel_x = self.x - game.camera_obj.x
@@ -327,6 +329,10 @@ class player(sprite):
         if halt is True:
             self.x_speed = 0
             self.y_speed = 0
+
+            self.PHYS.dash = False
+            self.dashing_frames = 0
+
             self.PHYS.forces = []
 
         self.y_speed -= boost_y
@@ -648,8 +654,8 @@ game = game_info(
                 name="the mario killer",
                 win_w=1280,
                 win_h=720,
-                user_w=1280,
-                user_h=720,
+                user_w=1920,
+                user_h=1080,
                 bg=(0, 0, 0),
                 framecap=60,
                 show_framerate=False,
