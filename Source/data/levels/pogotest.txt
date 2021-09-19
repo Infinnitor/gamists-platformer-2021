@@ -1,5 +1,5 @@
 !lock_X : 100
-!lock_Y : 100
+!lock_Y : 80
 
 !level_theme : APEOUT
 !platform_map : (1920, 1100)
@@ -37,7 +37,7 @@
 (1180, 700) (180, 20) (Hazard)
 (120, 720) (1240, 60) (Hazard)
 
-(360, 540) (40, 40) (PogoPoint)
+(360, 540) (80, 40) (PogoPoint)
 (560, 540) (40, 40) (PogoPoint)
 (840, 540) (40, 40) (PogoPoint)
 (1020, 540) (40, 40) (PogoPoint)
