@@ -2,6 +2,8 @@
 
 - [ ] Add pause screen
 
+- [ ] Objects that need game in __init__ should get game decorators
+
 - [x] - Change generation of surfaces for level_elements:
     - [x] - Allow for the use of larger textures
     - [x] - Create more optimised behaviour for generative textures
