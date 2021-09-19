@@ -196,6 +196,9 @@ class hazard(element):
             collider.destroying = True
 
     def update_draw(self, game):
+        self.surface.fill(colours.colourkey)
+        self.surface.set_colorkey(colours.colourkey)
+
         self.surface.blit(self.tv_static[self.iter], (0, 0))
         self.iter += 1
         if self.iter == len(self.tv_static):
@@ -207,11 +210,37 @@ class hazard(element):
         game.win.blit(self.surface, (rel_x, rel_y))
 
 
+class pogo_point(hazard):
+    layer = "POGO"
+
+    def generate_surface(self, map=None):
+
+        stencil = Surface((self.w, self.h))
+        stencil.fill(colours.purple)
+
+        draw.circle(stencil, colours.colourkey, (self.w/2, self.h/2), self.w/2)
+        stencil.set_colorkey(colours.colourkey)
+
+        def dead_tv_channel():
+            surf = Surface((self.w, self.h))
+            for y in range(0, self.h, 20):
+                for x in range(0, self.w, 20):
+                    surf.blit(asset.TEXTURE.hazard(), (x, y))
+
+            surf.blit(stencil, (0, 0))
+            surf.set_colorkey(colours.purple)
+            return surf
+
+        self.tv_static = [dead_tv_channel() for i in range(10)]
+        self.iter = 0
+        self.surface = Surface((self.w, self.h))
+
+
 class moving_hazard(hazard):
     layer = "HAZARD"
 
     @staticmethod
-    def m_array(s):
+    def p_array(s):
         return bracket.read_brackets(s, split_on="'", chars=("[", "]"), t=int)
 
     def __init__(self, start_pos, size, positions, speed):
@@ -225,7 +254,7 @@ class moving_hazard(hazard):
 
         self.positions = []
         for p in positions.split(","):
-            r = self.m_array(p)
+            r = self.p_array(p)
             self.positions.append(r)
 
         self.m_iter = 0

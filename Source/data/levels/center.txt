@@ -32,8 +32,8 @@
 (1280, 360) (40, 40) (Spawnkey) (TOP)
 
 # Left
-(540, 620) (100, 240) (LevelTransition) (left.txt : LEFTC)
-(640, 760) (40, 40) (Spawnkey) (LEFT)
+(540, 620) (100, 240) (LevelTransition) (pogotest.txt : POGO)
+(640, 760) (40, 40) (Spawnkey) (POGOC)
 
 # Right
 (1920, 640) (100, 240) (LevelTransition) (tower.txt : RIGHTC)

@@ -129,6 +129,7 @@ class game_info():
             "CameraCollider" : level.camera_collider,
             "Checkpoint" : level.checkpoint,
             "Hazard" : level.hazard,
+            "PogoPoint" : level.pogo_point,
             "MovingHazard" : level.moving_hazard,
             "LevelTransition" : level.level_transition,
             "Background" : level.background,
@@ -160,9 +161,9 @@ class game_info():
                 for x in range(0, (map_size[0] // pbg_x) * pbg_x + pbg_x, pbg_x):
                     map.blit(platform_BG, (x, y))
 
-        self.purge_sprites("CHECKPOINTS", "TERRAIN", "HAZARD", "LEVELTRANSITION", "CAMERACOLLIDER", "BACKGROUND", "HIGHPARTICLE", "LOWPARTICLE")
+        self.purge_sprites("CHECKPOINTS", "TERRAIN", "HAZARD", "LEVELTRANSITION", "CAMERACOLLIDER", "BACKGROUND", "HIGHPARTICLE", "LOWPARTICLE", "POGO")
 
-        surface_sprites = ("GroundTerrain", "Hazard", "Background", "MovingHazard")
+        surface_sprites = ("GroundTerrain", "Hazard", "Background", "MovingHazard", "PogoPoint")
 
         for pos, size, sprite_type, args in level_text:
             if player_spawn is True:

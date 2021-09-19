@@ -77,7 +77,8 @@ class pogo(sprite):
         self.h = size[1]
 
         self.force = force_vel
-        self.collide_sprites = ("POGO", "TERRAIN", "HAZARD")
+        # self.collide_sprites = ("POGO", "TERRAIN", "HAZARD")
+        self.collide_sprites = ["POGO"]
 
         self.lifetime = lifetime
 
@@ -94,11 +95,13 @@ class pogo(sprite):
         self.follow_player()
 
         colliders = []
-        [colliders.extend(game.sprites[k]) for k in self.collide_sprites]
+        for k in self.collide_sprites:
+            colliders.extend(game.sprites[k])
 
         for s in colliders:
             if move.rect_collision(self, s):
                 self.p.PHYS.add_force(self.force, ticks=3)
+                game.init_screenshake(10, 4)
 
                 self.p.PHYS.refresh_jump()
                 self.p.PHYS.grounded()
@@ -406,7 +409,7 @@ class player(sprite):
                 self.held_jump_frames = self.held_jump_max + 1
 
         if game.check_key(pygame.K_DOWN, buffer=True) and self.PHYS.pogo_active is False and self.PHYS.on_ground is False:
-            p = pogo(self, (self.x, self.y), (self.w, self.h*4), (0, -10), 25)
+            p = pogo(self, (self.x, self.y), (self.w, self.h*4), (0, -10), 15)
             game.add_sprite(p)
 
         if game.check_key(pygame.K_LSHIFT, buffer=True) and self.PHYS.dash is False:
