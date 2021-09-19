@@ -161,7 +161,8 @@ class game_info():
                 for x in range(0, (map_size[0] // pbg_x) * pbg_x + pbg_x, pbg_x):
                     map.blit(platform_BG, (x, y))
 
-        self.purge_sprites("CHECKPOINTS", "TERRAIN", "HAZARD", "LEVELTRANSITION", "CAMERACOLLIDER", "BACKGROUND", "HIGHPARTICLE", "LOWPARTICLE", "POGO")
+        # self.purge_sprites("CHECKPOINTS", "TERRAIN", "HAZARD", "LEVELTRANSITION", "CAMERACOLLIDER", "BACKGROUND", "HIGHPARTICLE", "LOWPARTICLE", "POGO")
+        self.purge_sprites(preserve=["PLAYER", "UI", "FOREGROUND"])
 
         surface_sprites = ("GroundTerrain", "Hazard", "Background", "MovingHazard", "PogoPoint")
 
@@ -233,13 +234,17 @@ class game_info():
         except KeyError:
             self.sprites[new_sprite.layer] = [new_sprite]
 
-    def purge_sprites(self, *layers):
+    def purge_sprites(self, *layers, preserve=[]):
         if not layers:
             for layer in self.sprites:
+                if layer in preserve:
+                    continue
                 self.sprites[layer] = []
 
         else:
             for l in layers:
+                if layer in preserve:
+                    continue
                 self.sprites[l] = []
 
     def init_screenshake(self, magnitude, len, rand=True, spread=False):
