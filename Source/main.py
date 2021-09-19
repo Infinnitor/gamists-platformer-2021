@@ -63,6 +63,65 @@ class deadplayer(sprite):
         return False
 
 
+class pogo(sprite):
+    layer = "PLAYER"
+
+    def __init__(self, player, pos, size, force_vel, lifetime):
+        self.p = player
+        self.p.PHYS.pogo_active = True
+
+        self.x = pos[0]
+        self.y = pos[1]
+
+        self.w = size[0]
+        self.h = size[1]
+
+        self.force = force_vel
+        self.collide_sprites = ("POGO", "TERRAIN", "HAZARD")
+
+        self.lifetime = lifetime
+
+    def follow_player(self):
+        self.x = self.p.x
+        self.y = self.p.y
+
+    def update_move(self, game):
+        self.lifetime -= 1
+        if self.lifetime < 1:
+            self.p.PHYS.pogo_active = False
+            self.kill()
+
+        self.follow_player()
+
+        colliders = []
+        [colliders.extend(game.sprites[k]) for k in self.collide_sprites]
+
+        for s in colliders:
+            if move.rect_collision(self, s):
+                self.p.PHYS.add_force(self.force, ticks=3)
+
+                self.p.PHYS.refresh_jump()
+                self.p.PHYS.grounded()
+
+                self.p.PHYS.pogo_active = False
+                self.destroying = True
+
+    def update_draw(self, game):
+        rel_x = self.x - game.camera_obj.x
+        rel_y = self.y - game.camera_obj.y
+
+        pygame.draw.rect(game.win, colours.black, (rel_x + 10, rel_y, self.w - 20, self.h))
+
+    def update_destroy(self, game):
+        self.lifetime -= 1
+        if self.lifetime < 1:
+            self.p.PHYS.pogo_active = False
+            self.kill()
+
+        self.follow_player()
+        self.update_draw(game)
+
+
 # Player physics info
 class physics_info():
     class timed_force():
@@ -98,6 +157,7 @@ class physics_info():
         self.walljump_left = True
         self.walljump_right = False
 
+        self.pogo_active = False
         self.dash = False
 
         self.head_hit = False
@@ -345,6 +405,10 @@ class player(sprite):
             if not self.PHYS.can_jump:
                 self.held_jump_frames = self.held_jump_max + 1
 
+        if game.check_key(pygame.K_DOWN, buffer=True) and self.PHYS.pogo_active is False and self.PHYS.on_ground is False:
+            p = pogo(self, (self.x, self.y), (self.w, self.h*4), (0, -10), 25)
+            game.add_sprite(p)
+
         if game.check_key(pygame.K_LSHIFT, buffer=True) and self.PHYS.dash is False:
 
             if self.dashes > 0:
@@ -419,7 +483,7 @@ class player(sprite):
                     if t.collide(self):
                         self.set_spawn((t.x, t.y))
 
-                if t.layer in ("HAZARD", "LEVELTRANSITION", "CAMERACOLLIDER"):
+                if t.layer in ("HAZARD", "POGO", "LEVELTRANSITION", "CAMERACOLLIDER"):
                     t.collide(self)
 
                 if t.layer != "TERRAIN":

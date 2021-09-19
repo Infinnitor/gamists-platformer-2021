@@ -6,7 +6,6 @@ from colour_manager import colours
 import particles
 
 import move_utils as move
-import asset
 
 
 class particle_shortcuts:
@@ -425,3 +424,14 @@ class screenwipe(sprite):
     def update_draw(self, game):
         # draw.rect(game.win, self.c, (self.x, self.y, self.w, self.h))
         game.win.blit(self.sprite, (self.x, self.y))
+
+
+class pause_surface(sprite):
+    layer = "BACKGROUND"
+
+    def __init__(self, game):
+        self.w = game.win_w
+        self.h = game.win_h
+
+        self.surface = Surface((self.w, self.h))
+        self.surface.blit(game.win)

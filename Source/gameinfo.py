@@ -103,6 +103,7 @@ class game_info():
                         "PLAYER": [],
                         "LEVELTRANSITION" : [],
                         "HAZARD" : [],
+                        "POGO" : [],
                         "TERRAIN": [],
                         "ENEMY" : [],
                         "HIGHPARTICLE" : [],

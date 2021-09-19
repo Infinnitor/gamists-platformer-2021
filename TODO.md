@@ -5,9 +5,11 @@
     - [x] - Create more optimised behaviour for generative textures
     - [ ] - Make pixels on tv static texture larger
 
-- [x] Refactor text_level
+- [ ] Add pause screen
 
-- [ ] Refactor text_player
+- [ ] Add funny pogo stick
+
+- [x] Refactor text_level
 
 - [x] Clean up player death code
 
@@ -24,11 +26,11 @@
 # LevelBuild todo:
 
 - [ ] - Create moving blocks
-    -  Player could ride on them (hard)
+    - Player could ride on them (hard)
     - Maybe enemies???
     - Moving hazard blocks
 
-- [ ] - New(er) syntax for <level>.txt???
+- [x] - New(er) syntax for <level>.txt???
     - OLD: (pos) (size) (type) <some args>
     - NEW: (pos) (size) (type) (type-converted args)
 
@@ -42,8 +44,12 @@
 
 # cANCELLED
 
->this sucks
+> Reason: camera colliders discontinued
 
-- [ ] - Change camera collider generation in LevelBuild:
-    - [ ] - LevelBuild will automatically create camera colliders around the level
-    - [ ] - Camera colliders can overlap level transitions (maybe???)
+- Change camera collider generation in LevelBuild:
+    - LevelBuild will automatically create camera colliders around the level
+    - Camera colliders can overlap level transitions (maybe???)
+
+> Reason: Doesn't really need doing
+
+- Refactor text_player

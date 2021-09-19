@@ -24,7 +24,8 @@
 # thanks joe!
 
 # Moving hazard
-(1280, 560) (40, 40) (MovingHazard) ([1280'560], [1280'960] : 10)
+# Commented out for now, as it sucks
+# (1280, 560) (40, 40) (MovingHazard) ([1280'560], [1280'960] : 10)
 
 # Top
 (1140, 280) (320, 80) (LevelTransition) (top.txt : TOPC)

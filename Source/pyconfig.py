@@ -12,6 +12,7 @@ def text_clean(file):
     return valid_text
 
 
+# shitty brackets function
 def read_brackets(string):
     b_values = []
     for iter, char in enumerate(string):
