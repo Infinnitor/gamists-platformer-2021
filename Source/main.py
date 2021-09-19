@@ -492,8 +492,11 @@ class player(sprite):
                     if t.collide(self):
                         self.set_spawn((t.x, t.y))
 
-                if t.layer in ("HAZARD", "POGO", "LEVELTRANSITION", "CAMERACOLLIDER"):
+                if t.layer in ("HAZARD", "POGO", "CAMERACOLLIDER"):
                     t.collide(self)
+
+                if t.layer == "LEVELTRANSITION":
+                    t.collide(self, game)
 
                 if t.layer != "TERRAIN":
                     continue
@@ -654,8 +657,8 @@ game = game_info(
                 name="the mario killer",
                 win_w=1280,
                 win_h=720,
-                user_w=1920,
-                user_h=1080,
+                user_w=1280,
+                user_h=720,
                 bg=(0, 0, 0),
                 framecap=60,
                 show_framerate=False,

@@ -317,13 +317,12 @@ class level_transition(element):
         self.k = spawnkey
 
     def update_draw(self, game):
-        self.game = game
         rel_x = self.x - game.camera_obj.x
         rel_y = self.y - game.camera_obj.y
 
         draw.rect(game.win, self.c, (rel_x, rel_y, self.w, self.h))
 
-    def collide(self, collider):
+    def collide(self, collider, game):
         if self.destroying:
             return
 
@@ -346,8 +345,8 @@ class level_transition(element):
                             direction = "LEFT"
 
                     # self.levelwipe = drawu.screenwipe(direction, asset.TEXTURE.screenwipe, 40, (155, 35, 35), self.game)
-                    self.levelwipe = drawu.bubblewipe(direction=direction, num_bubbles=9, tick=1, colour=(35, 110, 125), randspeed=True, randcol=True, game=self.game)
-                    self.game.add_sprite(self.levelwipe)
+                    self.levelwipe = drawu.bubblewipe(direction=direction, num_bubbles=9, tick=1, colour=(35, 110, 125), randspeed=True, randcol=True, game=game)
+                    game.add_sprite(self.levelwipe)
                     collider.PHYS.freeze = True
                     self.destroying = True
 
@@ -359,8 +358,8 @@ class level_transition(element):
 
     def update_destroy(self, game):
         if self.levelwipe.blocking:
-            self.game.load_level(self.target)
-            spawnpos = self.game.spawnkeys[self.k]
+            game.load_level(self.target)
+            spawnpos = game.spawnkeys[self.k]
 
             game.PLAYER.PHYS.freeze = False
             game.PLAYER.set_spawn(spawnpos)
