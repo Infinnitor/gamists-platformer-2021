@@ -1,13 +1,17 @@
 # Game todo:
 
-- [ ] - Change generation of surfaces for level_elements:
-    - [x] - Allow for the use of larger textures
-    - [x] - Create more optimised behaviour for generative textures
-    - [ ] - Make pixels on tv static texture larger
-
 - [ ] Add pause screen
 
-- [ ] Add funny pogo stick
+- [x] - Change generation of surfaces for level_elements:
+    - [x] - Allow for the use of larger textures
+    - [x] - Create more optimised behaviour for generative textures
+    - [x] - Make pixels on tv static texture larger
+
+- [x] - Refactor game.purge_sprites
+    - [x] - Use list of sprites to exclude instead of include in purge
+
+- [x] - Add funny pogo stick
+    - [x] - Add pogo_points
 
 - [x] Refactor text_level
 
