@@ -74,11 +74,12 @@ class pogo(sprite):
         self.y = pos[1]
 
         self.w = size[0]
-        self.h = size[1]
+        self.target_h = size[1]
+        self.h = 0
 
         self.force = force_vel
-        self.collide_sprites = ("POGO", "TERRAIN", "HAZARD")
-        # self.collide_sprites = ["POGO"]
+        # self.collide_sprites = ("POGO", "TERRAIN", "HAZARD")
+        self.collide_sprites = ["POGO"]
 
         self.lifetime = lifetime
 
@@ -94,13 +95,19 @@ class pogo(sprite):
 
         self.follow_player()
 
+        if self.h < self.target_h:
+            self.h += self.target_h/6
+
         colliders = []
         for k in self.collide_sprites:
             colliders.extend(game.sprites[k])
 
         for s in colliders:
             if move.rect_collision(self, s):
-                self.p.PHYS.add_force(self.force, ticks=3)
+                # Might need to undo
+                new_force = (self.force[0], (self.target_h / self.h) * self.force[1])
+
+                self.p.PHYS.add_force(new_force, ticks=3)
                 game.init_screenshake(10, 4)
 
                 self.p.PHYS.refresh_jump()
@@ -643,7 +650,6 @@ def mainloop(game):
                 game.add_text(f"{a} : {game.PLAYER.PHYS.__dict__[a]}")
 
         game.update_draw()
-
         game.update_scaled()
         game.update_state()
 
