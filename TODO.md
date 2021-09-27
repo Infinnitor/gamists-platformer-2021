@@ -4,6 +4,10 @@
 
 - [ ] Objects that need game in __init__ should get game decorators
 
+- [ ] Experiment with save file
+    - [ ] Saving gameinfo object?!?!?!?!?!
+    - [ ] Collectibles dictionary
+
 - [x] - Change generation of surfaces for level_elements:
     - [x] - Allow for the use of larger textures
     - [x] - Create more optimised behaviour for generative textures

@@ -101,6 +101,7 @@ class game_info():
                         "LOWPARTICLE" : [],
                         "CHECKPOINTS" : [],
                         "PLAYER": [],
+                        "TOKEN" : [],
                         "LEVELTRANSITION" : [],
                         "HAZARD" : [],
                         "POGO" : [],
@@ -113,6 +114,8 @@ class game_info():
 
         self.camera_obj = camera.game_camera((0, 0), (self.win_w, self.win_h))
         self.oncam_sprites = []
+
+        self.TOKEN_MANAGER = level.tokens_manager()
 
     def load_level(self, name, player_spawn=False):
         levelpath = f"data/levels/{name}"
@@ -133,6 +136,7 @@ class game_info():
             "MovingHazard" : level.moving_hazard,
             "LevelTransition" : level.level_transition,
             "Background" : level.background,
+            "Yummle" : level.yummle
         }
 
         self.spawnkeys = {}

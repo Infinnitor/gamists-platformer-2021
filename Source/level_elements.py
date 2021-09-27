@@ -1,5 +1,6 @@
 from pygame import draw, Surface
 from sprite_class import sprite
+from tokens import *
 
 import move_utils as move
 import math
@@ -284,7 +285,6 @@ class moving_hazard(hazard):
 
             self.angle_calc()
             self.moving = True
-        game.add_text(f"{self.xmove}, {self.ymove}")
 
         self.x += self.xmove * self.speed
         self.y += self.ymove * self.speed

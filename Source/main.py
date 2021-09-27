@@ -499,7 +499,7 @@ class player(sprite):
                     if t.collide(self):
                         self.set_spawn((t.x, t.y))
 
-                if t.layer in ("HAZARD", "POGO", "CAMERACOLLIDER"):
+                if t.layer in ("HAZARD", "POGO", "CAMERACOLLIDER", "TOKEN"):
                     t.collide(self)
 
                 if t.layer == "LEVELTRANSITION":
@@ -568,6 +568,8 @@ class player(sprite):
                         self.PHYS.head_hit = True
 
     def update_draw(self, game):
+
+        game.add_text(game.TOKEN_MANAGER.collectible_dict)
 
         # Effects stuff first
         if self.PHYS.head_hit:

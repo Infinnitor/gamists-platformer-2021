@@ -18,6 +18,8 @@
 (1900, 980) (20, 100) (GroundTerrain)
 (640, 1080) (1280, 20) (GroundTerrain)
 
+(1280, 720) (40, 40) (Yummle) (center0)
+
 # Transitions
 (1920, 740) (80, 220) (LevelTransition) (pogotest.txt : LEFT)
 (1880, 860) (40, 40) (Spawnkey) (LEFTC)
