@@ -40,6 +40,10 @@
     - Maybe enemies???
     - Moving hazard blocks
 
+- [ ] - Level Editor?!?!?!!??!?!
+    - [x] - Make draggable blocks
+    - [ ] - Everything else
+
 - [x] - New(er) syntax for <level>.txt???
     - OLD: (pos) (size) (type) <some args>
     - NEW: (pos) (size) (type) (type-converted args)

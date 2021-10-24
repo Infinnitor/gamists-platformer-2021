@@ -87,6 +87,7 @@ class game_info():
         self.render_text = []
 
         self.sprites = {
+                        "CAMERA" : [],
                         "BACKGROUND" : [],
                         "LOWPARTICLE" : [],
                         "CHECKPOINTS" : [],
@@ -101,6 +102,8 @@ class game_info():
                         "CAMERACOLLIDER" : [],
                         "UI" : [],
                         "FOREGROUND" : []}
+
+        self.current_selected_element = None
 
     def add_sprite(self, new_sprite):
         new_sprite.add_default_attr(self)
