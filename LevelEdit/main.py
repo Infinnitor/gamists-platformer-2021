@@ -74,7 +74,9 @@ class toolbar(sprite):
         self.h = size[1]
 
         def spawn_block(game):
-            new_sprite = test_element((800, 400), (100, 100))
+            spawn_pos = (game.CAMERA.x + 800, game.CAMERA.y + 400)
+
+            new_sprite = test_element(spawn_pos, (100, 100))
             game.add_sprite(new_sprite)
             new_sprite.context_menu(game)
             new_sprite.clicked = True

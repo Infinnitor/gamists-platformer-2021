@@ -240,6 +240,9 @@ class game_info():
                 else:
                     s_draw.update_draw(self)
 
+        if self.current_selected_element is not None:
+            self.current_selected_element.update_draw(self)
+
         for y, f in enumerate(self.render_text):
             y_pos = (y * self.font_size) + (self.font_size * 2)
             self.win.blit(f, (self.font_size * 2, y_pos))
