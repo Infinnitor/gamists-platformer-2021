@@ -1,5 +1,4 @@
 import math
-import copy
 
 from pygame import draw, Surface
 from sprite_class import sprite

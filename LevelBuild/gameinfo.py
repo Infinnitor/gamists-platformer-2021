@@ -40,7 +40,7 @@ class sprite():
         except AttributeError:
             highlight_r = 10
 
-        pygame.draw.circle(game.win, colours.green, (self.x, self.y), highlight_r)
+        pygame.draw.circle(game.win, (35, 155, 35), (self.x, self.y), highlight_r)
 
     def add_default_attr(self, game):
         self.destroy = False

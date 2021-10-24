@@ -1,5 +1,6 @@
 from pygame import transform, draw
 
+
 # Sprite skeleton class
 class sprite():
 

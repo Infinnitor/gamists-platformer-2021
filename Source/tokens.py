@@ -18,7 +18,8 @@ class tokens_manager():
     def __init__(self):
         self.collectible_dict = {
             "center0" : False,
-            "left0" : True }
+            "left0" : True
+            }
 
     def collect(self, id):
         self.collectible_dict[id] = True
