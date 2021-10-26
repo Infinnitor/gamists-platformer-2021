@@ -87,23 +87,14 @@ class game_info():
         self.render_text = []
 
         self.sprites = {
+                        "MANAGER" : [],
                         "CAMERA" : [],
                         "BACKGROUND" : [],
                         "LOWPARTICLE" : [],
-                        "CHECKPOINTS" : [],
-                        "PLAYER": [],
-                        "TOKEN" : [],
-                        "LEVELTRANSITION" : [],
-                        "HAZARD" : [],
-                        "POGO" : [],
                         "TERRAIN": [],
-                        "ENEMY" : [],
                         "HIGHPARTICLE" : [],
-                        "CAMERACOLLIDER" : [],
                         "UI" : [],
                         "FOREGROUND" : []}
-
-        self.current_selected_element = None
 
     def add_sprite(self, new_sprite):
         new_sprite.add_default_attr(self)
@@ -240,8 +231,10 @@ class game_info():
                 else:
                     s_draw.update_draw(self)
 
-        if self.current_selected_element is not None:
-            self.current_selected_element.update_draw(self)
+        topmost = self.SELECTION_MANAGER.select_element
+        if topmost is not None:
+            if topmost.destroy is False:
+                topmost.update_draw(self)
 
         for y, f in enumerate(self.render_text):
             y_pos = (y * self.font_size) + (self.font_size * 2)
