@@ -75,7 +75,7 @@ class pogo(sprite):
 
         self.w = size[0]
         self.target_h = size[1]
-        self.h = 0
+        self.h = self.target_h
 
         self.force = force_vel
         # self.collide_sprites = ("POGO", "TERRAIN", "HAZARD")
@@ -95,12 +95,13 @@ class pogo(sprite):
 
         self.follow_player()
 
-        if self.h < self.target_h:
-            self.h += self.target_h/6
+        # if self.h < self.target_h:
+        #     self.h += self.target_h/6
 
         colliders = []
         for k in self.collide_sprites:
             colliders.extend(game.sprites[k])
+        colliders.sort(key=lambda x: x.y)
 
         for s in colliders:
             if move.rect_collision(self, s):
@@ -391,12 +392,12 @@ class player(sprite):
 
                 if self.PHYS.walljump_left:
                     self.x_speed = self.walljump_str
-                    self.PHYS.add_force((self.x_acceleration * 2, 0), 10)
+                    self.PHYS.add_force((self.x_acceleration * 1, 0), 10)
                     self.PHYS.walljump_frames = 0
 
                 elif self.PHYS.walljump_right:
                     self.x_speed = self.walljump_str * -1
-                    self.PHYS.add_force((self.x_acceleration * -2, 0), 10)
+                    self.PHYS.add_force((self.x_acceleration * -1, 0), 10)
                     self.PHYS.walljump_frames = 0
 
             if self.jumps > 0:
@@ -569,8 +570,6 @@ class player(sprite):
 
     def update_draw(self, game):
 
-        game.add_text(game.TOKEN_MANAGER.collectible_dict)
-
         # Effects stuff first
         if self.PHYS.head_hit:
             game.init_screenshake(4, 4)
@@ -628,6 +627,7 @@ def mainloop(game):
     game.add_sprite(player(config.player))
     game.PLAYER = game.sprites["PLAYER"][0]
 
+    game.add_sprite(drawu.texture_overlay([game.win_w, game.win_h], asset.TEXTURE.platform_map))
     game.load_level('center.txt', player_spawn=bool(config.player.auto_spawn))
 
     show_player_attr = False

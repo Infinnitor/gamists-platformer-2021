@@ -56,7 +56,8 @@ class background(element):
         rel_x = self.x - game.camera_obj.x
         rel_y = self.y - game.camera_obj.y
 
-        game.win.blit(self.surface, (rel_x, rel_y))
+        # game.win.blit(self.surface, (rel_x, rel_y))
+        draw.rect(game.win, (25, 75, 25), (0, 0, game.win_w, game.win_h))
 
 
 class camera_collider(element):
@@ -162,7 +163,8 @@ class platform(element):
         rel_x = self.x - game.camera_obj.x
         rel_y = self.y - game.camera_obj.y
 
-        game.win.blit(self.surface, (rel_x, rel_y))
+        # game.win.blit(self.surface, (rel_x, rel_y))
+        draw.rect(game.win, (10, 10, 10), (rel_x, rel_y, self.w, self.h))
 
 
 class hazard(element):

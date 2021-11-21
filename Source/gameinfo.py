@@ -362,7 +362,9 @@ class game_info():
         self.oncam_sprites = []
         for layer in self.sprites:
             for s in self.sprites[layer]:
-                if self.camera_obj.on_camera(s) or s.persistent:
+                if s.persistent:
+                    self.oncam_sprites.append(s)
+                elif self.camera_obj.on_camera(s):
                     self.oncam_sprites.append(s)
 
         for cam_sprite in self.oncam_sprites:

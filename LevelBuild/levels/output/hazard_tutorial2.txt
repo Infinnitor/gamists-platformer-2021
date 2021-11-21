@@ -1,11 +1,3 @@
-!border_X : (0, 8000)
-!border_Y : (60, 3000)
-
-!level_theme : APEOUT
-!platform_map : (8000, 3000)
-
-(0, 0) (8000, 3000) (Background)
-
 (0, 0) (240, 20) (GroundTerrain)
 (480, 0) (7520, 160) (GroundTerrain)
 (0, 20) (240, 140) (GroundTerrain)
@@ -91,9 +83,7 @@
 (3680, 2480) (2800, 240) (Hazard)
 (3400, 1440) (80, 80) (Checkpoint)
 (320, 2320) (80, 80) (Checkpoint)
-
-(240, 0) (240, 160) (LevelTransition) (center.txt : BOTTOM)
-(320, 160) (80, 80) (Spawnkey) (BOTTOMC)
-
-(7880, 1800) (120, 280) (LevelTransition) (right.txt : RIGHTC)
-(7800, 2000) (80, 80) (Spawnkey) (RIGHT)
+(240, 0) (240, 160) (LevelTransition)
+(7880, 1800) (120, 280) (LevelTransition)
+(320, 160) (80, 80) (Spawnkey)
+(7800, 2000) (80, 80) (Spawnkey)

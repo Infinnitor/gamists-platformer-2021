@@ -6,6 +6,7 @@ from colour_manager import colours
 import particles
 
 import move_utils as move
+import asset
 
 
 class particle_shortcuts:
@@ -43,9 +44,9 @@ class particle_shortcuts:
             pos = args[1]
 
             # yo converT bool to int?????
-            expand_speed = int(kwargs['randcol']) + kwargs['speed']
-            surf = particles.part_surface(pos, expand_speed, kwargs['lifetime'])
-            surf.layer = kwargs['layer']
+            expand_speed = int(kwargs["randcol"]) + kwargs["speed"]
+            surf = particles.part_surface(pos, expand_speed, kwargs["lifetime"])
+            surf.layer = kwargs["layer"]
 
             args[1] = (surf.w/2, surf.h/2)
 
@@ -64,19 +65,19 @@ class particle_shortcuts:
         # Provided by this function: angle
 
         params = self.get_params(kwargs)
-        params['pos'] = pos
+        params["pos"] = pos
 
         ret_particles = []
         for p in range(number):
-            params['angle'] = random.randint(0, 360)
+            params["angle"] = random.randint(0, 360)
 
-            r_speed = kwargs['randspeed']
+            r_speed = kwargs["randspeed"]
             if r_speed is not False:
-                params['speed'] = random.randint(kwargs['speed'] - r_speed, kwargs['speed'] + r_speed)
+                params["speed"] = random.randint(kwargs["speed"] - r_speed, kwargs["speed"] + r_speed)
 
-            r_col = kwargs['randcol']
+            r_col = kwargs["randcol"]
             if r_col is not False:
-                params['colour'] = rgb.randomize(kwargs['colour'], r_col*-1, r_col)
+                params["colour"] = rgb.randomize(kwargs["colour"], r_col*-1, r_col)
 
             new_part = part(**params)
             ret_particles.append(new_part)
@@ -86,11 +87,11 @@ class particle_shortcuts:
     @surfacemethod
     def cross(self, part, pos, **kwargs):
         params = self.get_params(kwargs)
-        params['pos'] = pos
+        params["pos"] = pos
 
         ret_particles = []
         for a in range(0, 360, 90):
-            params['angle'] = a
+            params["angle"] = a
 
             ret_particles.append(part(**params))
 
@@ -99,19 +100,19 @@ class particle_shortcuts:
     @surfacemethod
     def cone(self, part, pos, number, a_range, **kwargs):
         params = self.get_params(kwargs)
-        params['pos'] = pos
+        params["pos"] = pos
 
         ret_particles = []
         for p in range(number):
-            params['angle'] = random.randint(a_range[0], a_range[1])
+            params["angle"] = random.randint(a_range[0], a_range[1])
 
-            r_speed = kwargs['randspeed']
+            r_speed = kwargs["randspeed"]
             if r_speed is not False:
-                params['speed'] = random.randint(kwargs['speed'] - r_speed, kwargs['speed'] + r_speed)
+                params["speed"] = random.randint(kwargs["speed"] - r_speed, kwargs["speed"] + r_speed)
 
-            r_col = kwargs['randcol']
+            r_col = kwargs["randcol"]
             if r_col is not False:
-                params['colour'] = rgb.randomize(kwargs['colour'], r_col*-1, r_col)
+                params["colour"] = rgb.randomize(kwargs["colour"], r_col*-1, r_col)
 
             new_part = part(**params)
             ret_particles.append(new_part)
@@ -188,7 +189,7 @@ class bubblewipe(sprite):
     persistent = True
 
     class bubble(sprite):
-        # Layer is just there because it's a sprite ig lol
+        # Layer is just there because it"s a sprite ig lol
         layer = "FOREGROUND"
 
         def __init__(b, pos, max_r, colour, speed, randspeed=False, randcol=False):
@@ -424,6 +425,30 @@ class screenwipe(sprite):
     def update_draw(self, game):
         # draw.rect(game.win, self.c, (self.x, self.y, self.w, self.h))
         game.win.blit(self.sprite, (self.x, self.y))
+
+
+class texture_overlay(sprite):
+    layer = "FOREGROUND"
+    persistent = True
+
+    def __init__(self, size, texture):
+        self.w = size[0]
+        self.h = size[1]
+
+        self.surface = Surface((self.w, self.h))
+        pbg_x, pbg_y = texture.get_size()
+
+        # Made a surface the size of the entire level, with a repeated texture on it
+        for y in range(0, (self.h // pbg_y) * pbg_y + pbg_y, pbg_y):
+            for x in range(0, (self.w // pbg_x) * pbg_x + pbg_x, pbg_x):
+                self.surface.blit(texture, (x, y))
+        self.surface.set_alpha(150)
+
+    def update_move(self, game):
+        pass
+
+    def update_draw(self, game):
+        game.win.blit(self.surface, (0, 0))
 
 
 class pause_surface(sprite):
