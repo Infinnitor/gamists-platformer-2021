@@ -608,8 +608,8 @@ class player(sprite):
         rel_y = self.y - game.camera_obj.y
 
         # Draw player and its colliders
-        # pygame.draw.rect(game.win, c, (rel_x, rel_y, self.w, self.h))
-        game.win.blit(self.surface, (rel_x, rel_y))
+        pygame.draw.rect(game.win, (1, 1, 1), (rel_x, rel_y, self.w, self.h))
+        # game.win.blit(self.surface, (rel_x, rel_y))
 
     def update_destroy(self, game):
         if self.dead_player is None:

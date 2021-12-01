@@ -3,7 +3,9 @@ from sprite_class import sprite
 from tokens import *
 
 import move_utils as move
+
 import math
+import random
 
 import draw_utils as drawu
 from colour_manager import colours
@@ -57,7 +59,7 @@ class background(element):
         rel_y = self.y - game.camera_obj.y
 
         # game.win.blit(self.surface, (rel_x, rel_y))
-        draw.rect(game.win, (25, 75, 25), (0, 0, game.win_w, game.win_h))
+        draw.rect(game.win, (15, 100, 45), (0, 0, game.win_w, game.win_h))
 
 
 class camera_collider(element):
@@ -140,6 +142,11 @@ class platform(element):
 
         self.c = colours.blue
 
+        self.wobble = self.w * self.h < 100000
+
+        self.randX = 0
+        self.randY = 0
+
     def generate_surface(self, map=None):
         self.surface = Surface((self.w, self.h))
 
@@ -164,7 +171,11 @@ class platform(element):
         rel_y = self.y - game.camera_obj.y
 
         # game.win.blit(self.surface, (rel_x, rel_y))
-        draw.rect(game.win, (10, 10, 10), (rel_x, rel_y, self.w, self.h))
+        if game.frames % 10 == 0 and self.wobble:
+            self.randX = random.randint(0, 4)
+            self.randY = random.randint(0, 4)
+
+        draw.rect(game.win, (10, 10, 10), (rel_x + self.randX, rel_y, self.w + (self.randX*-1), self.h + self.randY), border_radius=2)
 
 
 class hazard(element):

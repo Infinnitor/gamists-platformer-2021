@@ -1,5 +1,5 @@
 import random
-from pygame import draw, Surface
+from pygame import draw, Surface, transform
 from sprite_class import sprite
 
 from colour_manager import colours
@@ -185,12 +185,12 @@ class rgb():
 
 
 class bubblewipe(sprite):
-    layer = "FOREGROUND"
+    layer = "UI"
     persistent = True
 
     class bubble(sprite):
         # Layer is just there because it"s a sprite ig lol
-        layer = "FOREGROUND"
+        layer = "UI"
 
         def __init__(b, pos, max_r, colour, speed, randspeed=False, randcol=False):
             b.x = pos[0]
@@ -436,18 +436,29 @@ class texture_overlay(sprite):
         self.h = size[1]
 
         self.surface = Surface((self.w, self.h))
-        pbg_x, pbg_y = texture.get_size()
+        self.surfaces = [Surface((self.w, self.h)) for s in range(10)]
+        size = texture.get_size()
 
         # Made a surface the size of the entire level, with a repeated texture on it
-        for y in range(0, (self.h // pbg_y) * pbg_y + pbg_y, pbg_y):
-            for x in range(0, (self.w // pbg_x) * pbg_x + pbg_x, pbg_x):
-                self.surface.blit(texture, (x, y))
-        self.surface.set_alpha(150)
+        for surf in self.surfaces:
+            t = transform.scale(texture, [random.randint(int(size[0]*0.5), int(size[0]*1.5)), random.randint(int(size[1]*0.5), int(size[1]*1.5))])
+            pbg_x, pbg_y = t.get_size()
+            for y in range(0, (self.h // pbg_y) * pbg_y + pbg_y, pbg_y):
+                for x in range(0, (self.w // pbg_x) * pbg_x + pbg_x, pbg_x):
+                    surf.blit(t, (x, y))
+            surf.set_alpha(150)
 
     def update_move(self, game):
         pass
 
     def update_draw(self, game):
+        if game.frames % 10 == 0:
+            flicker = random.choice(self.surfaces)
+            if flicker is self.surface:
+                self.update_draw(game)
+                return
+            self.surface = flicker
+
         game.win.blit(self.surface, (0, 0))
 
 

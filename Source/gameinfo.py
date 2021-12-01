@@ -168,7 +168,8 @@ class game_info():
         # self.purge_sprites("CHECKPOINTS", "TERRAIN", "HAZARD", "LEVELTRANSITION", "CAMERACOLLIDER", "BACKGROUND", "HIGHPARTICLE", "LOWPARTICLE", "POGO")
         self.purge_sprites(preserve=["PLAYER", "UI", "FOREGROUND"])
 
-        surface_sprites = ("GroundTerrain", "Hazard", "Background", "MovingHazard", "PogoPoint")
+        # surface_sprites = ("GroundTerrain", "Hazard", "Background", "MovingHazard", "PogoPoint")
+        surface_sprites = ("Hazard", "MovingHazard", "PogoPoint")
 
         for pos, size, sprite_type, args in level_text:
             if player_spawn is True:
