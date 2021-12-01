@@ -1,4 +1,8 @@
 #!/bin/bash
+if [ "$EUID" -eq 0 ]
+	then echo "Do not run as root, it can cause unwanted behaviour"
+	exit
+fi
 
 echo "---------------------------"
 echo "Creating building directory"
@@ -11,11 +15,6 @@ echo "---------------------------"
 echo "Copying Python source files"
 echo "---------------------------"
 cp *.py building/ --verbose
-
-# echo "---------------------------"
-# echo "Copying Data"
-# echo "---------------------------"
-# cp -r data building/ --verbose
 
 echo "--------------------------------"
 echo "Building executable from main.py"
@@ -40,8 +39,9 @@ echo "---------------------------"
 echo "Deleting building directory"
 echo "---------------------------"
 
-rm -rf building
+rm -rf building --verbose
 
+echo "---------------------------"
 echo "Running built executable..."
-cd building
+echo "---------------------------"
 ./main

@@ -89,7 +89,7 @@ class game_info():
         self.shake_y = 0
         self.shake = False
 
-        self.font_name = None
+        self.font_name = asset.FONT_PATH
         self.font_size = self.win_w // 50
         self.FONT = pygame.font.Font(self.font_name, self.font_size)
         self.render_text = []

@@ -1,5 +1,10 @@
-from pygame import image, mixer, Surface
+import pygame.image, pygame.mixer, pygame.font
+from pygame import Surface
+pygame.mixer.init()
+pygame.font.init()
+
 from colour_manager import colours
+
 import random
 import os
 import sys
@@ -28,7 +33,7 @@ class spritesheet():
         self.path = fix_path(path)
 
         # Convert it to save time when blitting
-        self.sheet = image.load(self.path).convert()
+        self.sheet = pygame.image.load(self.path).convert()
 
         # Size of each sprite in the size
         self.w = size[0]
@@ -65,7 +70,7 @@ class audio_manager():
                 self.sounds[s] = (sounds[s], i)
 
             # In order to play sounds on top of each other, one channel is created for each sound
-            mixer.set_num_channels(len(self.sounds))
+            pygame.mixer.set_num_channels(len(self.sounds))
 
     # Sound is played in its given channel
     def play(self, name):
@@ -73,19 +78,19 @@ class audio_manager():
         assert name in self.sounds, f"{name} is an undefined sound"
         s = self.sounds[name]
 
-        mixer.Channel(s[1]).play(s[0])
+        pygame.mixer.Channel(s[1]).play(s[0])
 
 
 class texture_manager():
     def __init__(self):
-        self._blank = image.load(fix_path(('data/sprites/textures/amongus.png'))).convert()
+        self._blank = pygame.image.load(fix_path(('data/sprites/textures/amongus.png'))).convert()
 
         self.platform_tex = spritesheet('data/sprites/textures/platform_rachel.png', (20, 20))
         self.hazard_tex = spritesheet('data/sprites/textures/hazard_spritesheet.png', (20, 20))
 
-        self.screenwipe = image.load('data/sprites/ui/screenwipe_RED.png').convert()
-        self.platform_map = image.load(fix_path('data/sprites/textures/ape_out.png')).convert()
-        self.bg_texture = image.load(fix_path('data/sprites/textures/ape_bg.png')).convert()
+        self.screenwipe = pygame.image.load('data/sprites/ui/screenwipe_RED.png').convert()
+        self.platform_map = pygame.image.load(fix_path('data/sprites/textures/ape_out.png')).convert()
+        self.bg_texture = pygame.image.load(fix_path('data/sprites/textures/ape_bg.png')).convert()
 
     def hazard(self):
         return random.choice(self.hazard_tex.list())
@@ -109,3 +114,4 @@ def init():
 
 
 VALID_LEVELTHEMES = ("MAIN", "APEOUT", "BEAN")
+FONT_PATH = fix_path("data/sprites/ui/DejaVuSans-Bold.ttf")
