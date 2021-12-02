@@ -1,3 +1,5 @@
 Other/
 **/__pycache__/
 **/*.zip
+**/building/
+**/build/

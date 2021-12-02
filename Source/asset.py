@@ -1,4 +1,4 @@
-import pygame.image, pygame.mixer, pygame.font
+import pygame.image, pygame.draw, pygame.mixer, pygame.font
 from pygame import Surface
 pygame.mixer.init()
 pygame.font.init()

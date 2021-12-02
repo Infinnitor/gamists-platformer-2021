@@ -2,6 +2,8 @@ from pygame import draw, Surface
 from sprite_class import sprite
 from tokens import *
 
+import particles
+
 import move_utils as move
 
 import math
@@ -29,6 +31,8 @@ class background(element):
     persistent = True
 
     leveltheme = "MAIN"
+
+    c = (15, 110, 75)
 
     def __init__(self, pos, size):
         self.x = pos[0]
@@ -59,7 +63,7 @@ class background(element):
         rel_y = self.y - game.camera_obj.y
 
         # game.win.blit(self.surface, (rel_x, rel_y))
-        draw.rect(game.win, (15, 100, 45), (0, 0, game.win_w, game.win_h))
+        draw.rect(game.win, self.c, (0, 0, game.win_w, game.win_h))
 
 
 class camera_collider(element):
@@ -133,6 +137,8 @@ class platform(element):
     layer = "TERRAIN"
     leveltheme = "MAIN"
 
+    c = (10, 10, 10)
+
     def __init__(self, pos, size):
         self.x = pos[0]
         self.y = pos[1]
@@ -140,31 +146,30 @@ class platform(element):
         self.w = size[0]
         self.h = size[1]
 
-        self.c = colours.blue
-
+        # It will only wobble if it has a small enough surface area
         self.wobble = self.w * self.h < 100000
 
         self.randX = 0
         self.randY = 0
 
-    def generate_surface(self, map=None):
-        self.surface = Surface((self.w, self.h))
-
-        self.texture = asset.TEXTURE._blank
-        if self.leveltheme == "BEAN":
-            self.texture = asset.TEXTURE.bean_texture()
-        elif self.leveltheme == "MAIN":
-            self.texture = asset.TEXTURE.bean_texture()
-
-        if map is None:
-            for y in range(0, self.h, 20):
-                for x in range(0, self.w, 20):
-
-                    self.surface.blit(self.texture, (x, y))
-
-        # If there is an active platform map
-        else:
-            self.surface.blit(map, (0, 0), (self.x, self.y, self.w, self.h))
+    # def generate_surface(self, map=None):
+    #     self.surface = Surface((self.w, self.h))
+    #
+    #     self.texture = asset.TEXTURE._blank
+    #     if self.leveltheme == "BEAN":
+    #         self.texture = asset.TEXTURE.bean_texture()
+    #     elif self.leveltheme == "MAIN":
+    #         self.texture = asset.TEXTURE.bean_texture()
+    #
+    #     if map is None:
+    #         for y in range(0, self.h, 20):
+    #             for x in range(0, self.w, 20):
+    #
+    #                 self.surface.blit(self.texture, (x, y))
+    #
+    #     # If there is an active platform map
+    #     else:
+    #         self.surface.blit(map, (0, 0), (self.x, self.y, self.w, self.h))
 
     def update_draw(self, game):
         rel_x = self.x - game.camera_obj.x
@@ -175,7 +180,7 @@ class platform(element):
             self.randX = random.randint(0, 4)
             self.randY = random.randint(0, 4)
 
-        draw.rect(game.win, (10, 10, 10), (rel_x + self.randX, rel_y, self.w + (self.randX*-1), self.h + self.randY), border_radius=2)
+        draw.rect(game.win, self.c, (rel_x + self.randX, rel_y, self.w + (self.randX*-1), self.h + self.randY), border_radius=2)
 
 
 class hazard(element):
@@ -189,6 +194,7 @@ class hazard(element):
         self.w = size[0]
         self.h = size[1]
 
+        self.part_iter = random.randint(260, 1000)
         self.c = (35, 35, 155)
 
     def generate_surface(self, map=None):
@@ -220,6 +226,20 @@ class hazard(element):
 
         rel_x = self.x - game.camera_obj.x
         rel_y = self.y - game.camera_obj.y
+
+        if game.frames % self.part_iter == 0:
+            game.particles.cone(
+                                        particles.circle, (self.x + random.randint(0, self.w), self.y), 5,
+                                        [-135, -45],
+                                        size=12,
+                                        speed=3,
+                                        colour=(155, 135, 155),
+                                        randspeed=1,
+                                        randcol=3,
+                                        layer="LOWPARTICLE"
+                                    )
+
+        self.part_iter = random.randint(260, 1000)
 
         game.win.blit(self.surface, (rel_x, rel_y))
 
