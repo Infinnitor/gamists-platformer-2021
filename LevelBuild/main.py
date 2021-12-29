@@ -1,8 +1,8 @@
-from gameinfo import game_info, pygame, sprite, random
+#!/usr/bin/python3
+from gameinfo import game_info, pygame, sprite, random, sys, os
 
 import tkinter
 import tkinter.filedialog
-
 import glob
 
 
@@ -74,7 +74,8 @@ def clear_file(name):
 
 
 def build_text(gridrect, name):
-    file = open(f"levels/output/{name}.txt", "a+")
+    p = f"levels/output/{name}.txt"
+    file = open(p, "a+")
     target_element = gridrect[0].start_element
 
     u_x, u_y = gridrect[0].upper()
@@ -84,10 +85,17 @@ def build_text(gridrect, name):
     rect_h = l_y - u_y
 
     # print(f"{rect_w},  {rect_h}")
-    out_text = f"({u_x}, {u_y}) ({rect_w}, {rect_h}) ({target_element})\n"
-    file.write(out_text)
+    out_text = f"({u_x}, {u_y}) ({rect_w}, {rect_h}) ({target_element})"
+    if target_element == "Spawnkey":
+        out_text += " (TEST)"
 
+    elif target_element == "LevelTransition":
+        out_text += " (test.txt : TEST)"
+
+    out_text += "\n"
+    file.write(out_text)
     file.close()
+    return f"levels/output/{name}.txt"
 
 
 # Function for finding out the initial parameters of a potential rectangle, given a starting tile
@@ -320,7 +328,19 @@ class button(sprite):
                     level_name = levelpath.split('/')[-1]
                     clear_file(level_name.replace('.png', ''))
                     for platform in rects:
-                        build_text(platform, level_name.replace('.png', ''))
+                        new_level_path = build_text(platform, level_name.replace('.png', ''))
+
+                    flags = "!level_theme : APEOUT\n!platform_map : (1920, 1080)\n(640, 360) (4000, 1380) (Background)"
+
+                    add_flags = open(new_level_path, "a+")
+                    add_flags.write(flags)
+                    add_flags.close()
+
+                    if game.launch_level is True:
+                        open_path = os.path.abspath(new_level_path)
+                        os.chdir("../Source/")
+                        os.system("./main.py " + open_path)
+                        return
 
             else:
                 print("FAILED")
@@ -420,6 +440,7 @@ def mainmenu(game):
     draw_grid = button((500, 440), (260, 60), "DRAW GRID: TRUE", [(90, 10, 10), (120, 20, 20), (255, 35, 35)])
     game.draw_grid = True
 
+    game.launch_level = True
     buttons = [load, load_all, algo, draw_grid]
 
     while game.run:

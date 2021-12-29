@@ -1,4 +1,5 @@
-from gameinfo import game_info, pygame, time, math, random
+#!/usr/bin/python3
+from gameinfo import game_info, pygame, time, math, random, sys, os
 
 from colour_manager import colours
 from sprite_class import sprite
@@ -9,7 +10,6 @@ import draw_utils as drawu
 import particles
 
 import pyconfig as config
-
 import asset
 
 
@@ -623,12 +623,20 @@ class player(sprite):
                 self.dead_player = None
 
 
-def mainloop(game):
+def mainloop(game, args):
+    start_level_path = "center.txt"
+
+    if len(args) > 1:
+        if not os.path.exists(args[1]):
+            print("Path to args-provided level is invalid")
+        else:
+            start_level_path = args[1]
+
     game.add_sprite(player(config.player))
     game.PLAYER = game.sprites["PLAYER"][0]
 
-    game.add_sprite(drawu.texture_overlay([game.win_w, game.win_h], asset.TEXTURE.platform_map))
-    game.load_level('center.txt', player_spawn=bool(config.player.auto_spawn))
+    # game.add_sprite(drawu.texture_overlay([game.win_w, game.win_h], asset.TEXTURE.platform_map))
+    game.load_level(start_level_path, player_spawn=bool(config.player.auto_spawn))
 
     show_player_attr = False
     while game.run:
@@ -674,4 +682,4 @@ game = game_info(
 
 # Asset must be initialised after game sets the display surface
 asset.init()
-mainloop(game)
+mainloop(game, sys.argv)

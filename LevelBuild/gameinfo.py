@@ -4,9 +4,10 @@
 
 # DO NOT COPY LOL
 
-from os import environ
-environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
+import os
+os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 
+import sys
 import math
 import time
 import random

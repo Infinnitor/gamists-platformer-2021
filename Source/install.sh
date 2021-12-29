@@ -20,7 +20,8 @@ echo "--------------------------------"
 echo "Building executable from main.py"
 echo "--------------------------------"
 cd building
-pyinstaller main.py --onefile --clean
+mv main.py Game.py
+pyinstaller Game.py --onefile --clean
 
 cd ..
 if [ [ ! -e "building/dist/main" ] ]

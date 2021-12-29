@@ -1,5 +1,5 @@
-from os import environ
-environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
+import os
+os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 
 from sprite_class import sprite
 import draw_utils as drawu
@@ -14,6 +14,7 @@ import asset
 import math
 import time
 import random
+import sys
 import pygame
 pygame.font.init()
 
@@ -118,7 +119,8 @@ class game_info():
         self.TOKEN_MANAGER = level.tokens_manager()
 
     def load_level(self, name, player_spawn=False):
-        levelpath = f"data/levels/{name}"
+        levelpath = f"data/levels/{name}" if not os.path.exists(name) else name
+
 
         def flagged(f):
             if self.levelflags.get(f):
